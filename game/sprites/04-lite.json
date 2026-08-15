@@ -1,0 +1,50 @@
+{
+  "Main": {
+    "Group": 4,
+    "Image": "04-lite.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "PodHit",
+      "Location": [
+        2,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "CapHit",
+      "Location": [
+        40,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "BumperHit",
+      "Location": [
+        70,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "MarkHit",
+      "Location": [
+        100,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    }
+  ]
+}

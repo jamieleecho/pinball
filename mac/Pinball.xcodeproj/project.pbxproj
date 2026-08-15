@@ -1,0 +1,667 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+		E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAppDelegate.m; path = dynosprite/src/DSAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		7B8D78DA8406AF8D1B9F37E7 /* DSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */; };
+		C89607FB2394FD260E50546A /* DSAssetLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAssetLoader.m; path = dynosprite/src/DSAssetLoader.m; sourceTree = SOURCE_ROOT; };
+		E5D518203FBC9437AA0529C7 /* DSAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C89607FB2394FD260E50546A /* DSAssetLoader.m */; };
+		076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSCoCoJoystick.mm; path = dynosprite/src/DSCoCoJoystick.mm; sourceTree = SOURCE_ROOT; };
+		9181947D2F66674B44CED737 /* DSCoCoJoystick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */; };
+		BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCoCoKeyboardJoystick.m; path = dynosprite/src/DSCoCoKeyboardJoystick.m; sourceTree = SOURCE_ROOT; };
+		1771F5BAB377ADCFCE2A245B /* DSCoCoKeyboardJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */; };
+		3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCocoJoystickController.m; path = dynosprite/src/DSCocoJoystickController.m; sourceTree = SOURCE_ROOT; };
+		460867F3FD0F38DA0DCE8D11 /* DSCocoJoystickController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */; };
+		B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSConfigFileParser.m; path = dynosprite/src/DSConfigFileParser.m; sourceTree = SOURCE_ROOT; };
+		86D5E83FC1FD13A542ECD3AA /* DSConfigFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */; };
+		4EFFDA4F51262631297483E4 /* DSCons.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCons.m; path = dynosprite/src/DSCons.m; sourceTree = SOURCE_ROOT; };
+		7DD68AD7613981026FB8D33B /* DSCons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFFDA4F51262631297483E4 /* DSCons.m */; };
+		7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfig.m; path = dynosprite/src/DSDefaultsConfig.m; sourceTree = SOURCE_ROOT; };
+		8A7513476DC7C03CDC32F7C4 /* DSDefaultsConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */; };
+		E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfigLoader.m; path = dynosprite/src/DSDefaultsConfigLoader.m; sourceTree = SOURCE_ROOT; };
+		8605605857E2EC8E181E2693 /* DSDefaultsConfigLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */; };
+		C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDirectPageGlobals.m; path = dynosprite/src/DSDirectPageGlobals.m; sourceTree = SOURCE_ROOT; };
+		9A4F0C701245F67449179048 /* DSDirectPageGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */; };
+		166FEB3A1A38A07015E40386 /* DSGameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSGameScene.m; path = dynosprite/src/DSGameScene.m; sourceTree = SOURCE_ROOT; };
+		EB12C407CD8B518BEEFA4161 /* DSGameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 166FEB3A1A38A07015E40386 /* DSGameScene.m */; };
+		14DA5EB625008BFA12F31435 /* DSImageUtil.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSImageUtil.mm; path = dynosprite/src/DSImageUtil.mm; sourceTree = SOURCE_ROOT; };
+		5AA3D874D0FFF811ADE76821 /* DSImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14DA5EB625008BFA12F31435 /* DSImageUtil.mm */; };
+		0458023F19AF0F2794781F66 /* DSInitScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSInitScene.m; path = dynosprite/src/DSInitScene.m; sourceTree = SOURCE_ROOT; };
+		8000DFBCB973CE7A52A87FCC /* DSInitScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 0458023F19AF0F2794781F66 /* DSInitScene.m */; };
+		638AB97E2977F97C779FCC5E /* DSLevel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevel.m; path = dynosprite/src/DSLevel.m; sourceTree = SOURCE_ROOT; };
+		FD5A82C1683718A604B4FD1D /* DSLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 638AB97E2977F97C779FCC5E /* DSLevel.m */; };
+		B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelFileParser.m; path = dynosprite/src/DSLevelFileParser.m; sourceTree = SOURCE_ROOT; };
+		A471D14A32B5256B3B111627 /* DSLevelFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */; };
+		322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelLoadingScene.m; path = dynosprite/src/DSLevelLoadingScene.m; sourceTree = SOURCE_ROOT; };
+		DC20A6706A192ACECB67106B /* DSLevelLoadingScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */; };
+		0904A283629703D9340D4C25 /* DSLevelRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelRegistry.m; path = dynosprite/src/DSLevelRegistry.m; sourceTree = SOURCE_ROOT; };
+		BECACCAC2D2600089509D993 /* DSLevelRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0904A283629703D9340D4C25 /* DSLevelRegistry.m */; };
+		C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSMutableArrayWrapper.m; path = dynosprite/src/DSMutableArrayWrapper.m; sourceTree = SOURCE_ROOT; };
+		932EB0CBC8024638F3A6F07A /* DSMutableArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */; };
+		798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSNSDataMD5Extensions.m; path = dynosprite/src/DSNSDataMD5Extensions.m; sourceTree = SOURCE_ROOT; };
+		A5C4B573BC49AF46B1E92285 /* DSNSDataMD5Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */; };
+		C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObject.m; path = dynosprite/src/DSObject.m; sourceTree = SOURCE_ROOT; };
+		2D045FB3CEB4479AFA402A33 /* DSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */; };
+		9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassData.m; path = dynosprite/src/DSObjectClassData.m; sourceTree = SOURCE_ROOT; };
+		72BE024B808B9E92293345A7 /* DSObjectClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */; };
+		5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassDataRegistry.m; path = dynosprite/src/DSObjectClassDataRegistry.m; sourceTree = SOURCE_ROOT; };
+		C16316347B637BFA77410ED7 /* DSObjectClassDataRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */; };
+		033FDA5E0B97345413102139 /* DSObjectCoordinator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectCoordinator.m; path = dynosprite/src/DSObjectCoordinator.m; sourceTree = SOURCE_ROOT; };
+		EF0DB476FC5498EA38222493 /* DSObjectCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033FDA5E0B97345413102139 /* DSObjectCoordinator.m */; };
+		F4D3FC272F3A15F863FB2780 /* DSPoint.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = DSPoint.c; path = dynosprite/src/DSPoint.c; sourceTree = SOURCE_ROOT; };
+		2D9F2A99FD05661F488891F8 /* DSPoint.c in Sources */ = {isa = PBXBuildFile; fileRef = F4D3FC272F3A15F863FB2780 /* DSPoint.c */; };
+		1143D568433718CDA4CB5EBB /* DSResourceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSResourceController.m; path = dynosprite/src/DSResourceController.m; sourceTree = SOURCE_ROOT; };
+		5B3F640BFFE96DB12D5AFC90 /* DSResourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1143D568433718CDA4CB5EBB /* DSResourceController.m */; };
+		CAF19456551C9F9FD7F846D6 /* DSScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSScene.m; path = dynosprite/src/DSScene.m; sourceTree = SOURCE_ROOT; };
+		A92B3B04131F0EA28B2F4B4D /* DSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF19456551C9F9FD7F846D6 /* DSScene.m */; };
+		879D43D10DAAF9BAAA04073C /* DSSceneController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSceneController.m; path = dynosprite/src/DSSceneController.m; sourceTree = SOURCE_ROOT; };
+		45373066C54C11527949EBAB /* DSSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 879D43D10DAAF9BAAA04073C /* DSSceneController.m */; };
+		BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSharedSceneController.m; path = dynosprite/src/DSSharedSceneController.m; sourceTree = SOURCE_ROOT; };
+		DE5D43421DA8ED9E8450361F /* DSSharedSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */; };
+		C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSoundManager.m; path = dynosprite/src/DSSoundManager.m; sourceTree = SOURCE_ROOT; };
+		71576E3D55FBF6CF228AB5EC /* DSSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */; };
+		A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteFileParser.m; path = dynosprite/src/DSSpriteFileParser.m; sourceTree = SOURCE_ROOT; };
+		D236DBE265976DAD4E5AD31B /* DSSpriteFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */; };
+		5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteInfo.m; path = dynosprite/src/DSSpriteInfo.m; sourceTree = SOURCE_ROOT; };
+		B0E96A05E4B736B830A7D420 /* DSSpriteInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */; };
+		3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClass.m; path = dynosprite/src/DSSpriteObjectClass.m; sourceTree = SOURCE_ROOT; };
+		35FB4FC22822CBE10581CB53 /* DSSpriteObjectClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */; };
+		5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClassFactory.m; path = dynosprite/src/DSSpriteObjectClassFactory.m; sourceTree = SOURCE_ROOT; };
+		211DFCCA93BAF6C4F322AA9B /* DSSpriteObjectClassFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */; };
+		4C91A8DD2C578F83AE956960 /* DSTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTexture.m; path = dynosprite/src/DSTexture.m; sourceTree = SOURCE_ROOT; };
+		36EFB3A6BA930412DE281409 /* DSTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C91A8DD2C578F83AE956960 /* DSTexture.m */; };
+		5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTextureManager.m; path = dynosprite/src/DSTextureManager.m; sourceTree = SOURCE_ROOT; };
+		584C0F872574E895F0A59EA5 /* DSTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */; };
+		5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileFileParser.m; path = dynosprite/src/DSTileFileParser.m; sourceTree = SOURCE_ROOT; };
+		BF05BF9DFDF7FBDAB4071870 /* DSTileFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */; };
+		2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfo.m; path = dynosprite/src/DSTileInfo.m; sourceTree = SOURCE_ROOT; };
+		AE87A27D09ED80982A3FCC9C /* DSTileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */; };
+		77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfoRegistry.m; path = dynosprite/src/DSTileInfoRegistry.m; sourceTree = SOURCE_ROOT; };
+		4AFE5149D71011B8FD3675D5 /* DSTileInfoRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */; };
+		DE2577CB27491037C9641829 /* DSTileMapMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileMapMaker.m; path = dynosprite/src/DSTileMapMaker.m; sourceTree = SOURCE_ROOT; };
+		FBF26C9103C54266AD223F6B /* DSTileMapMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = DE2577CB27491037C9641829 /* DSTileMapMaker.m */; };
+		C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionImageLoader.m; path = dynosprite/src/DSTransitionImageLoader.m; sourceTree = SOURCE_ROOT; };
+		9FE2A99D81FA23CE8179424A /* DSTransitionImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */; };
+		8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionScene.m; path = dynosprite/src/DSTransitionScene.m; sourceTree = SOURCE_ROOT; };
+		858880CCBABDF36FE15D320C /* DSTransitionScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */; };
+		DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfo.m; path = dynosprite/src/DSTransitionSceneInfo.m; sourceTree = SOURCE_ROOT; };
+		60EF2FEA2E7852E0A4C283F6 /* DSTransitionSceneInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */; };
+		1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfoFileParser.m; path = dynosprite/src/DSTransitionSceneInfoFileParser.m; sourceTree = SOURCE_ROOT; };
+		3C5E7FCDF290011041E53D15 /* DSTransitionSceneInfoFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */; };
+		9E1B53B85268075C657BD333 /* DSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSViewController.m; path = dynosprite/src/DSViewController.m; sourceTree = SOURCE_ROOT; };
+		4005330DE51FFD18D79CA02F /* DSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1B53B85268075C657BD333 /* DSViewController.m */; };
+		267CE2E1F14A96F208C2063B /* DSWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSWindowController.m; path = dynosprite/src/DSWindowController.m; sourceTree = SOURCE_ROOT; };
+		BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Misc.m"; path = "dynosprite/src/UIImage+Misc.m"; sourceTree = SOURCE_ROOT; };
+		C31CC672D12F1E77024CF7D0 /* UIImage+Misc.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */; };
+		B2178ED9468009F382C9AFAF /* DSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSAppDelegate.h; path = dynosprite/src/DSAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		6ECC3148974D89144159EBC0 /* DSAssetLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSAssetLoader.h; path = dynosprite/src/DSAssetLoader.h; sourceTree = SOURCE_ROOT; };
+		59F2D1F26206990515719216 /* DSCoCoJoystick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCoCoJoystick.h; path = dynosprite/src/DSCoCoJoystick.h; sourceTree = SOURCE_ROOT; };
+		26230041E75589FC68430CBC /* DSCoCoJoystickController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCoCoJoystickController.h; path = dynosprite/src/DSCoCoJoystickController.h; sourceTree = SOURCE_ROOT; };
+		E097C89FEADD7C7A4B9E31C6 /* DSCoCoJoystickProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCoCoJoystickProtocol.h; path = dynosprite/src/DSCoCoJoystickProtocol.h; sourceTree = SOURCE_ROOT; };
+		0BA40E71C19B9514304D31C7 /* DSCoCoKeyboardJoystick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCoCoKeyboardJoystick.h; path = dynosprite/src/DSCoCoKeyboardJoystick.h; sourceTree = SOURCE_ROOT; };
+		097A83FFD197DBCF9AE26726 /* DSConfigFileParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSConfigFileParser.h; path = dynosprite/src/DSConfigFileParser.h; sourceTree = SOURCE_ROOT; };
+		DC3E30D6B388A61AAC6D1365 /* DSCons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCons.h; path = dynosprite/src/DSCons.h; sourceTree = SOURCE_ROOT; };
+		9FF4FE3E26CC319EAE40D208 /* DSDefaultsConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSDefaultsConfig.h; path = dynosprite/src/DSDefaultsConfig.h; sourceTree = SOURCE_ROOT; };
+		A3271B89FE6869DC8FB05A0E /* DSDefaultsConfigLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSDefaultsConfigLoader.h; path = dynosprite/src/DSDefaultsConfigLoader.h; sourceTree = SOURCE_ROOT; };
+		F1BD43C4C5589A5AF6B7E91C /* DSDirectPageGlobals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSDirectPageGlobals.h; path = dynosprite/src/DSDirectPageGlobals.h; sourceTree = SOURCE_ROOT; };
+		B661FD43DDADF3A9C0F4F704 /* DSGameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSGameScene.h; path = dynosprite/src/DSGameScene.h; sourceTree = SOURCE_ROOT; };
+		C82A09A6AAE57DAF824B4D0B /* DSImageUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSImageUtil.h; path = dynosprite/src/DSImageUtil.h; sourceTree = SOURCE_ROOT; };
+		24006A514580A1B78E2D8FCF /* DSInitScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSInitScene.h; path = dynosprite/src/DSInitScene.h; sourceTree = SOURCE_ROOT; };
+		25296620907982F876FFFCC2 /* DSLevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSLevel.h; path = dynosprite/src/DSLevel.h; sourceTree = SOURCE_ROOT; };
+		1A24DB4539D2CE70B5CE68F1 /* DSLevelFileParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSLevelFileParser.h; path = dynosprite/src/DSLevelFileParser.h; sourceTree = SOURCE_ROOT; };
+		46EA895ADC5850F08BAE496D /* DSLevelLoadingScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSLevelLoadingScene.h; path = dynosprite/src/DSLevelLoadingScene.h; sourceTree = SOURCE_ROOT; };
+		FAF00025CB82D0DE6AC93F64 /* DSLevelRegistry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSLevelRegistry.h; path = dynosprite/src/DSLevelRegistry.h; sourceTree = SOURCE_ROOT; };
+		FBCA68DDA1BFA20AB34E9E0A /* DSMutableArrayWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSMutableArrayWrapper.h; path = dynosprite/src/DSMutableArrayWrapper.h; sourceTree = SOURCE_ROOT; };
+		78A70E9CD8E9156732FED5C9 /* DSNSDataMD5Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSNSDataMD5Extensions.h; path = dynosprite/src/DSNSDataMD5Extensions.h; sourceTree = SOURCE_ROOT; };
+		4F4C2F7AE349A15AD7B76060 /* DSObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSObject.h; path = dynosprite/src/DSObject.h; sourceTree = SOURCE_ROOT; };
+		EC76AF85B8D62F516BD07C80 /* DSObjectClassData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSObjectClassData.h; path = dynosprite/src/DSObjectClassData.h; sourceTree = SOURCE_ROOT; };
+		C7D6DCF5D9046FA2BA9D9DC1 /* DSObjectClassDataRegistry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSObjectClassDataRegistry.h; path = dynosprite/src/DSObjectClassDataRegistry.h; sourceTree = SOURCE_ROOT; };
+		771D91E3D4BAD95AA7D2A0D5 /* DSObjectClassMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSObjectClassMethods.h; path = dynosprite/src/DSObjectClassMethods.h; sourceTree = SOURCE_ROOT; };
+		313CA26BFA61B282EADBF40F /* DSObjectCoordinator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSObjectCoordinator.h; path = dynosprite/src/DSObjectCoordinator.h; sourceTree = SOURCE_ROOT; };
+		AFF80671C8C67586009C951C /* DSPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSPoint.h; path = dynosprite/src/DSPoint.h; sourceTree = SOURCE_ROOT; };
+		1B0DAE7792EE3D679F228886 /* DSResourceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSResourceController.h; path = dynosprite/src/DSResourceController.h; sourceTree = SOURCE_ROOT; };
+		4358934DF52A04A119EB29FC /* DSScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSScene.h; path = dynosprite/src/DSScene.h; sourceTree = SOURCE_ROOT; };
+		5FB31E9FC03380AB1E158A1A /* DSSceneController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSceneController.h; path = dynosprite/src/DSSceneController.h; sourceTree = SOURCE_ROOT; };
+		8222B347DF8AEB019301ED3C /* DSSceneControllerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSceneControllerProtocol.h; path = dynosprite/src/DSSceneControllerProtocol.h; sourceTree = SOURCE_ROOT; };
+		D78A6B1D5508E1C846D70E6D /* DSSharedSceneController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSharedSceneController.h; path = dynosprite/src/DSSharedSceneController.h; sourceTree = SOURCE_ROOT; };
+		708034BD19CE3D30608E9189 /* DSSoundManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSoundManager.h; path = dynosprite/src/DSSoundManager.h; sourceTree = SOURCE_ROOT; };
+		477EBB2A3A4D7C22C8893013 /* DSSpriteFileParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSpriteFileParser.h; path = dynosprite/src/DSSpriteFileParser.h; sourceTree = SOURCE_ROOT; };
+		7EF4B0212D7B82F13CCFA696 /* DSSpriteInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSpriteInfo.h; path = dynosprite/src/DSSpriteInfo.h; sourceTree = SOURCE_ROOT; };
+		9859CF7A285711AEFE08D2C1 /* DSSpriteObjectClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSpriteObjectClass.h; path = dynosprite/src/DSSpriteObjectClass.h; sourceTree = SOURCE_ROOT; };
+		E0A63BCF3ECCCAC8E0D442CD /* DSSpriteObjectClassFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSSpriteObjectClassFactory.h; path = dynosprite/src/DSSpriteObjectClassFactory.h; sourceTree = SOURCE_ROOT; };
+		C0B117EF42C5C15993A71213 /* DSTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTexture.h; path = dynosprite/src/DSTexture.h; sourceTree = SOURCE_ROOT; };
+		B446C4783ABC6D85BA6A80F8 /* DSTextureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTextureManager.h; path = dynosprite/src/DSTextureManager.h; sourceTree = SOURCE_ROOT; };
+		A87981D7614BFD228618C393 /* DSTileFileParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTileFileParser.h; path = dynosprite/src/DSTileFileParser.h; sourceTree = SOURCE_ROOT; };
+		D4AEEA2BF320663DA387305C /* DSTileInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTileInfo.h; path = dynosprite/src/DSTileInfo.h; sourceTree = SOURCE_ROOT; };
+		9E909C06422E39F3257B50D3 /* DSTileInfoRegistry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTileInfoRegistry.h; path = dynosprite/src/DSTileInfoRegistry.h; sourceTree = SOURCE_ROOT; };
+		5A283BDA534AE96A579E7CDC /* DSTileMapMaker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTileMapMaker.h; path = dynosprite/src/DSTileMapMaker.h; sourceTree = SOURCE_ROOT; };
+		480AAAED3E334BBEB58855A9 /* DSTransitionImageLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTransitionImageLoader.h; path = dynosprite/src/DSTransitionImageLoader.h; sourceTree = SOURCE_ROOT; };
+		70222D585D00528DC69B905E /* DSTransitionScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTransitionScene.h; path = dynosprite/src/DSTransitionScene.h; sourceTree = SOURCE_ROOT; };
+		D9E9668F3386D517788421E8 /* DSTransitionSceneInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTransitionSceneInfo.h; path = dynosprite/src/DSTransitionSceneInfo.h; sourceTree = SOURCE_ROOT; };
+		12903745FDD0EAC67BEB49A4 /* DSTransitionSceneInfoFileParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTransitionSceneInfoFileParser.h; path = dynosprite/src/DSTransitionSceneInfoFileParser.h; sourceTree = SOURCE_ROOT; };
+		B34FEB7696412F27FFCEDFEE /* DSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSViewController.h; path = dynosprite/src/DSViewController.h; sourceTree = SOURCE_ROOT; };
+		3033CF7707C8D09B86FE77D7 /* DSWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSWindowController.h; path = dynosprite/src/DSWindowController.h; sourceTree = SOURCE_ROOT; };
+		190512F5255DF7855A609A09 /* DynospriteDirectPageGlobals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DynospriteDirectPageGlobals.h; path = dynosprite/src/DynospriteDirectPageGlobals.h; sourceTree = SOURCE_ROOT; };
+		417A83E2E6CDD1047926120B /* UIImage+Misc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIImage+Misc.h"; path = "dynosprite/src/UIImage+Misc.h"; sourceTree = SOURCE_ROOT; };
+		1CBC87B04AD2F74E83427702 /* coco.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = coco.h; path = dynosprite/include/coco.h; sourceTree = SOURCE_ROOT; };
+		20BC1D4C3AB19316EE6D1C12 /* dynosprite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dynosprite.h; path = dynosprite/include/dynosprite.h; sourceTree = SOURCE_ROOT; };
+		DAF9CA242583C27CE57278D0 /* 01-ball.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "01-ball.c"; path = "../game/objects/01-ball.c"; sourceTree = SOURCE_ROOT; };
+		935FA82DD25AB61197B230B6 /* 01-ball.c in Sources */ = {isa = PBXBuildFile; fileRef = DAF9CA242583C27CE57278D0 /* 01-ball.c */; };
+		FCD0613D5290760D27804786 /* 02-flipper.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "02-flipper.c"; path = "../game/objects/02-flipper.c"; sourceTree = SOURCE_ROOT; };
+		9EF50F3E2873EFF402B7C6D8 /* 02-flipper.c in Sources */ = {isa = PBXBuildFile; fileRef = FCD0613D5290760D27804786 /* 02-flipper.c */; };
+		12341E56BA48B8349BE710E8 /* 03-digit.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "03-digit.c"; path = "../game/objects/03-digit.c"; sourceTree = SOURCE_ROOT; };
+		6D9A0EE5B21BC98324EE7376 /* 03-digit.c in Sources */ = {isa = PBXBuildFile; fileRef = 12341E56BA48B8349BE710E8 /* 03-digit.c */; };
+		B686DFEAD21D4474AD18FDF3 /* 04-lite.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "04-lite.c"; path = "../game/objects/04-lite.c"; sourceTree = SOURCE_ROOT; };
+		48D04601D272F0E6305E6818 /* 04-lite.c in Sources */ = {isa = PBXBuildFile; fileRef = B686DFEAD21D4474AD18FDF3 /* 04-lite.c */; };
+		3E2D54C2BFA201788FABEEC1 /* 05-panel.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "05-panel.c"; path = "../game/objects/05-panel.c"; sourceTree = SOURCE_ROOT; };
+		95BAE058838C367B20392E44 /* 05-panel.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E2D54C2BFA201788FABEEC1 /* 05-panel.c */; };
+		2107B2775484C2F73CCBA429 /* 01-table.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "01-table.c"; path = "../game/levels/01-table.c"; sourceTree = SOURCE_ROOT; };
+		78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2107B2775484C2F73CCBA429 /* 01-table.c */; };
+		3D3B381C7E6498C41E26CDA3 /* 01-ball.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "01-ball.h"; path = "../game/objects/01-ball.h"; sourceTree = SOURCE_ROOT; };
+		EBB476494478196962335871 /* 02-flipper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "02-flipper.h"; path = "../game/objects/02-flipper.h"; sourceTree = SOURCE_ROOT; };
+		8DB9499F4B4EEC72B7356249 /* 03-digit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "03-digit.h"; path = "../game/objects/03-digit.h"; sourceTree = SOURCE_ROOT; };
+		6270C20F520AF80E4EC0DE6F /* 04-lite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "04-lite.h"; path = "../game/objects/04-lite.h"; sourceTree = SOURCE_ROOT; };
+		88B74E57B037981AC06DC163 /* 05-panel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "05-panel.h"; path = "../game/objects/05-panel.h"; sourceTree = SOURCE_ROOT; };
+		13748BFFD46F258DA0A9C4A0 /* object_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = object_info.h; path = ../game/objects/object_info.h; sourceTree = SOURCE_ROOT; };
+		BC1F4F2D2C94ED8AF4BF8A28 /* table_data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = table_data.h; path = ../game/objects/table_data.h; sourceTree = SOURCE_ROOT; };
+		D24365165B5F168E0124FA4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Pinball/main.m; sourceTree = SOURCE_ROOT; };
+		1A0F5E720F4905525EADE3AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D24365165B5F168E0124FA4C /* main.m */; };
+		5033E57538CEC179E8BD9D1A /* Pinball-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pinball-Info.plist"; path = "Pinball-Info.plist"; sourceTree = SOURCE_ROOT; };
+		1068111ACF869460673A8E03 /* Pinball.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Pinball.entitlements; path = Pinball/Pinball.entitlements; sourceTree = SOURCE_ROOT; };
+		C0CE92D971D7C83A0CB14B2E /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Actions.sks; path = dynosprite/src/Actions.sks; sourceTree = SOURCE_ROOT; };
+		70A15905D2A2C7C5A86CADF3 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CE92D971D7C83A0CB14B2E /* Actions.sks */; };
+		187F89368C0C0BD17117026A /* pcgfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = pcgfont.ttf; path = dynosprite/Fonts/pcgfont.ttf; sourceTree = SOURCE_ROOT; };
+		A2532077FB43BE8AA4EA91C9 /* pcgfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 187F89368C0C0BD17117026A /* pcgfont.ttf */; };
+		BA466525A841240BB171ADFB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Pinball/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		CB17B9676B141C4DB8328964 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA466525A841240BB171ADFB /* Assets.xcassets */; };
+		5FF6E153D522C0D9C7697974 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Pinball/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		8BA602BFAE591153B23A139A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FF6E153D522C0D9C7697974 /* Main.storyboard */; };
+		0397EF86AA68E750AE054E9C /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Credits.html; path = Pinball/Credits.html; sourceTree = SOURCE_ROOT; };
+		59AC7705E3D9C255CDB40F11 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 0397EF86AA68E750AE054E9C /* Credits.html */; };
+		8600FD3C70376FCD3A963A23 /* defaults-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "defaults-config.json"; path = "../game/defaults-config.json"; sourceTree = SOURCE_ROOT; };
+		6C74A9A44CB6B10AC6961BE2 /* defaults-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8600FD3C70376FCD3A963A23 /* defaults-config.json */; };
+		DFF28DA8EAB59CC0CBCFD500 /* levels */ = {isa = PBXFileReference; lastKnownFileType = folder; name = levels; path = ../game/levels; sourceTree = SOURCE_ROOT; };
+		D9FB4A383A016787104A4005 /* levels in Resources */ = {isa = PBXBuildFile; fileRef = DFF28DA8EAB59CC0CBCFD500 /* levels */; };
+		BBED53A83E3DFDB485F711E8 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sprites; path = ../game/sprites; sourceTree = SOURCE_ROOT; };
+		B8FA847742B64BFE21EA3C77 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = BBED53A83E3DFDB485F711E8 /* sprites */; };
+		37B3FBAA118587E99F448923 /* tiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tiles; path = ../game/tiles; sourceTree = SOURCE_ROOT; };
+		4A17FF99104BC825AE3808B0 /* tiles in Resources */ = {isa = PBXBuildFile; fileRef = 37B3FBAA118587E99F448923 /* tiles */; };
+		4F08E139F38DBAE1C8BB1C7B /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../game/images; sourceTree = SOURCE_ROOT; };
+		5D3832F4E89CE0366684BF12 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 4F08E139F38DBAE1C8BB1C7B /* images */; };
+		379ABD4B5EDF0AA00438C499 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = ../game/sounds; sourceTree = SOURCE_ROOT; };
+		DA4CAB2847A956853AE01EA5 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = 379ABD4B5EDF0AA00438C499 /* sounds */; };
+		F5BF48AA40CAD7891EB709FC /* Lost World Pinball.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lost World Pinball.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BE706EF9312F663F095DAA5 /* dynosprite */ = {
+			isa = PBXGroup;
+			children = (
+				E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */,
+				C89607FB2394FD260E50546A /* DSAssetLoader.m */,
+				076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */,
+				BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */,
+				3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */,
+				B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */,
+				4EFFDA4F51262631297483E4 /* DSCons.m */,
+				7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */,
+				E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */,
+				C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */,
+				166FEB3A1A38A07015E40386 /* DSGameScene.m */,
+				14DA5EB625008BFA12F31435 /* DSImageUtil.mm */,
+				0458023F19AF0F2794781F66 /* DSInitScene.m */,
+				638AB97E2977F97C779FCC5E /* DSLevel.m */,
+				B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */,
+				322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */,
+				0904A283629703D9340D4C25 /* DSLevelRegistry.m */,
+				C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */,
+				798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */,
+				C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */,
+				9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */,
+				5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */,
+				033FDA5E0B97345413102139 /* DSObjectCoordinator.m */,
+				F4D3FC272F3A15F863FB2780 /* DSPoint.c */,
+				1143D568433718CDA4CB5EBB /* DSResourceController.m */,
+				CAF19456551C9F9FD7F846D6 /* DSScene.m */,
+				879D43D10DAAF9BAAA04073C /* DSSceneController.m */,
+				BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */,
+				C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */,
+				A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */,
+				5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */,
+				3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */,
+				5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */,
+				4C91A8DD2C578F83AE956960 /* DSTexture.m */,
+				5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */,
+				5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */,
+				2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */,
+				77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */,
+				DE2577CB27491037C9641829 /* DSTileMapMaker.m */,
+				C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */,
+				8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */,
+				DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */,
+				1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */,
+				9E1B53B85268075C657BD333 /* DSViewController.m */,
+				267CE2E1F14A96F208C2063B /* DSWindowController.m */,
+				BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */,
+				B2178ED9468009F382C9AFAF /* DSAppDelegate.h */,
+				6ECC3148974D89144159EBC0 /* DSAssetLoader.h */,
+				59F2D1F26206990515719216 /* DSCoCoJoystick.h */,
+				26230041E75589FC68430CBC /* DSCoCoJoystickController.h */,
+				E097C89FEADD7C7A4B9E31C6 /* DSCoCoJoystickProtocol.h */,
+				0BA40E71C19B9514304D31C7 /* DSCoCoKeyboardJoystick.h */,
+				097A83FFD197DBCF9AE26726 /* DSConfigFileParser.h */,
+				DC3E30D6B388A61AAC6D1365 /* DSCons.h */,
+				9FF4FE3E26CC319EAE40D208 /* DSDefaultsConfig.h */,
+				A3271B89FE6869DC8FB05A0E /* DSDefaultsConfigLoader.h */,
+				F1BD43C4C5589A5AF6B7E91C /* DSDirectPageGlobals.h */,
+				B661FD43DDADF3A9C0F4F704 /* DSGameScene.h */,
+				C82A09A6AAE57DAF824B4D0B /* DSImageUtil.h */,
+				24006A514580A1B78E2D8FCF /* DSInitScene.h */,
+				25296620907982F876FFFCC2 /* DSLevel.h */,
+				1A24DB4539D2CE70B5CE68F1 /* DSLevelFileParser.h */,
+				46EA895ADC5850F08BAE496D /* DSLevelLoadingScene.h */,
+				FAF00025CB82D0DE6AC93F64 /* DSLevelRegistry.h */,
+				FBCA68DDA1BFA20AB34E9E0A /* DSMutableArrayWrapper.h */,
+				78A70E9CD8E9156732FED5C9 /* DSNSDataMD5Extensions.h */,
+				4F4C2F7AE349A15AD7B76060 /* DSObject.h */,
+				EC76AF85B8D62F516BD07C80 /* DSObjectClassData.h */,
+				C7D6DCF5D9046FA2BA9D9DC1 /* DSObjectClassDataRegistry.h */,
+				771D91E3D4BAD95AA7D2A0D5 /* DSObjectClassMethods.h */,
+				313CA26BFA61B282EADBF40F /* DSObjectCoordinator.h */,
+				AFF80671C8C67586009C951C /* DSPoint.h */,
+				1B0DAE7792EE3D679F228886 /* DSResourceController.h */,
+				4358934DF52A04A119EB29FC /* DSScene.h */,
+				5FB31E9FC03380AB1E158A1A /* DSSceneController.h */,
+				8222B347DF8AEB019301ED3C /* DSSceneControllerProtocol.h */,
+				D78A6B1D5508E1C846D70E6D /* DSSharedSceneController.h */,
+				708034BD19CE3D30608E9189 /* DSSoundManager.h */,
+				477EBB2A3A4D7C22C8893013 /* DSSpriteFileParser.h */,
+				7EF4B0212D7B82F13CCFA696 /* DSSpriteInfo.h */,
+				9859CF7A285711AEFE08D2C1 /* DSSpriteObjectClass.h */,
+				E0A63BCF3ECCCAC8E0D442CD /* DSSpriteObjectClassFactory.h */,
+				C0B117EF42C5C15993A71213 /* DSTexture.h */,
+				B446C4783ABC6D85BA6A80F8 /* DSTextureManager.h */,
+				A87981D7614BFD228618C393 /* DSTileFileParser.h */,
+				D4AEEA2BF320663DA387305C /* DSTileInfo.h */,
+				9E909C06422E39F3257B50D3 /* DSTileInfoRegistry.h */,
+				5A283BDA534AE96A579E7CDC /* DSTileMapMaker.h */,
+				480AAAED3E334BBEB58855A9 /* DSTransitionImageLoader.h */,
+				70222D585D00528DC69B905E /* DSTransitionScene.h */,
+				D9E9668F3386D517788421E8 /* DSTransitionSceneInfo.h */,
+				12903745FDD0EAC67BEB49A4 /* DSTransitionSceneInfoFileParser.h */,
+				B34FEB7696412F27FFCEDFEE /* DSViewController.h */,
+				3033CF7707C8D09B86FE77D7 /* DSWindowController.h */,
+				190512F5255DF7855A609A09 /* DynospriteDirectPageGlobals.h */,
+				417A83E2E6CDD1047926120B /* UIImage+Misc.h */,
+				1CBC87B04AD2F74E83427702 /* coco.h */,
+				20BC1D4C3AB19316EE6D1C12 /* dynosprite.h */,
+			);
+			name = dynosprite;
+			sourceTree = "<group>";
+		};
+		87F2B663B922F3DA9BFCEDE0 /* game */ = {
+			isa = PBXGroup;
+			children = (
+				DAF9CA242583C27CE57278D0 /* 01-ball.c */,
+				FCD0613D5290760D27804786 /* 02-flipper.c */,
+				12341E56BA48B8349BE710E8 /* 03-digit.c */,
+				B686DFEAD21D4474AD18FDF3 /* 04-lite.c */,
+				3E2D54C2BFA201788FABEEC1 /* 05-panel.c */,
+				2107B2775484C2F73CCBA429 /* 01-table.c */,
+				3D3B381C7E6498C41E26CDA3 /* 01-ball.h */,
+				EBB476494478196962335871 /* 02-flipper.h */,
+				8DB9499F4B4EEC72B7356249 /* 03-digit.h */,
+				6270C20F520AF80E4EC0DE6F /* 04-lite.h */,
+				88B74E57B037981AC06DC163 /* 05-panel.h */,
+				13748BFFD46F258DA0A9C4A0 /* object_info.h */,
+				BC1F4F2D2C94ED8AF4BF8A28 /* table_data.h */,
+				DFF28DA8EAB59CC0CBCFD500 /* levels */,
+				BBED53A83E3DFDB485F711E8 /* sprites */,
+				37B3FBAA118587E99F448923 /* tiles */,
+				4F08E139F38DBAE1C8BB1C7B /* images */,
+				379ABD4B5EDF0AA00438C499 /* sounds */,
+			);
+			name = game;
+			sourceTree = "<group>";
+		};
+		5435F544BB19B0245DB83127 /* Pinball */ = {
+			isa = PBXGroup;
+			children = (
+				D24365165B5F168E0124FA4C /* main.m */,
+				5033E57538CEC179E8BD9D1A /* Pinball-Info.plist */,
+				1068111ACF869460673A8E03 /* Pinball.entitlements */,
+			);
+			name = Pinball;
+			sourceTree = "<group>";
+		};
+		8241ED42B56CC1DA7F726566 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F5BF48AA40CAD7891EB709FC /* Lost World Pinball.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B731CEFC6751AAE0EC69B98 = {
+			isa = PBXGroup;
+			children = (
+				5435F544BB19B0245DB83127 /* Pinball */,
+				87F2B663B922F3DA9BFCEDE0 /* game */,
+				4BE706EF9312F663F095DAA5 /* dynosprite */,
+				8241ED42B56CC1DA7F726566 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		80DAA310FC779194862C0D32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7B8D78DA8406AF8D1B9F37E7 /* DSAppDelegate.m in Sources */,
+				E5D518203FBC9437AA0529C7 /* DSAssetLoader.m in Sources */,
+				9181947D2F66674B44CED737 /* DSCoCoJoystick.mm in Sources */,
+				1771F5BAB377ADCFCE2A245B /* DSCoCoKeyboardJoystick.m in Sources */,
+				460867F3FD0F38DA0DCE8D11 /* DSCocoJoystickController.m in Sources */,
+				86D5E83FC1FD13A542ECD3AA /* DSConfigFileParser.m in Sources */,
+				7DD68AD7613981026FB8D33B /* DSCons.m in Sources */,
+				8A7513476DC7C03CDC32F7C4 /* DSDefaultsConfig.m in Sources */,
+				8605605857E2EC8E181E2693 /* DSDefaultsConfigLoader.m in Sources */,
+				9A4F0C701245F67449179048 /* DSDirectPageGlobals.m in Sources */,
+				EB12C407CD8B518BEEFA4161 /* DSGameScene.m in Sources */,
+				5AA3D874D0FFF811ADE76821 /* DSImageUtil.mm in Sources */,
+				8000DFBCB973CE7A52A87FCC /* DSInitScene.m in Sources */,
+				FD5A82C1683718A604B4FD1D /* DSLevel.m in Sources */,
+				A471D14A32B5256B3B111627 /* DSLevelFileParser.m in Sources */,
+				DC20A6706A192ACECB67106B /* DSLevelLoadingScene.m in Sources */,
+				BECACCAC2D2600089509D993 /* DSLevelRegistry.m in Sources */,
+				932EB0CBC8024638F3A6F07A /* DSMutableArrayWrapper.m in Sources */,
+				A5C4B573BC49AF46B1E92285 /* DSNSDataMD5Extensions.m in Sources */,
+				2D045FB3CEB4479AFA402A33 /* DSObject.m in Sources */,
+				72BE024B808B9E92293345A7 /* DSObjectClassData.m in Sources */,
+				C16316347B637BFA77410ED7 /* DSObjectClassDataRegistry.m in Sources */,
+				EF0DB476FC5498EA38222493 /* DSObjectCoordinator.m in Sources */,
+				2D9F2A99FD05661F488891F8 /* DSPoint.c in Sources */,
+				5B3F640BFFE96DB12D5AFC90 /* DSResourceController.m in Sources */,
+				A92B3B04131F0EA28B2F4B4D /* DSScene.m in Sources */,
+				45373066C54C11527949EBAB /* DSSceneController.m in Sources */,
+				DE5D43421DA8ED9E8450361F /* DSSharedSceneController.m in Sources */,
+				71576E3D55FBF6CF228AB5EC /* DSSoundManager.m in Sources */,
+				D236DBE265976DAD4E5AD31B /* DSSpriteFileParser.m in Sources */,
+				B0E96A05E4B736B830A7D420 /* DSSpriteInfo.m in Sources */,
+				35FB4FC22822CBE10581CB53 /* DSSpriteObjectClass.m in Sources */,
+				211DFCCA93BAF6C4F322AA9B /* DSSpriteObjectClassFactory.m in Sources */,
+				36EFB3A6BA930412DE281409 /* DSTexture.m in Sources */,
+				584C0F872574E895F0A59EA5 /* DSTextureManager.m in Sources */,
+				BF05BF9DFDF7FBDAB4071870 /* DSTileFileParser.m in Sources */,
+				AE87A27D09ED80982A3FCC9C /* DSTileInfo.m in Sources */,
+				4AFE5149D71011B8FD3675D5 /* DSTileInfoRegistry.m in Sources */,
+				FBF26C9103C54266AD223F6B /* DSTileMapMaker.m in Sources */,
+				9FE2A99D81FA23CE8179424A /* DSTransitionImageLoader.m in Sources */,
+				858880CCBABDF36FE15D320C /* DSTransitionScene.m in Sources */,
+				60EF2FEA2E7852E0A4C283F6 /* DSTransitionSceneInfo.m in Sources */,
+				3C5E7FCDF290011041E53D15 /* DSTransitionSceneInfoFileParser.m in Sources */,
+				4005330DE51FFD18D79CA02F /* DSViewController.m in Sources */,
+				C31CC672D12F1E77024CF7D0 /* UIImage+Misc.m in Sources */,
+				935FA82DD25AB61197B230B6 /* 01-ball.c in Sources */,
+				9EF50F3E2873EFF402B7C6D8 /* 02-flipper.c in Sources */,
+				6D9A0EE5B21BC98324EE7376 /* 03-digit.c in Sources */,
+				48D04601D272F0E6305E6818 /* 04-lite.c in Sources */,
+				95BAE058838C367B20392E44 /* 05-panel.c in Sources */,
+				78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */,
+				1A0F5E720F4905525EADE3AF /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA8594C83D82D703505DFABE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16B6DB84760A9CCAF0F0E448 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A15905D2A2C7C5A86CADF3 /* Actions.sks in Resources */,
+				A2532077FB43BE8AA4EA91C9 /* pcgfont.ttf in Resources */,
+				CB17B9676B141C4DB8328964 /* Assets.xcassets in Resources */,
+				8BA602BFAE591153B23A139A /* Main.storyboard in Resources */,
+				59AC7705E3D9C255CDB40F11 /* Credits.html in Resources */,
+				6C74A9A44CB6B10AC6961BE2 /* defaults-config.json in Resources */,
+				D9FB4A383A016787104A4005 /* levels in Resources */,
+				B8FA847742B64BFE21EA3C77 /* sprites in Resources */,
+				4A17FF99104BC825AE3808B0 /* tiles in Resources */,
+				5D3832F4E89CE0366684BF12 /* images in Resources */,
+				DA4CAB2847A956853AE01EA5 /* sounds in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEF0D0E765082978DB4A5BB3 /* Create Credits */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../game/readme-bas.txt",
+			);
+			name = "Create Credits";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Credits.rtf",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sed 1,3d \"$SCRIPT_INPUT_FILE_0\" | textutil -convert rtf -stdin -output \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
+		79202D6F05A2EB0B50AEA796 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/dynosprite/include";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		BA9524E20EE286DFD03FCC44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/dynosprite/include";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AF9D2D27DADC25B267ED81C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Pinball/Pinball.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Pinball-Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Main.storyboard;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jamiecho.LostWorldPinball";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7D8C6F6E45786682C7D8EF1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Pinball/Pinball.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Pinball-Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Main.storyboard;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jamiecho.LostWorldPinball";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BEE1607168D4EBCB69E53BCE /* project */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79202D6F05A2EB0B50AEA796 /* Debug */,
+				BA9524E20EE286DFD03FCC44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ADA8AAA82D482A5327115063 /* target */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF9D2D27DADC25B267ED81C6 /* Debug */,
+				7D8C6F6E45786682C7D8EF1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		42AEFBAE01D2DFD981F7DA7D /* Lost World Pinball */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ADA8AAA82D482A5327115063;
+			buildPhases = (
+				80DAA310FC779194862C0D32 /* Sources */,
+				EA8594C83D82D703505DFABE /* Frameworks */,
+				16B6DB84760A9CCAF0F0E448 /* Resources */,
+				BEF0D0E765082978DB4A5BB3 /* Create Credits */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Lost World Pinball";
+			productName = "Lost World Pinball";
+			productReference = F5BF48AA40CAD7891EB709FC;
+			productType = "com.apple.product-type.application";
+		};
+		46F86FAA6BBF9AC94A7E4595 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1540;
+			};
+			buildConfigurationList = BEE1607168D4EBCB69E53BCE;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2B731CEFC6751AAE0EC69B98;
+			productRefGroup = 8241ED42B56CC1DA7F726566;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				42AEFBAE01D2DFD981F7DA7D /* Lost World Pinball */,
+			);
+		};
+	};
+	rootObject = 46F86FAA6BBF9AC94A7E4595 /* Project object */;
+}

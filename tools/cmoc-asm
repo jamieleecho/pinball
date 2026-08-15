@@ -1,0 +1,3 @@
+#!/bin/bash
+
+lwasm -I../../engine -I. "$@"

@@ -1,0 +1,30 @@
+{
+  "Main": {
+    "Group": 1,
+    "Image": "01-ball.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "Ball",
+      "Location": [
+        8,
+        8
+      ],
+      "SinglePixelPosition": true
+    },
+    {
+      "Name": "Launcher",
+      "Location": [
+        30,
+        8
+      ],
+      "SinglePixelPosition": true
+    }
+  ]
+}

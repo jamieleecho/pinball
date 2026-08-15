@@ -1,0 +1,86 @@
+{
+  "Main": {
+    "Group": 5,
+    "Image": "05-panel.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "Tongue1",
+      "Location": [
+        2,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "Tongue2",
+      "Location": [
+        36,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "Tongue3",
+      "Location": [
+        70,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "Tongue4",
+      "Location": [
+        104,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "Tongue5",
+      "Location": [
+        138,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "Tongue6",
+      "Location": [
+        172,
+        26
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "GameOver",
+      "Location": [
+        2,
+        34
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "MultX",
+      "Location": [
+        160,
+        34
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    }
+  ]
+}

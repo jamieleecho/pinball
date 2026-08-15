@@ -1,0 +1,78 @@
+name: Make a New Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-6809-dsk-image:
+    runs-on: ubuntu-latest
+    container:
+      image: jamieleecho/coco-dev:0.85
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the 6809 disk image
+        run: make all RELEASE=1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 6809-dsk-image
+          path: build/*.DSK
+          retention-days: 1
+
+  build-6309-dsk-image:
+    runs-on: ubuntu-latest
+    container:
+      image: jamieleecho/coco-dev:0.85
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the 6309 disk image
+        run: make all RELEASE=1 CPU=6309
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 6309-dsk-image
+          path: build/*.DSK
+          retention-days: 1
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the Mac app
+        run: |
+          scripts/gen-xcode.py
+          xcodebuild -project mac/Pinball.xcodeproj \
+            -configuration Release \
+            -scheme "Lost World Pinball" \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
+            build CONFIGURATION_BUILD_DIR=`pwd`/build/release
+          cd build/release
+          tar czf lost-world-pinball-mac.tgz *.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-app
+          path: build/release/*.tgz
+          retention-days: 1
+
+  upload-artifacts:
+    runs-on: ubuntu-latest
+    needs: [build-6809-dsk-image, build-6309-dsk-image, build-macos]
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Get the tag
+        run: |
+          echo "RELEASE_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+
+      - name: Create a release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "./6809-dsk-image/*.DSK,./6309-dsk-image/*.DSK,./mac-app/*.tgz"
+          allowUpdates: true
+          draft: true
+          name: "${{ format('{0} {1}', env.REPO_NAME, env.RELEASE_TAG) }}"

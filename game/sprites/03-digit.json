@@ -1,0 +1,113 @@
+{
+  "Main": {
+    "Group": 3,
+    "Image": "03-digit.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "Digit0",
+      "Location": [
+        2,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit1",
+      "Location": [
+        14,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit2",
+      "Location": [
+        26,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit3",
+      "Location": [
+        38,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit4",
+      "Location": [
+        50,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit5",
+      "Location": [
+        62,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit6",
+      "Location": [
+        74,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit7",
+      "Location": [
+        86,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit8",
+      "Location": [
+        98,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Digit9",
+      "Location": [
+        110,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitBlank",
+      "Location": [
+        122,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    }
+  ]
+}

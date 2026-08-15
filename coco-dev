@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# Run a command inside the coco-dev toolchain image (lwasm, CMOC, ToolShed,
+# ffmpeg, the Python imaging deps used by the asset pipeline).
+#
+#     ./coco-dev              # interactive shell
+#     ./coco-dev make all     # run a build
+#
+# The whole project is mounted at /work, which is where the makefile expects
+# to find engine/, scripts/, game/ and build/.
+#
+# `docker run -t` fails in a non-TTY (agent / CI) shell, so the TTY flag is
+# added only when stdin and stdout really are terminals.
+set -euo pipefail
+
+# Pinned rather than :latest so a build is reproducible, and so CI and a
+# developer machine agree.  Keep in step with .github/workflows/*.yml.
+IMAGE="${COCO_DEV_IMAGE:-jamieleecho/coco-dev:0.85}"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+docker_flags=(--rm -i)
+if [ -t 0 ] && [ -t 1 ]; then
+  docker_flags+=(-t)
+fi
+
+if [ "$#" -eq 0 ]; then
+  set -- bash
+fi
+
+exec docker run "${docker_flags[@]}" \
+  -v "${PROJECT_DIR}:/work" \
+  -w /work \
+  "${IMAGE}" "$@"

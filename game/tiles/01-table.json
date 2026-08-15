@@ -1,0 +1,11 @@
+{
+  "Image": "01-table.png",
+  "TileSetStart": [
+    0,
+    16
+  ],
+  "TileSetSize": [
+    320,
+    208
+  ]
+}

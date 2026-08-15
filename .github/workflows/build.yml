@@ -1,0 +1,114 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# The image tag is pinned rather than :latest so a run is reproducible, and it
+# must match the tag ./coco-dev uses locally -- keep the two in step. It cannot
+# be hoisted into a workflow-level env var: the env context is not available in
+# jobs.<id>.container.image.
+jobs:
+  build-dsk-images:
+    runs-on: ubuntu-latest
+    container:
+      image: jamieleecho/coco-dev:0.85
+    steps:
+      - uses: actions/checkout@v4
+
+      # The checkout lands owned by a different user than the one the container
+      # runs as, which git refuses to touch until told the repository is safe.
+      - name: Trust the checkout
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Everything under game/ except the .c and .h files is generated. This
+      # catches both a hand-edit to a generated file and a generator that has
+      # stopped being deterministic.
+      - name: Check the assets match their generator
+        run: scripts/check-assets.py
+
+      # Cleaned in between on purpose. The intermediate sprite and object files
+      # are not named per CPU, so a 6309 build on top of a 6809 one would
+      # happily reuse the 6809 code and produce a disk that is quietly wrong.
+      # `make clean` also removes the disk it just built, hence the copy aside.
+      - name: Build both CPU targets
+        run: |
+          mkdir -p dist
+          make all RELEASE=1
+          cp build/*.DSK dist/
+          make clean
+          make all RELEASE=1 CPU=6309
+          cp build/*.DSK dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dsk-images
+          path: dist/*.DSK
+          retention-days: 7
+
+  # Boots the disk in headless MAME and plays a whole three-ball game, then
+  # checks the game's own state to see that it launched, scored, drained and
+  # ended. A compile-only build would happily pass with a ball that never
+  # leaves the launcher.
+  playtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: jamieleecho/coco-dev:0.85
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trust the checkout
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # CoCo 3 ROMs are copyrighted and are not shipped in the image, so they
+      # are fetched at run time -- the same source the sibling projects use.
+      - name: Fetch CoCo 3 ROMs
+        run: |
+          mkdir -p roms
+          curl -fL --retry 3 -o roms/coco3.zip \
+            https://archive.org/download/batov39/coco3.zip
+
+      - name: Build
+        run: make all RELEASE=1
+
+      - name: Play a game
+        env:
+          MAME_ROMPATH: ${{ github.workspace }}/roms
+        run: |
+          scripts/playtest.sh 300
+          scripts/check-playtest.py
+
+      # The screenshots and the state trace make a failure diagnosable from the
+      # pull request without reproducing it locally.
+      - name: Upload playtest output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playtest
+          path: build/playtest
+          retention-days: 7
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      # The project file is generated from whatever is in game/ and mac/, so it
+      # is regenerated here rather than trusted: a stale committed project would
+      # otherwise hide a missing source file.
+      - name: Generate the Xcode project
+        run: scripts/gen-xcode.py
+
+      - name: Build the Mac app
+        run: |
+          xcodebuild -project mac/Pinball.xcodeproj \
+            -scheme "Lost World Pinball" \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
+            build

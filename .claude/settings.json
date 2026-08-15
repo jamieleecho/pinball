@@ -1,0 +1,79 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "../space-bandits",
+      "~/Applications/mame"
+    ],
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.docker/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.pypirc)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(~/.claude.json)",
+      "Read(~/Library/Keychains/**)",
+      "Read(~/Documents/**)",
+      "Read(~/Desktop/**)",
+      "Read(~/Downloads/**)"
+    ]
+  },
+
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "failIfUnavailable": true,
+    "excludedCommands": ["gh *", "docker *", "./coco-dev *", "git *"],
+
+    "filesystem": {
+      "allowWrite": [
+        "../space-bandits",
+        "~/Applications/mame"
+      ],
+      "denyRead": [
+        "~/"
+      ],
+      "allowRead": [
+        ".",
+        "../space-bandits",
+        "~/Applications/mame",
+        "~/.claude/shell-snapshots",
+        "~/.claude/plugins",
+        "~/.claude/settings.json",
+        "~/.local/share/claude",
+        "~/.local/bin",
+        "~/.zshrc",
+        "~/.zshenv",
+        "~/.zprofile",
+        "~/.gitconfig",
+        "~/.local/config/git"
+      ]
+    },
+
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "codeload.github.com",
+        "*.github.com",
+        "objects.githubusercontent.com",
+        "raw.githubusercontent.com",
+        "*.githubusercontent.com"
+      ]
+    },
+
+    "credentials": {
+      "files": [
+        { "path": "~/.ssh", "mode": "deny" },
+        { "path": "~/.aws", "mode": "deny" },
+        { "path": "~/.gnupg", "mode": "deny" },
+        { "path": "~/.claude/.credentials.json", "mode": "deny" }
+      ]
+    }
+  }
+}

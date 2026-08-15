@@ -1,0 +1,14 @@
+{
+  "images": [
+    {
+      "BackgroundColor": "000000",
+      "ForegroundColor": "ffaa00",
+      "ProgressColor": "ffff00"
+    },
+    {
+      "BackgroundColor": "000000",
+      "ForegroundColor": "ffaa00",
+      "ProgressColor": "ffff00"
+    }
+  ]
+}

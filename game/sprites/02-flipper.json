@@ -1,0 +1,122 @@
+{
+  "Main": {
+    "Group": 2,
+    "Image": "02-flipper.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "LeftFlip0",
+      "Location": [
+        6,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LeftFlip1",
+      "Location": [
+        46,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LeftFlip2",
+      "Location": [
+        86,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LeftFlip3",
+      "Location": [
+        126,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LeftFlip4",
+      "Location": [
+        166,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LeftFlip5",
+      "Location": [
+        206,
+        20
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip0",
+      "Location": [
+        34,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip1",
+      "Location": [
+        74,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip2",
+      "Location": [
+        114,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip3",
+      "Location": [
+        154,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip4",
+      "Location": [
+        194,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "RightFlip5",
+      "Location": [
+        234,
+        60
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    }
+  ]
+}
