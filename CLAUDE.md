@@ -59,6 +59,17 @@ The ball therefore needs one array lookup to know both how to bounce and what
 to score. Which *instance* was hit is resolved afterwards by scanning a short
 table of bounding boxes, which only happens on a scoring hit.
 
+**The kind field is full.** Three bits, and all eight values are spoken for
+(empty plus seven surfaces). A new kind of surface means retiring one, or
+stealing a bit from the direction field and halving the resolution of every
+normal from 32 directions to 16. That is why the launch lane's one-way gate is
+a coordinate test in `01-ball.c` rather than a cell kind: it was not worth a
+bit.
+
+The tileset is likewise on a budget. The artwork currently needs 161 unique
+16x16 tiles; tilemap entries are bytes, so the hard ceiling is 255. Detail
+costs tiles, and large flat areas cost none.
+
 ## Fixed point, and why the arithmetic looks odd
 
 Velocities are 8.8 fixed point. Normals are scaled by 32. CMOC's `int` is
@@ -89,6 +100,9 @@ and only the fraction is kept in object state — see `addPos()` in
 - **`UserGlobals`'s first byte is cleared by the menu** each time a level is
   launched, which is a free "new game" signal. Anything that must outlive that
   (the high score) is guarded by a magic number instead.
+- **`GameGlobals` must fit in 32 bytes**, because that is all `UserGlobals` is
+  (`engine/globals.asm`). It is currently about 20. Nothing checks this, and
+  overflowing it would walk into the music engine's state.
 - **The keyboard matrix is rescanned every frame** into `Input_KeyMatrix[8]`,
   which is what `keyDown()` reads. The joystick emulation cannot report two
   keys at once, and a pinball game needs both flippers.
@@ -96,6 +110,54 @@ and only the fraction is kept in object state — see `addPos()` in
   different `InitData` in the level descriptor.
 - The COT is searched from the front, so the ball is listed first in the level
   descriptor and the lamp objects can find it in O(1).
+
+## When something goes wrong
+
+Failures here surface a long way from their cause. These are the ones that have
+actually happened, and what they looked like.
+
+**Debug builds trap; release builds do not.** Without `RELEASE=1` the engine is
+full of `swi` instructions on failed assertions, and one paints a register dump
+across the top of the screen:
+
+```
+SWI  Error (PC=328B DP=20)
+A=FF B=2F X=8300 Y=0000 U=4400 S=3FF8
+```
+
+Look the PC up in `build/list/dynosprite-pass2.lst`, which carries the source
+file and line beside every address, and the assertion names itself. Always
+reach for a debug build first: with `RELEASE=1` the same fault is a hang or
+quiet corruption instead. That listing is the single most useful debugging
+tool in the project.
+
+**The level loading screen stops part-way and nothing else happens.** The level
+is carrying more data than the loader can place; there is no message. It has
+been seen with 72KB of compiled sprite code, and went away at 43KB. If a build
+that loaded yesterday hangs today, look at what just grew:
+
+```sh
+ls -la build/obj/sprite*.raw    # compiled sprite code, the usual culprit
+```
+
+**A sound effect shorter than about 200ms silently becomes nothing.** ffmpeg's
+resampler needs a couple of hundred milliseconds of material to produce any
+output at 2kHz, so a 40ms click resamples to a zero-byte file, the build
+carries on happily, and the failure appears much later as an `swi` deep inside
+the *level loader's* sound loop ("we didn't read all of the data in the
+stream"). Give short effects a fast decay instead of a short duration, and
+check the output is not empty:
+
+```sh
+ls -la build/obj/sound*.raw
+```
+
+**A build that hangs forever with a container stuck in ffmpeg** is ffmpeg
+waiting on stdin, which never closes under `docker run -i`. The makefile passes
+`-nostdin -y` for this reason; do not remove them.
+
+**An object drawing itself as something else** is almost always a state-size
+overrun — see `DynospriteObject_DataSize` above.
 
 ## Sprites are compiled code
 
@@ -121,10 +183,24 @@ exponential — a 66x22 plate took over twenty minutes. `ChunkHint` bounds that
 search, but only on the 6309 path; on 6809 the answer is to use fewer opaque
 pixels.
 
-Each sprite is found by flood filling from its anchor, so everything meant to
-be one sprite must be 4-connected, and sprites must not touch each other on the
-sheet. The anchor point is also the hotspot: it is the pixel that lands on the
-object's `globalX`/`globalY`.
+Each sprite is found by flood filling from its anchor. Two things go wrong
+there, and they fail very differently:
+
+- **Sprites overlapping on the sheet** — one drawn over another — fails the
+  build with `****Error: sprite <name> not found within 20 pixels of location`.
+  Annoying, but it tells you.
+- **A sprite that is not 4-connected fails silently.** The fill takes whatever
+  is joined to the anchor and leaves the rest behind, so you get a fragment on
+  screen and no warning at all. Diagonal touching does not count as joined. The
+  end-of-game message lost the whole "GAME OVER" line this way, arriving in the
+  game as a stray letter; it is held together by a rule under each line for
+  exactly that reason.
+
+The anchor point is also the hotspot: it is the pixel that lands on the
+object's `globalX`/`globalY`. It does not have to be opaque — the search
+spirals outward to find the shape — but it does have to sit at the top-left of
+the bounding box you intend, because the hotspot is `anchor` minus the
+bounding-box minimum.
 
 ## Physics notes
 
@@ -221,3 +297,15 @@ release across several frames for that reason.
 
 `scripts/shot.py` crops MAME's 640x239 snapshot back to a clean 320x200 view
 and can magnify a region.
+
+The trace offsets in `playtest.lua` are hand-maintained against `GameGlobals`
+and `BallObjectState`. Reordering a struct field silently makes the trace lie:
+reading `cooldown` while believing it to be `pull` once sent a perfectly
+healthy launcher to be debugged for half an hour. If a traced value looks
+impossible, check the offsets before the game.
+
+Being suspicious of the harness pays generally. Two "bugs" in this game turned
+out to be the driver: the plunger that would not fire (the driver released the
+key for fewer frames than the game samples) and the ball that would not launch
+(same cause, different symptom). Confirm the game is really at fault by reading
+its own state, not by watching what the driver thinks it did.
