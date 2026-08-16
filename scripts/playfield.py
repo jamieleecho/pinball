@@ -57,7 +57,14 @@ FLIPPER_BOXES = ((55, 157, 84, 172), (121, 157, 150, 172))
 # The launch lane: an 8-pixel white channel running the full height of the
 # table down its right-hand side, walled off from the playfield by the divider.
 LANE_X0, LANE_X1 = 177, 184
-LANE_TOP = 30  # above this the lane opens into the table
+LANE_TOP = 34  # above this the lane opens into the table
+
+# The gate across the mouth of the lane.  It is a sprite, not artwork, because
+# it is only there once the ball is in play: a shot on its way up passes
+# through, and the bar appears behind it.  Two pixels either side of the lane
+# so it visibly meets the divider and the wall.
+GATE_XY = (LANE_X0 - 1, LANE_TOP)
+GATE_W, GATE_H = (LANE_X1 - LANE_X0 + 3), 2
 
 # The flippers.  Each is one of the little dinosaurs, 30x16, pivoting on its
 # outer end so the tips meet over the drain.

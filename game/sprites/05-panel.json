@@ -81,6 +81,26 @@
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
+    },
+    {
+      "Name": "GateShut",
+      "Location": [
+        160,
+        50
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8,
+      "SaveBackground": false
+    },
+    {
+      "Name": "GateOpen",
+      "Location": [
+        176,
+        50
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8,
+      "SaveBackground": false
     }
   ]
 }

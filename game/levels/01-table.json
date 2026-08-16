@@ -9,7 +9,7 @@
       4,
       5
     ],
-    "MaxObjectTableSize": 38,
+    "MaxObjectTableSize": 39,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -438,6 +438,17 @@
       "globalY": 0,
       "InitData": [
         2
+      ]
+    },
+    {
+      "_comment": "lane gate",
+      "GroupID": 5,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        3
       ]
     }
   ]

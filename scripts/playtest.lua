@@ -123,12 +123,13 @@ local function tick()
     local by = mem:read_u16(cot + 6)
     local st = mem:read_u16(cot + 8)
     print(string.format(
-      "f=%d state=%d balls=%d score=%02x%02x%02x%02x mult=%d plungers=%02x tongue=%d " ..
+      "f=%d state=%d balls=%d score=%02x%02x%02x%02x mult=%d feet=%02x%02x tongue=%d gate=%d " ..
       "| ball %d,%d act=%d vx=%d vy=%d pull=%d tick=%d",
-      frames, u8(3), u8(4), u8(5), u8(6), u8(7), u8(8), u8(13), u8(14), u8(15),
+      frames, u8(3), u8(4), u8(5), u8(6), u8(7), u8(8), u8(13), u8(15), u8(14),
+      u8(16), u8(17),
       bx, by, mem:read_u8(cot + 2),
       s16(mem:read_u16(st + 4)), s16(mem:read_u16(st + 6)), mem:read_u8(st + 9),
-      u8(19)))
+      u8(21)))
   end
 end
 

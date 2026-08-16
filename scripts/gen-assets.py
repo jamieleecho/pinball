@@ -540,6 +540,8 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALLS_PITCH       {playfield.BALLS_PITCH}
 #define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
 #define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
+#define GATE_X            {playfield.GATE_XY[0] + playfield.ORIGIN_X}
+#define GATE_Y            {playfield.GATE_XY[1] + playfield.ORIGIN_Y}
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
@@ -876,6 +878,19 @@ def draw_panel_sheet(d, img):
     x0, y0 = 160, 34
     draw_text(d, x0, y0, "X", MAGENTA, scale=1)
     sprites.append(("MultX", x0, y0, False))
+
+    # The gate across the mouth of the launch lane, shut and open.  Both are
+    # opaque over the same footprint and save no background, so the open one is
+    # what takes the bar away again -- there is no erase code to do it.
+    for i, (name, ink) in enumerate((("GateShut", MAGENTA), ("GateOpen", WHITE))):
+        # Clear of the GameOver plate, which reaches down to row 50 on the left
+        # of the sheet.  Sprites that touch each other are found by one flood
+        # fill and the build stops with "not found within 20 pixels".
+        x0 = 160 + i * (playfield.GATE_W + 6)
+        y0 = 50
+        d.rectangle((x0, y0, x0 + playfield.GATE_W - 1, y0 + playfield.GATE_H - 1),
+                    fill=ink)
+        sprites.append((name, x0, y0, False, False))
 
     return sprites
 
@@ -1342,6 +1357,10 @@ def write_sounds():
     write_wav("04-drain.wav", tone(520, 80, 420, "saw", decay=1.2))
     # Launch: the spring lets go.
     write_wav("05-launch.wav", tone(160, 780, 300, "square", decay=1.5, sweep_ms=160))
+    # The lane: one low blip of the ticking the ball makes on its way up.  It
+    # has to carry the resampler's 220ms of material or it comes out empty, so
+    # the shortness is all in the decay.
+    write_wav("06-lane.wav", tone(150, 140, SND_MIN_MS, "square", decay=26.0))
 
 
 def write_descriptors():
@@ -1404,8 +1423,8 @@ def write_descriptors():
     for i in range(len(playfield.foot_boxes(feet))):
         obj(f"foot {i}", 4, 3, 0, 0, [i])
 
-    for i, what in enumerate(("tongue", "game over", "multiplier X")):
-        obj(what, 5, 1, 0, 0, [i])
+    for i, what in enumerate(("tongue", "game over", "multiplier X", "lane gate")):
+        obj(what, 5, 3 if what == "lane gate" else 1, 0, 0, [i])
 
     level = {
         "Level": {

@@ -22,6 +22,7 @@
 #define SOUND_FLIPPER 3
 #define SOUND_DRAIN 4
 #define SOUND_LAUNCH 5
+#define SOUND_LANE 6
 
 /* Ball sprites */
 #define BALL_SPRITE_BALL 0
@@ -44,6 +45,8 @@
 #define PANEL_SPRITE_TONGUE1 0
 #define PANEL_SPRITE_GAMEOVER 6
 #define PANEL_SPRITE_MULTX 7
+#define PANEL_SPRITE_GATE_SHUT 8
+#define PANEL_SPRITE_GATE_OPEN 9
 #define PANEL_TONGUE_STAGES 6
 
 /* Where the panel read-outs sit.  The multiplier and ball count are drawn with
@@ -99,6 +102,7 @@ typedef struct GameGlobals {
     byte multiplier;   /* 1, 2, 3 or 10 */
     byte feetHit[2];   /* bit per foot; nine of them, so nine bits */
     byte tongue;       /* top-mark hits so far this game */
+    byte gate;         /* the lane gate is shut once the shot is in play */
     byte volcano;      /* non-zero once the volcano has erupted this ball */
     byte extraBalls;   /* 10,000-point thresholds already awarded */
     byte stateTimer;   /* counts down state transitions */

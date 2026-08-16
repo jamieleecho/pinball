@@ -45,7 +45,7 @@
 #define PLAYFIELD_RIGHT  194
 #define LANE_X0          185
 #define LANE_X1          192
-#define LANE_TOP         42
+#define LANE_TOP         46
 #define DRAIN_Y          206
 #define BALL_R           3
 
@@ -65,6 +65,8 @@
 #define BALLS_PITCH       10
 #define PANEL_TONGUE_X    274
 #define PANEL_TONGUE_Y    80
+#define GATE_X            184
+#define GATE_Y            46
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */

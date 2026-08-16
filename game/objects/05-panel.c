@@ -36,6 +36,10 @@ void PanelInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
         cob->globalX = PANEL_MULTX_X;
         cob->globalY = PANEL_MULTX_Y;
         s->spriteIdx = PANEL_SPRITE_MULTX;
+    } else if (s->role == PANEL_ROLE_GATE) {
+        cob->globalX = GATE_X;
+        cob->globalY = GATE_Y;
+        s->spriteIdx = PANEL_SPRITE_GATE_OPEN;
     } else {
         cob->globalX = PANEL_TONGUE_X;
         cob->globalY = PANEL_TONGUE_Y;
@@ -50,6 +54,16 @@ byte PanelReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 byte PanelUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     PanelObjectState *s = (PanelObjectState *)(cob->statePtr);
     byte show = 0;
+
+    if (s->role == PANEL_ROLE_GATE) {
+        /* The gate always draws, shut or open.  These sprites save no
+         * background, so going inactive would leave the bar across the lane
+         * for good; the open one is what takes it away. */
+        s->spriteIdx = globals->gate ? PANEL_SPRITE_GATE_SHUT
+                                     : PANEL_SPRITE_GATE_OPEN;
+        cob->active = OBJECT_ACTIVE;
+        return 0;
+    }
 
     if (s->role == PANEL_ROLE_GAMEOVER) {
         show = (globals->gameState == GameStateOver);

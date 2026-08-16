@@ -276,8 +276,9 @@ static byte stepBall(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
         /* One-way gate across the mouth of the launch lane.  A shot passes
          * straight up through it, but a ball dropping back this way is turned
          * into the table instead of trickling down the lane and draining. */
-        if (s->vy > 0 && ix >= LANE_X0 - BALL_R && ix <= LANE_X1 &&
-            iy >= LANE_TOP - BALL_R && iy <= LANE_TOP + BALL_R) {
+        if (globals->gate && s->vy > 0 && ix >= LANE_X0 - BALL_R &&
+            ix <= LANE_X1 && iy >= LANE_TOP - BALL_R &&
+            iy <= LANE_TOP + BALL_R) {
             cob->globalX = oldX;
             cob->globalY = oldY;
             s->fx = oldFx;
@@ -373,9 +374,10 @@ static void placeOnLauncher(DynospriteCOB *cob, BallObjectState *s, byte pull) {
 static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     globals->gameState = GameStateReady;
     globals->multiplier = 1;
-    /* The nine feet come back with every new ball. */
+    /* The nine feet come back with every new ball, and the lane opens up. */
     globals->feetHit[0] = 0;
     globals->feetHit[1] = 0;
+    globals->gate = 0;
     globals->volcano = 0;
     s->pull = 0;
     s->cooldown = 0;
@@ -560,6 +562,28 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
             }
         } else {
             s->stillFor = 0;
+        }
+
+        /* Once the shot is round the top and into the table, the gate drops
+         * behind it and the ball can no longer trickle back down the lane. */
+        if (!globals->gate && (int)cob->globalX < LANE_X0 - BALL_R) {
+            globals->gate = 1;
+        }
+
+        /* Climbing the lane, the ball ticks: quickly at first, slower as it
+         * runs out of steam, and silent once it is over the top.  The interval
+         * is taken straight from the vertical speed, so the sound reports what
+         * the ball is actually doing rather than following a fixed pattern. */
+        if ((int)cob->globalX >= LANE_X0 - BALL_R && s->vy < 0) {
+            if (s->laneTick) {
+                s->laneTick--;
+            } else {
+                byte speed = (byte)((-s->vy) >> 8);
+                PlaySound(SOUND_LANE);
+                s->laneTick = (speed >= 12) ? 2 : (byte)(14 - speed);
+            }
+        } else {
+            s->laneTick = 0;
         }
 
         if (s->vy > 0 && (int)cob->globalX >= LANE_X0 &&

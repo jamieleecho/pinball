@@ -16,6 +16,7 @@
 #define PANEL_ROLE_TONGUE 0
 #define PANEL_ROLE_GAMEOVER 1
 #define PANEL_ROLE_MULTX 2
+#define PANEL_ROLE_GATE 3
 
 /** One of the read-outs on the score panel. */
 typedef struct PanelObjectState {

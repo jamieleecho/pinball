@@ -44,6 +44,7 @@ typedef struct BallObjectState {
     byte stillFor; /* frames spent barely moving, used to unstick the ball */
     byte nudge;    /* alternates the direction of the unsticking nudge */
     byte rnd;      /* running seed for the randomised bounce */
+    byte laneTick; /* frames until the next blip on the way up the lane */
 } BallObjectState;
 
 #endif /* _01_ball_h */
