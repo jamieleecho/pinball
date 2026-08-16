@@ -65,8 +65,10 @@
 #define BALLS_PITCH       10
 #define PANEL_TONGUE_X    274
 #define PANEL_TONGUE_Y    80
-#define GATE_X            184
-#define GATE_Y            46
+#define GATE_X0           177
+#define GATE_Y0           26
+#define GATE_X1           184
+#define GATE_Y1           52
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */

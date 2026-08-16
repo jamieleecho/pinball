@@ -85,20 +85,20 @@
     {
       "Name": "GateShut",
       "Location": [
-        160,
-        50
+        100,
+        30
       ],
-      "SinglePixelPosition": false,
+      "SinglePixelPosition": true,
       "ChunkHint": 8,
       "SaveBackground": false
     },
     {
       "Name": "GateOpen",
       "Location": [
-        176,
-        50
+        116,
+        30
       ],
-      "SinglePixelPosition": false,
+      "SinglePixelPosition": true,
       "ChunkHint": 8,
       "SaveBackground": false
     }

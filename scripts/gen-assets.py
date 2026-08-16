@@ -540,8 +540,10 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALLS_PITCH       {playfield.BALLS_PITCH}
 #define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
 #define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
-#define GATE_X            {playfield.GATE_XY[0] + playfield.ORIGIN_X}
-#define GATE_Y            {playfield.GATE_XY[1] + playfield.ORIGIN_Y}
+#define GATE_X0           {playfield.GATE_BOX[0] + playfield.ORIGIN_X}
+#define GATE_Y0           {playfield.GATE_BOX[1] + playfield.ORIGIN_Y}
+#define GATE_X1           {playfield.GATE_BOX[2] + playfield.ORIGIN_X}
+#define GATE_Y1           {playfield.GATE_BOX[3] + playfield.ORIGIN_Y}
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
@@ -882,15 +884,21 @@ def draw_panel_sheet(d, img):
     # The gate across the mouth of the launch lane, shut and open.  Both are
     # opaque over the same footprint and save no background, so the open one is
     # what takes the bar away again -- there is no erase code to do it.
+    # The stopper across the gap between the table and the launch lane, shut
+    # and open.  Both are opaque over the same footprint and save no
+    # background, so the open one is what takes the bar away again.
+    #
+    # It sits on an odd column, so this is the one sprite in the game that pays
+    # for SinglePixelPosition.  Nudging it a pixel to suit the compiler would
+    # leave a slot down one side of the gap and eat a pixel of the table on the
+    # other.
     for i, (name, ink) in enumerate((("GateShut", MAGENTA), ("GateOpen", WHITE))):
-        # Clear of the GameOver plate, which reaches down to row 50 on the left
-        # of the sheet.  Sprites that touch each other are found by one flood
-        # fill and the build stops with "not found within 20 pixels".
-        x0 = 160 + i * (playfield.GATE_W + 6)
-        y0 = 50
+        # Clear of the GameOver plate (x 2..67) and the tongue frames (y 2..26).
+        x0 = 100 + i * (playfield.GATE_W + 8)
+        y0 = 30
         d.rectangle((x0, y0, x0 + playfield.GATE_W - 1, y0 + playfield.GATE_H - 1),
                     fill=ink)
-        sprites.append((name, x0, y0, False, False))
+        sprites.append((name, x0, y0, True, False))
 
     return sprites
 

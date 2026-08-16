@@ -59,12 +59,19 @@ FLIPPER_BOXES = ((55, 157, 84, 172), (121, 157, 150, 172))
 LANE_X0, LANE_X1 = 177, 184
 LANE_TOP = 34  # above this the lane opens into the table
 
-# The gate across the mouth of the lane.  It is a sprite, not artwork, because
-# it is only there once the ball is in play: a shot on its way up passes
-# through, and the bar appears behind it.  Two pixels either side of the lane
-# so it visibly meets the divider and the wall.
-GATE_XY = (LANE_X0 - 1, LANE_TOP)
-GATE_W, GATE_H = (LANE_X1 - LANE_X0 + 3), 2
+# The stopper.  The lane and the table are joined by one gap: the columns of
+# the divider, x 169..176, between the bottom of the curved top border (y 13-16
+# depending on the column) and the top of the divider itself (y 35-41).  A shot
+# on its way up goes through that gap into the table; the stopper then fills it
+# so the ball cannot come back.  It is a sprite rather than artwork because it
+# is only there once the ball is in play.
+#
+# Measured off the artwork column by column, then squared off: the bar runs a
+# little into the border above and the divider below, which costs nothing and
+# leaves no seam at either end.
+GATE_BOX = (169, 14, 176, 40)  # source x0, y0, x1, y1, inclusive
+GATE_W = GATE_BOX[2] - GATE_BOX[0] + 1
+GATE_H = GATE_BOX[3] - GATE_BOX[1] + 1
 
 # The flippers.  Each is one of the little dinosaurs, 30x16, pivoting on its
 # outer end so the tips meet over the drain.

@@ -273,18 +273,20 @@ static byte stepBall(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
     }
 
     if (!bestCell) {
-        /* One-way gate across the mouth of the launch lane.  A shot passes
-         * straight up through it, but a ball dropping back this way is turned
-         * into the table instead of trickling down the lane and draining. */
-        if (globals->gate && s->vy > 0 && ix >= LANE_X0 - BALL_R &&
-            ix <= LANE_X1 && iy >= LANE_TOP - BALL_R &&
-            iy <= LANE_TOP + BALL_R) {
+        /* The stopper.  The table and the launch lane are joined by one gap,
+         * in the divider's columns above where the divider itself begins; a
+         * shot on its way up goes through it, and once the ball is in play the
+         * bar fills it so it cannot come back.  The bar is not in the grid --
+         * it comes and goes -- so the ball meets it here. */
+        if (globals->gate && ix >= GATE_X0 - BALL_R && ix <= GATE_X1 + BALL_R &&
+            iy >= GATE_Y0 - BALL_R && iy <= GATE_Y1 + BALL_R) {
             cob->globalX = oldX;
             cob->globalY = oldY;
             s->fx = oldFx;
             s->fy = oldFy;
-            reflect(s, 0, -32, GAIN_WALL);
-            addPos(cob, s, 0, -(1 << 8));
+            /* It is tall and narrow, so the ball is nearly always arriving
+             * side-on; push it back the way it came. */
+            reflect(s, ix < GATE_X0 ? -32 : 32, 0, GAIN_WALL);
             return 1;
         }
         return 0;
@@ -564,23 +566,34 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
             s->stillFor = 0;
         }
 
-        /* Once the shot is round the top and into the table, the gate drops
-         * behind it and the ball can no longer trickle back down the lane. */
-        if (!globals->gate && (int)cob->globalX < LANE_X0 - BALL_R) {
+        /* Once the shot is clear of the gap, the stopper fills it in behind.
+         * "Clear" has to mean clear of the bar itself, not merely out of the
+         * lane: dropping it as soon as the ball left the lane put the bar down
+         * on top of a ball still passing through, and it was pinned there for
+         * the rest of the game. */
+        if (!globals->gate && (int)cob->globalX < GATE_X0 - BALL_R) {
             globals->gate = 1;
         }
 
-        /* Climbing the lane, the ball ticks: quickly at first, slower as it
-         * runs out of steam, and silent once it is over the top.  The interval
-         * is taken straight from the vertical speed, so the sound reports what
-         * the ball is actually doing rather than following a fixed pattern. */
+        /* Climbing the lane, the ball ticks: every frame off the launcher,
+         * stretching to a quarter of a second by the top, and silent once it
+         * is over.  Thirty a second is the ceiling -- the game samples and
+         * sounds on its own 30Hz tick, so one blip a frame is as fast as it
+         * goes.
+         *
+         * The interval comes from how far up the lane the ball is, not from
+         * how fast it is going.  Speed is the obvious choice and it does not
+         * work: this lane is short enough that the ball barely slows on the
+         * way up -- measured, it leaves at seven pixels a frame and arrives at
+         * six -- so a speed-derived interval hardly varies at all.  Height
+         * covers the whole run. */
         if ((int)cob->globalX >= LANE_X0 - BALL_R && s->vy < 0) {
             if (s->laneTick) {
                 s->laneTick--;
             } else {
-                byte speed = (byte)((-s->vy) >> 8);
+                byte up = (byte)((LAUNCHER_REST_Y - (int)cob->globalY) >> 4);
                 PlaySound(SOUND_LANE);
-                s->laneTick = (speed >= 12) ? 2 : (byte)(14 - speed);
+                s->laneTick = (up > 7) ? 7 : up;
             }
         } else {
             s->laneTick = 0;
