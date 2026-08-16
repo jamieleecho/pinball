@@ -19,6 +19,7 @@ GENOBJDIR = $(BUILDDIR)/obj
 GENTMPDIR = $(BUILDDIR)/tmp
 GENLISTDIR = $(BUILDDIR)/list
 GENDISKDIR = $(BUILDDIR)/disk
+MAMEFLAGS ?= -window -skip_gameinfo -autoboot_delay 1 -autoboot_command 'loadm"pinball"\n'
 
 # lists of source game assets.
 #
