@@ -20,8 +20,18 @@ GENTMPDIR = $(BUILDDIR)/tmp
 GENLISTDIR = $(BUILDDIR)/list
 GENDISKDIR = $(BUILDDIR)/disk
 
-# lists of source game assets
+# lists of source game assets.
+#
+# The images matter as much as the descriptors: gfx-process.py reads the PNG
+# named inside each .json, and scripts/gen-assets.py regenerates the artwork
+# without touching the descriptor.  A rule that depends only on the .json
+# therefore never fires after the table is redrawn, and the build quietly
+# carries on with the previous picture.
 TILEDESC = $(wildcard $(TILEDIR)/??-*.json)
+TILEIMG = $(wildcard $(TILEDIR)/??-*.png)
+# Likewise the generated headers: table_data.h and object_info.h are included
+# by every object and level, and table_data.h is regenerated with the artwork.
+GAMEHDR = $(wildcard $(OBJECTDIR)/*.h)
 LEVELSRC = $(wildcard $(LEVELDIR)/??-*.asm)
 SPRITEDSC = $(wildcard $(SPRITEDIR)/??-*.json)
 OBJECTCSRC = $(wildcard $(OBJECTDIR)/??-*.c)
@@ -214,15 +224,15 @@ $(GENASMDIR)/defaults-config.asm: $(GAMEDIR)/defaults-config.json
 	$(SCRIPTDIR)/build-config.py $< $@
 
 # 1a. Generate text Palette and Tileset files from images
-$(GENGFXDIR)/tileset%.txt $(GENGFXDIR)/tilemask%.txt $(GENGFXDIR)/palette%.txt: $(TILEDIR)/%.json $(SCRIPTDIR)/gfx-process.py
+$(GENGFXDIR)/tileset%.txt $(GENGFXDIR)/tilemask%.txt $(GENGFXDIR)/palette%.txt: $(TILEDIR)/%.json $(TILEDIR)/%.png $(SCRIPTDIR)/gfx-process.py
 	$(SCRIPTDIR)/gfx-process.py gentileset $< $(GENGFXDIR)/palette$*.txt $(GENGFXDIR)/tileset$*.txt $(GENGFXDIR)/tilemask$*.txt
 
 # 1b. Generate text Tilemap files from images
-$(GENGFXDIR)/tilemap%.txt: $(LEVELDIR)/%.json $(TILESRC) $(PALSRC) $(SCRIPTDIR)/gfx-process.py
+$(GENGFXDIR)/tilemap%.txt: $(LEVELDIR)/%.json $(TILEIMG) $(TILESRC) $(PALSRC) $(SCRIPTDIR)/gfx-process.py
 	$(SCRIPTDIR)/gfx-process.py gentilemap $< $(GENGFXDIR) $@
 
 # 1c. Generate Sprite files from images
-$(GENGFXDIR)/sprite%.txt: $(SPRITEDIR)/%.json $(PALSRC) $(SCRIPTDIR)/gfx-process.py
+$(GENGFXDIR)/sprite%.txt: $(SPRITEDIR)/%.json $(SPRITEDIR)/%.png $(PALSRC) $(SCRIPTDIR)/gfx-process.py
 	$(SCRIPTDIR)/gfx-process.py gensprites $< $(GENGFXDIR) $@
 
 # 2. Compile sprites to 6809 assembly code
@@ -242,26 +252,26 @@ $(SYMBOLASM): $(SCRIPTDIR)/symbol-extract.py $(PASS1LIST)
 	$(SCRIPTDIR)/symbol-extract.py $(PASS1LIST) $(SYMBOLASM)
 
 # 6a. Compile C Object handling routines to raw
-$(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.c $(SRCDIR)/datastruct.asm $(SYMBOLASM)
+$(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
 	cd $(OBJECTDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=object $(notdir $<)
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 
 # 6b. Assemble Object handling routines to raw machine code
-$(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.asm $(SRCDIR)/datastruct.asm $(SYMBOLASM)
+$(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.asm $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
 	$(ASSEMBLER) $(ASMFLAGS) -r -I $(SRCDIR) -I $(GENASMDIR)/ -o $@ --list=$(GENLISTDIR)/object$*.lst --symbols $<
 
 # 7. Assemble Level handling routines to raw machine code
 # 6a. Compile C Level handling routines to raw
 # 7a. Compile C Level handling routines to raw
-$(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.c $(SRCDIR)/datastruct.asm $(SYMBOLASM)
+$(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
 	cd $(LEVELDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=level $(notdir $<)
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 
 # 6b. Assemble Level handling routines to raw machine code
 # 7b. Assemble Level handling routines to raw machine code
-$(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.asm $(SRCDIR)/datastruct.asm $(SYMBOLASM)
+$(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.asm $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
 	$(ASSEMBLER) $(ASMFLAGS) -r -I $(SRCDIR) -I $(GENASMDIR)/ -o $@ --list=$(GENLISTDIR)/level$*.lst --symbols $<
 
 # 8. Build Object data file and game directory assembler code
