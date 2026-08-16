@@ -13,7 +13,7 @@
     {
       "Name": "LeftFlip0",
       "Location": [
-        34,
+        33,
         20
       ],
       "SinglePixelPosition": false,
@@ -22,7 +22,7 @@
     {
       "Name": "LeftFlip1",
       "Location": [
-        74,
+        73,
         20
       ],
       "SinglePixelPosition": false,
@@ -31,7 +31,7 @@
     {
       "Name": "LeftFlip2",
       "Location": [
-        114,
+        113,
         20
       ],
       "SinglePixelPosition": false,
@@ -40,7 +40,7 @@
     {
       "Name": "LeftFlip3",
       "Location": [
-        154,
+        153,
         20
       ],
       "SinglePixelPosition": false,
@@ -49,7 +49,7 @@
     {
       "Name": "LeftFlip4",
       "Location": [
-        194,
+        193,
         20
       ],
       "SinglePixelPosition": false,
@@ -58,7 +58,7 @@
     {
       "Name": "LeftFlip5",
       "Location": [
-        234,
+        233,
         20
       ],
       "SinglePixelPosition": false,

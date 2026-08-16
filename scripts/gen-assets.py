@@ -677,17 +677,14 @@ def draw_ball_sheet(d, img):
     return [("Ball", cx, cy, True), ("Launcher", lx, ly, True)]
 
 
-def flipper_points(pivot, deg, mirror):
+def flipper_points(pivot, deg):
     """Outline of a flipper rotated deg degrees below horizontal."""
     px, py = pivot
     a = math.radians(deg)
-    sgn = -1 if mirror else 1
     ca, sa = math.cos(a), math.sin(a)
 
     def at(along, across):
-        x = px + sgn * (along * ca) - across * sa * sgn * sgn
-        y = py + along * sa + across * ca
-        return (x, y)
+        return (px + along * ca - across * sa, py + along * sa + across * ca)
 
     base = float(playfield.FLIPPER_HALF_THICK)
     tip = base / 2.0
@@ -700,38 +697,46 @@ def flipper_points(pivot, deg, mirror):
 
 
 def draw_flipper_sheet(d, img):
-    sprites = []
-    cell_w = 40
-    cell_h = 40
-    # Side 0 is the left flipper.  It pivots on its dinosaur's tail, which is
-    # the inboard end, so its tip points outward -- to the left -- and it is
-    # the mirrored one.  The collision tables in table_data.h are built in the
-    # same order, and the two have to agree or the ball bounces off a flipper
-    # drawn somewhere else.
-    for side in (0, 1):
-        mirror = side == 0
-        for f in range(playfield.FLIPPER_FRAMES):
-            col = f
-            row = side
-            # Anchor (the pivot) sits where the flipper's hub is, at whichever
-            # end of the cell leaves room for the body.
-            ax = col * cell_w + (34 if mirror else 6)
-            ay = row * cell_h + 20
-            deg = playfield.FLIPPER_REST_DEG + (
-                playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
-            ) * f / (
-                playfield.FLIPPER_FRAMES - 1
-            )
-            pts = flipper_points((ax, ay), deg, mirror)
-            d.polygon(pts, fill=TEAL, outline=DTEAL)
-            # Hub, drawn last so the anchor pixel is always opaque.
-            d.ellipse((ax - 3, ay - 3, ax + 3, ay + 3), fill=ORANGE)
-            d.point((ax, ay), fill=RED)
-            name = ("Left" if side == 0 else "Right") + f"Flip{f}"
-            # Both pivots sit on even pixel columns, so these never need the
-            # single-pixel-position variant -- which would double the code.
-            sprites.append((name, ax, ay, False))
-    return sprites
+    """Six frames of the right flipper; the left is those pixels mirrored.
+
+    Only one side is ever drawn.  Reflecting the outline and rasterising it
+    again rounds differently on each side and leaves the two a handful of
+    pixels apart -- enough to see, and enough to make one flipper hit sooner
+    than the other.  Mirroring the finished pixels makes them identical by
+    construction.
+
+    Side 0 is the left flipper.  It pivots on its dinosaur's tail, which is the
+    inboard end, so its tip points outward; the collision tables in
+    table_data.h are built in the same order and must agree.
+    """
+    cell = 40
+    pivot_x, pivot_y = 6, 20
+    left, right = [], []
+
+    for f in range(playfield.FLIPPER_FRAMES):
+        deg = playfield.FLIPPER_REST_DEG + (
+            playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
+        ) * f / (playfield.FLIPPER_FRAMES - 1)
+
+        one = Image.new("P", (cell, cell), TRANSPARENT)
+        one.putpalette(sprite_palette())
+        od = ImageDraw.Draw(one)
+        od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=DTEAL)
+        # Hub, drawn last so the anchor pixel is always opaque.
+        od.ellipse(
+            (pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
+        od.point((pivot_x, pivot_y), fill=RED)
+
+        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, 0))
+        left.append(
+            (f"LeftFlip{f}", f * cell + cell - 1 - pivot_x, pivot_y, False))
+
+        img.paste(one, (f * cell, cell))
+        right.append((f"RightFlip{f}", f * cell + pivot_x, cell + pivot_y, False))
+
+    # Both pivots sit on even pixel columns, so these never need the
+    # single-pixel-position variant -- which would double the code.
+    return left + right
 
 
 # A compact 5x7 digit font: one string of five characters per row.

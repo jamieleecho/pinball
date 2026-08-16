@@ -199,6 +199,12 @@ def world_image():
     sp, dp = src.load(), img.load()
     for y in range(src.height):
         for x in range(src.width):
+            # The flippers swing, so they are sprites and the background needs
+            # a hole where they sit.  Leaving the dinosaurs painted in means
+            # their spikes and legs show around whichever frame is drawn on
+            # top, and nothing ever erases them.
+            if any(in_box(x, y, b) for b in FLIPPER_BOXES):
+                continue
             dp[x + ORIGIN_X, y + ORIGIN_Y] = PALETTE.get(sp[x, y], BLACK)
     return img
 
