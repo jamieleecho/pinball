@@ -18,6 +18,7 @@ from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from table_spec import *  # noqa: F403
+import playfield  # the table, traced from art/ rather than drawn here
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TILE_DIR = os.path.join(ROOT, "game", "tiles")
@@ -331,56 +332,20 @@ def draw_panel(img, oy):
 # Collision grid
 # ---------------------------------------------------------------------------
 
-KIND_COLOURS = {
-    "drain": 0,
-    "wall": K_WALL,
-    "floor": 0,
-    "sling": K_SLING,
-    "strip": K_STRIP,
-    "scenery": K_SCENERY,
-    "bumper": K_BUMPER,
-    "plunger": K_PLUNGER,
-    "mark": K_MARK,
-}
+def build_world_grid():
+    """Encode playfield's kind map, one byte per cell: kind and facing.
 
-
-def build_kind_map():
-    """Pixel-resolution map of what occupies each point of the playfield."""
-    img = Image.new("L", (PLAYFIELD_W, CANVAS_H), 0)
-    draw_table(Painter(img, KIND_COLOURS), 0)
-    return img
-
-
-def build_grid(kind_img):
-    """Reduce the kind map to one byte per CELL x CELL cell.
-
-    Each solid cell stores its kind and the direction the surface faces, so the
-    ball object needs a single table lookup to know both how to bounce and what
-    to score.
+    The kinds come from the artwork (scripts/playfield.py); the facing is
+    worked out here from the free space around each solid cell, so a curved
+    wall gets a sensible normal without anyone writing one down.
     """
-    px = kind_img.load()
-    solid = [[False] * GRID_W for _ in range(GRID_H)]
-    kind = [[0] * GRID_W for _ in range(GRID_H)]
+    kinds, (x0, y0, gw, gh) = playfield.collision_grid()
+    solid = [[k != playfield.K_EMPTY for k in row] for row in kinds]
 
-    for gy in range(GRID_H):
-        for gx in range(GRID_W):
-            counts = {}
-            for y in range(gy * CELL, gy * CELL + CELL):
-                for x in range(gx * CELL, gx * CELL + CELL):
-                    v = px[x, y]
-                    if v:
-                        counts[v] = counts.get(v, 0) + 1
-            if counts:
-                solid[gy][gx] = True
-                # Scoring surfaces win ties: a mark set into a wall should
-                # score when the ball reaches it.
-                kind[gy][gx] = max(counts, key=lambda k: (counts[k], k))
-
-    # Normal of each solid cell: the direction of the free space around it.
     R = 3
-    grid = [[0] * GRID_W for _ in range(GRID_H)]
-    for gy in range(GRID_H):
-        for gx in range(GRID_W):
+    grid = [[0] * gw for _ in range(gh)]
+    for gy in range(gh):
+        for gx in range(gw):
             if not solid[gy][gx]:
                 continue
             sx = sy = 0.0
@@ -389,8 +354,7 @@ def build_grid(kind_img):
                     if dx == 0 and dy == 0:
                         continue
                     nx, ny = gx + dx, gy + dy
-                    free = True
-                    if 0 <= nx < GRID_W and 0 <= ny < GRID_H:
+                    if 0 <= nx < gw and 0 <= ny < gh:
                         free = not solid[ny][nx]
                     else:
                         free = False  # off-table counts as solid
@@ -404,8 +368,8 @@ def build_grid(kind_img):
             else:
                 ang = math.atan2(sy / mag, sx / mag)
                 dir_idx = int(round(ang / (2 * math.pi) * NUM_DIRS)) % NUM_DIRS
-            grid[gy][gx] = (kind[gy][gx] << 5) | dir_idx
-    return grid
+            grid[gy][gx] = (kinds[gy][gx] << 5) | dir_idx
+    return grid, x0, y0, gw, gh
 
 
 # ---------------------------------------------------------------------------
@@ -414,25 +378,29 @@ def build_grid(kind_img):
 
 
 def write_tileset(preview=False):
-    img = Image.new("P", (SCREEN_W, PAL_ROWS + CANVAS_H), BLACK)
+    """The background: a palette strip, then the 336x224 world.
+
+    The world is bigger than the 320x200 screen on purpose -- see
+    scripts/playfield.py -- so the camera has somewhere to jiggle into.
+    """
+    W, H = playfield.WORLD_W, playfield.WORLD_H
+    img = Image.new("P", (W, PAL_ROWS + H), BLACK)
     img.putpalette(palette_bytes())
 
     d = ImageDraw.Draw(img)
-    swatch = SCREEN_W // 16
+    swatch = W // 16
     for i in range(16):
         d.rectangle((i * swatch, 0, (i + 1) * swatch - 1, PAL_ROWS - 1), fill=i)
 
-    draw_table(Painter(img, ART_COLOURS), ART_Y)
-    shade_table(img, ART_Y)
-    draw_panel(img, ART_Y)
+    img.paste(playfield.world_image(), (0, ART_Y))
 
     path = os.path.join(TILE_DIR, "01-table.png")
     img.save(path)
 
     if preview:
         os.makedirs(BUILD_DIR, exist_ok=True)
-        prev = img.crop((0, ART_Y, SCREEN_W, ART_Y + SCREEN_H)).convert("RGB")
-        prev = prev.resize((SCREEN_W * 2, SCREEN_H * 2), Image.NEAREST)
+        prev = img.crop((0, ART_Y, W, ART_Y + H)).convert("RGB")
+        prev = prev.resize((W * 2, H * 2), Image.NEAREST)
         prev.save(os.path.join(BUILD_DIR, "table-preview.png"))
 
     return count_tiles(img)
@@ -442,8 +410,8 @@ def count_tiles(img):
     """How many unique 16x16 background tiles the artwork needs."""
     px = img.load()
     seen = set()
-    for ty in range(ART_Y, ART_Y + CANVAS_H, 16):
-        for tx in range(0, SCREEN_W, 16):
+    for ty in range(ART_Y, ART_Y + playfield.WORLD_H, 16):
+        for tx in range(0, playfield.WORLD_W, 16):
             tile = tuple(
                 px[tx + x, ty + y] for y in range(16) for x in range(16)
             )
@@ -459,30 +427,36 @@ def c_table(name, values, per_line=16, typ="const unsigned char"):
     return "\n".join(out)
 
 
-def write_collision_header(grid):
+def write_collision_header(grid, gx0, gy0, gw, gh):
     dirs_x, dirs_y = [], []
     for i in range(NUM_DIRS):
         ang = i * 2 * math.pi / NUM_DIRS
         dirs_x.append(int(round(math.cos(ang) * 32)))
         dirs_y.append(int(round(math.sin(ang) * 32)))
 
-    flat = [grid[gy][gx] for gy in range(GRID_H) for gx in range(GRID_W)]
+    flat = [grid[y][x] for y in range(gh) for x in range(gw)]
 
-    def boxes(name, items):
-        vals = []
-        for x0, y0, x1, y1 in items:
-            vals += [x0, y0, x1, y1]
-        return c_table(name, vals, per_line=16)
+    _, feet = playfield.source()
+    feet_world = [
+        playfield.world(x0, y0) + playfield.world(x1, y1)
+        for x0, y0, x1, y1 in playfield.foot_boxes(feet)
+    ]
+    foot_vals = []
+    for x0, y0, x1, y1 in feet_world:
+        foot_vals += [x0, y0, x1, y1]
 
     # Flipper geometry, one entry per side per animation frame.  "dir" runs
     # from the pivot to the tip; "nrm" is the outward normal of the face the
     # ball is meant to be launched from.
     fdx, fdy, fnx, fny = [], [], [], []
-    for mirror in (False, True):
-        for f in range(FLIPPER_FRAMES):
-            deg = FLIPPER_REST_DEG + (FLIPPER_UP_DEG - FLIPPER_REST_DEG) * f / (
-                FLIPPER_FRAMES - 1
-            )
+    frames = playfield.FLIPPER_FRAMES
+    # Entries for the left flipper first.  Its tip points outward, which is to
+    # the left, so it is the mirrored one now that the pivot has moved inboard.
+    for mirror in (True, False):
+        for f in range(frames):
+            deg = playfield.FLIPPER_REST_DEG + (
+                playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
+            ) * f / (frames - 1)
             a = math.radians(deg)
             sgn = -1 if mirror else 1
             fdx.append(int(round(sgn * math.cos(a) * 32)))
@@ -490,91 +464,101 @@ def write_collision_header(grid):
             fnx.append(int(round(sgn * math.sin(a) * 32)))
             fny.append(int(round(-math.cos(a) * 32)))
 
-    cell_shift = int(math.log2(CELL))
+    lx, ly = playfield.world(*playfield.FLIPPER_PIVOTS[0])
+    rx, ry = playfield.world(*playfield.FLIPPER_PIVOTS[1])
+    tl, _ = playfield.world(playfield.TABLE_X0, 0)
+    tr, _ = playfield.world(playfield.TABLE_X1, 0)
+    lane0, _ = playfield.world(playfield.LANE_X0, 0)
+    lane1, _ = playfield.world(playfield.LANE_X1, 0)
+    _, lane_top = playfield.world(0, playfield.LANE_TOP)
+    _, drain_y = playfield.world(0, playfield.DRAIN_BOX[3])
 
     body = f"""#ifndef _table_data_h
 #define _table_data_h
 
-/* Generated by scripts/gen-assets.py from scripts/table_spec.py -- do not edit.
+/* Generated by scripts/gen-assets.py from scripts/playfield.py -- do not edit.
  *
- * The playfield is diced into {GRID_W}x{GRID_H} cells of {CELL}x{CELL} pixels.  A zero cell is
- * open floor.  Any other cell packs the kind of surface in the top 3 bits and
- * the direction the surface faces in the low 5 bits, so one lookup tells the
- * ball both how to bounce and what to score.
+ * The table is traced from art/pinball.png; the nine feet come from
+ * art/pinball2.png.  It is diced into {gw}x{gh} cells of {playfield.CELL}x{playfield.CELL} pixels, covering the
+ * table only -- the ball never leaves it, and a cell for the whole world would
+ * cost three times as much.  A zero cell is open floor.  Any other cell packs
+ * the kind of surface in the top 3 bits and the direction it faces in the low
+ * 5, so one lookup tells the ball both how to bounce and what to score.
+ *
+ * Cell (0,0) is at world pixel (TBL_ORIGIN_X, TBL_ORIGIN_Y).
  */
 
-#define TBL_CELL        {CELL}
-#define TBL_CELL_SHIFT  {cell_shift}
-#define TBL_GRID_W      {GRID_W}
-#define TBL_GRID_H      {GRID_H}
+#define TBL_CELL        {playfield.CELL}
+#define TBL_CELL_SHIFT  {int(math.log2(playfield.CELL))}
+#define TBL_GRID_W      {gw}
+#define TBL_GRID_H      {gh}
+#define TBL_ORIGIN_X    {gx0}
+#define TBL_ORIGIN_Y    {gy0}
 #define TBL_NUM_DIRS    {NUM_DIRS}
 
 #define TBL_KIND(c)     ((c) >> 5)
 #define TBL_DIR(c)      ((c) & 31)
 
-#define K_EMPTY   {K_EMPTY}
-#define K_WALL    {K_WALL}
-#define K_STRIP   {K_STRIP}
-#define K_PLUNGER {K_PLUNGER}
-#define K_MARK    {K_MARK}
-#define K_BUMPER  {K_BUMPER}
-#define K_SCENERY {K_SCENERY}
-#define K_SLING   {K_SLING}
+#define K_EMPTY   {playfield.K_EMPTY}
+#define K_WALL    {playfield.K_WALL}
+#define K_BUMPER  {playfield.K_BUMPER}
+#define K_FOOT    {playfield.K_FOOT}
+#define K_SCENERY {playfield.K_SCENERY}
+#define K_DRAIN   {playfield.K_DRAIN}
 
-#define PLAYFIELD_LEFT   0
-#define PLAYFIELD_RIGHT  {PLAYFIELD_W - 1}
-#define DRAIN_Y          {DRAIN_Y}
-#define LANE_X0          {LANE_X0}
-#define LANE_X1          {LANE_X1}
-#define LANE_TOP         {LANE_TOP}
-#define BALL_R           {BALL_R}
+/* The world is bigger than the screen so the camera has room to move; the
+ * artwork is centred in it and CAMERA_X/Y is where the view sits at rest. */
+#define WORLD_W          {playfield.WORLD_W}
+#define WORLD_H          {playfield.WORLD_H}
+#define CAMERA_X         {playfield.ORIGIN_X}
+#define CAMERA_Y         {playfield.ORIGIN_Y}
+#define CAMERA_MAX_X     {playfield.WORLD_W - 320}
+#define CAMERA_MAX_Y     {playfield.WORLD_H - 200}
 
-/* The right-hand panel.  These are the same constants that placed the artwork
- * underneath, so a read-out cannot end up off the board it belongs to. */
-#define PANEL_X           {PANEL_X}
-#define SCORE_DIGITS      {SCORE_DIGITS}
-#define SCORE_DIGIT_X0    {SCORE_DIGIT_X0}
-#define SCORE_DIGIT_PITCH {SCORE_DIGIT_PITCH}
-#define SCORE_GROUP_GAP   {SCORE_GROUP_GAP}
-#define HIGH_DIGIT_Y      {HIGH_DIGIT_Y}
-#define SCORE_DIGIT_Y     {SCORE_DIGIT_Y}
-#define BALLS_DIGIT_X     {BALLS_DIGIT_X}
-#define BALLS_DIGIT_Y     {BALLS_DIGIT_Y}
-#define MULT_DIGIT_X      {MULT_DIGIT_X}
-#define MULT_DIGIT_Y      {MULT_DIGIT_Y}
-#define PANEL_TONGUE_X    {VALLY_MOUTH[0]}
-#define PANEL_TONGUE_Y    {VALLY_MOUTH[1]}
+/* All of these are world pixels. */
+#define PLAYFIELD_LEFT   {tl}
+#define PLAYFIELD_RIGHT  {tr}
+#define LANE_X0          {lane0}
+#define LANE_X1          {lane1}
+#define LANE_TOP         {lane_top}
+#define DRAIN_Y          {drain_y}
+#define BALL_R           {playfield.BALL_R}
 
-#define BUMPER_R         {BUMPERS[0][2]}
-#define NUM_PLUNGERS     {len(PODS) + len(CAPSULES)}
-#define NUM_MARKS        {len(TOP_MARKS) + len(CREST_MARKS) + len(HEAD_MARKS)}
-#define NUM_TOP_MARKS    {len(TOP_MARKS)}
-#define NUM_BUMPERS      {len(BUMPERS)}
+#define NUM_FEET         {len(feet_world)}
+
+/* The panel read-outs, placed from the boards drawn in the artwork. */
+#define SCORE_DIGITS      {playfield.SCORE_DIGITS}
+#define SCORE_DIGIT_X0    {playfield.SCORE_DIGIT_X0 + playfield.ORIGIN_X}
+#define SCORE_DIGIT_PITCH {playfield.SCORE_DIGIT_PITCH}
+#define SCORE_GROUP_GAP   {playfield.SCORE_GROUP_GAP}
+#define HIGH_DIGIT_Y      {playfield.HIGH_BOX[1] + playfield.SCORE_DIGIT_DY + playfield.ORIGIN_Y}
+#define SCORE_DIGIT_Y     {playfield.SCORE_BOX[1] + playfield.SCORE_DIGIT_DY + playfield.ORIGIN_Y}
+#define MULT_DIGIT_X      {playfield.MULT_XY[0] + playfield.ORIGIN_X}
+#define MULT_DIGIT_Y      {playfield.MULT_XY[1] + playfield.ORIGIN_Y}
+#define BALLS_DIGIT_X     {playfield.BALLS_XY[0] + playfield.ORIGIN_X}
+#define BALLS_DIGIT_Y     {playfield.BALLS_XY[1] + playfield.ORIGIN_Y}
+#define BALLS_PITCH       {playfield.BALLS_PITCH}
+#define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
+#define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
+
+/* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
+ * out of play until the ball drains. */
+{c_table("tblFootBox", foot_vals, per_line=16)}
 
 /* Unit normals, scaled by 32. */
 {c_table("tblDirX", dirs_x, typ="const signed char")}
 
 {c_table("tblDirY", dirs_y, typ="const signed char")}
 
-/* Bounding boxes as x0, y0, x1, y1.  The first NUM_TOP_MARKS marks are the
- * ones under the top pods -- the ones that feed Vally's tongue. */
-{boxes("tblPlungerBox", PODS + CAPSULES)}
-
-{boxes("tblMarkBox", TOP_MARKS + CREST_MARKS + HEAD_MARKS)}
-
-{c_table("tblBumperX", [b[0] for b in BUMPERS])}
-
-{c_table("tblBumperY", [b[1] for b in BUMPERS])}
-
-/* Flippers.  Entries 0..{FLIPPER_FRAMES - 1} are the left flipper from rest to fully
- * raised; the next {FLIPPER_FRAMES} are the right. */
-#define FLIPPER_FRAMES   {FLIPPER_FRAMES}
-#define FLIPPER_LEN      {FLIPPER_LEN}
-#define FLIPPER_HALF_THICK {FLIPPER_HALF_THICK}
-#define FLIP_L_X         {LEFT_FLIPPER_PIVOT[0]}
-#define FLIP_L_Y         {LEFT_FLIPPER_PIVOT[1]}
-#define FLIP_R_X         {RIGHT_FLIPPER_PIVOT[0]}
-#define FLIP_R_Y         {RIGHT_FLIPPER_PIVOT[1]}
+/* Flippers.  Entries 0..{frames - 1} are the left flipper from rest to fully
+ * raised; the next {frames} are the right. */
+#define FLIPPER_FRAMES   {frames}
+#define FLIPPER_LEN      {playfield.FLIPPER_LEN}
+#define FLIPPER_HALF_THICK {playfield.FLIPPER_HALF_THICK}
+#define FLIP_L_X         {lx}
+#define FLIP_L_Y         {ly}
+#define FLIP_R_X         {rx}
+#define FLIP_R_Y         {ry}
 
 {c_table("tblFlipDirX", fdx, typ="const signed char")}
 
@@ -705,12 +689,12 @@ def flipper_points(pivot, deg, mirror):
         y = py + along * sa + across * ca
         return (x, y)
 
-    base = 4.0
-    tip = 2.0
+    base = float(playfield.FLIPPER_HALF_THICK)
+    tip = base / 2.0
     return [
         at(0, -base),
-        at(FLIPPER_LEN, -tip),
-        at(FLIPPER_LEN, tip),
+        at(playfield.FLIPPER_LEN, -tip),
+        at(playfield.FLIPPER_LEN, tip),
         at(0, base),
     ]
 
@@ -719,22 +703,31 @@ def draw_flipper_sheet(d, img):
     sprites = []
     cell_w = 40
     cell_h = 40
-    for mirror in (False, True):
-        for f in range(FLIPPER_FRAMES):
+    # Side 0 is the left flipper.  It pivots on its dinosaur's tail, which is
+    # the inboard end, so its tip points outward -- to the left -- and it is
+    # the mirrored one.  The collision tables in table_data.h are built in the
+    # same order, and the two have to agree or the ball bounces off a flipper
+    # drawn somewhere else.
+    for side in (0, 1):
+        mirror = side == 0
+        for f in range(playfield.FLIPPER_FRAMES):
             col = f
-            row = 1 if mirror else 0
-            # Anchor (the pivot) sits where the flipper's hub is.
+            row = side
+            # Anchor (the pivot) sits where the flipper's hub is, at whichever
+            # end of the cell leaves room for the body.
             ax = col * cell_w + (34 if mirror else 6)
             ay = row * cell_h + 20
-            deg = FLIPPER_REST_DEG + (FLIPPER_UP_DEG - FLIPPER_REST_DEG) * f / (
-                FLIPPER_FRAMES - 1
+            deg = playfield.FLIPPER_REST_DEG + (
+                playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
+            ) * f / (
+                playfield.FLIPPER_FRAMES - 1
             )
             pts = flipper_points((ax, ay), deg, mirror)
             d.polygon(pts, fill=TEAL, outline=DTEAL)
             # Hub, drawn last so the anchor pixel is always opaque.
             d.ellipse((ax - 3, ay - 3, ax + 3, ay + 3), fill=ORANGE)
             d.point((ax, ay), fill=RED)
-            name = ("Right" if mirror else "Left") + f"Flip{f}"
+            name = ("Left" if side == 0 else "Right") + f"Flip{f}"
             # Both pivots sit on even pixel columns, so these never need the
             # single-pixel-position variant -- which would double the code.
             sprites.append((name, ax, ay, False))
@@ -782,51 +775,50 @@ def draw_digit_sheet(d, img):
     x0 = 2 + 10 * (DIGIT_W + 4)
     d.rectangle((x0, 2, x0 + DIGIT_W - 1, 2 + DIGIT_H - 1), fill=WHITE)
     sprites.append(("DigitBlank", x0, 2, False, False))
+
+    # The balls still to play, drawn one per ball beside the score boards.
+    # Both of these are opaque 8x8 blocks and carry no erase code either, so
+    # the blank is what takes a used ball off the panel.
+    for name, ink in (("BallLive", DGREY), ("BallBlank", None)):
+        x0 += DIGIT_W + 4
+        d.rectangle((x0, 2, x0 + 7, 9), fill=WHITE)
+        if ink is not None:
+            d.ellipse((x0 + 1, 3, x0 + 6, 8), fill=ink)
+            d.point((x0 + 3, 4), fill=WHITE)
+        sprites.append((name, x0, 2, False, False))
     return sprites
 
 
 def draw_lite_sheet(d, img):
-    """Overlays that show an element's state without redrawing the tilemap."""
+    """The nine feet, live and spent.
+
+    Both states are opaque across the whole box, so they can be drawn without
+    saving the background: there is no erase code, and it is the orange that
+    puts a foot back when the ball drains rather than any erase.  The shapes
+    are lifted straight out of the artwork, so an overlay lands exactly on the
+    foot painted underneath it.
+
+    The feet do not all sit on even columns, so these are the one place we pay
+    for SinglePixelPosition.  At 6x4 pixels that is a few hundred bytes, which
+    is cheaper than nudging the artwork to suit the sprite compiler.
+    """
     sprites = []
+    _, feet = playfield.source()
+    shapes = {}
+    for x0, y0, x1, y1 in playfield.foot_boxes(feet):
+        shapes.setdefault((x1 - x0 + 1, y1 - y0 + 1), (x0, y0))
 
-    # A hit plunger turns green.  These are opaque and exactly cover the shape
-    # drawn into the background.
-    pod_w = PODS[0][2] - PODS[0][0] + 1
-    pod_h = PODS[0][3] - PODS[0][1] + 1
-    x0, y0 = 2, 2
-    d.rounded_rectangle(
-        (x0, y0, x0 + pod_w - 1, y0 + pod_h - 1), radius=6, fill=GREEN
-    )
-    d.rectangle((x0 + 4, y0 + 4, x0 + pod_w - 5, y0 + pod_h - 5), fill=DTEAL)
-    sprites.append(("PodHit", x0, y0, False))
-
-    cap_w = CAPSULES[0][2] - CAPSULES[0][0] + 1
-    cap_h = CAPSULES[0][3] - CAPSULES[0][1] + 1
-    x0, y0 = 40, 2
-    d.ellipse((x0, y0, x0 + cap_w - 1, y0 + cap_h - 1), fill=GREEN)
-    d.ellipse((x0 + 2, y0 + 3, x0 + cap_w - 3, y0 + cap_h - 4), fill=DTEAL)
-    sprites.append(("CapHit", x0, y0, False))
-
-    # A struck bumper flashes for a few frames.
-    r = BUMPERS[0][2]
-    cx, cy = 70 + r, 2 + r
-    d.polygon(
-        [(cx, cy - r), (cx + r, cy), (cx, cy + r), (cx - r, cy)],
-        fill=YELLOW,
-    )
-    d.polygon(
-        [(cx, cy - r + 4), (cx + r - 4, cy), (cx, cy + r - 4), (cx - r + 4, cy)],
-        fill=WHITE,
-    )
-    sprites.append(("BumperHit", cx - r, cy - r, False))
-
-    # A struck mark flashes yellow.
-    mw = TOP_MARKS[0][2] - TOP_MARKS[0][0] + 1
-    mh = TOP_MARKS[0][3] - TOP_MARKS[0][1] + 1
-    x0, y0 = 100, 2
-    d.rounded_rectangle((x0, y0, x0 + mw - 1, y0 + mh - 1), radius=2, fill=YELLOW)
-    sprites.append(("MarkHit", x0, y0, False))
-
+    x = 2
+    for (w, h), (sx, sy) in sorted(shapes.items()):
+        for ink, tag in ((ORANGE, "Live"), (TEAL, "Spent")):
+            d.rectangle((x, 2, x + w - 1, 2 + h - 1), fill=WHITE)
+            for j in range(h):
+                for i in range(w):
+                    if (sx + i, sy + j) in feet:
+                        d.point((x + i, 2 + j), fill=ink)
+            sprites.append((
+                f'Foot{"Wide" if w > h else "Tall"}{tag}', x, 2, True, False))
+            x += w + 4
     return sprites
 
 
@@ -888,7 +880,7 @@ def write_sprites():
     total = 0
     total += write_sprite_group(1, "ball", (48, 20), draw_ball_sheet)
     total += write_sprite_group(2, "flipper", (240, 80), draw_flipper_sheet, chunk=8)
-    total += write_sprite_group(3, "digit", (144, 16), draw_digit_sheet)
+    total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
     total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
     return total
@@ -1350,12 +1342,15 @@ def write_sounds():
 def write_descriptors():
     import json
 
+    LAUNCHER_REST_Y = 180  # near the bottom of the lane; matches object_info.h
+    BALL_INDICATORS = 4
+
     with open(os.path.join(TILE_DIR, "01-table.json"), "w") as f:
         json.dump(
             {
                 "Image": "01-table.png",
                 "TileSetStart": [0, ART_Y],
-                "TileSetSize": [SCREEN_W, CANVAS_H],
+                "TileSetSize": [playfield.WORLD_W, playfield.WORLD_H],
             },
             f,
             indent=2,
@@ -1381,25 +1376,28 @@ def write_descriptors():
 
     # The ball must come first: the overlays find it with a search that stops
     # at the first object of its group.
-    obj("ball", 1, 3, LANE_X0 + 6, 190, [0])
-    obj("launcher", 1, 3, LANE_X0 + 6, 192, [1])
-    obj("left flipper", 2, 3, *LEFT_FLIPPER_PIVOT, [0])
-    obj("right flipper", 2, 3, *RIGHT_FLIPPER_PIVOT, [1])
+    lane_cx = (playfield.LANE_X0 + playfield.LANE_X1) // 2 + playfield.ORIGIN_X
+    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
+    obj("launcher", 1, 3, lane_cx, LAUNCHER_REST_Y, [1])
+    obj("left flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[0]), [0])
+    obj("right flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[1]), [1])
 
     for board in (0, 1):
         for column in range(7):
             obj(f"{'high ' if board else ''}score digit {column}", 3, 3, 0, 0,
                 [board, column])
-    obj("ball count", 3, 3, 0, 0, [2, 0])
+    # One indicator per ball still to play.  Four fit beside the boards; a
+    # game only ever starts with three, and extra balls beyond the fourth are
+    # counted but not drawn.
+    for i in range(BALL_INDICATORS):
+        obj(f"ball indicator {i}", 3, 3, 0, 0, [2, i])
     obj("multiplier tens", 3, 1, 0, 0, [3, 0])
     obj("multiplier units", 3, 1, 0, 0, [4, 0])
 
-    for i in range(len(PODS) + len(CAPSULES)):
-        obj(f"plunger lamp {i}", 4, 1, 0, 0, [0, i])
-    for i in range(len(BUMPERS)):
-        obj(f"bumper lamp {i}", 4, 1, 0, 0, [1, i])
-    for i in range(len(TOP_MARKS) + len(CREST_MARKS) + len(HEAD_MARKS)):
-        obj(f"mark lamp {i}", 4, 1, 0, 0, [2, i])
+    # One overlay per foot; it places itself from tblFootBox.
+    _, feet = playfield.source()
+    for i in range(len(playfield.foot_boxes(feet))):
+        obj(f"foot {i}", 4, 3, 0, 0, [i])
 
     for i, what in enumerate(("tongue", "game over", "multiplier X")):
         obj(what, 5, 1, 0, 0, [i])
@@ -1413,9 +1411,9 @@ def write_descriptors():
             "Tileset": 1,
             "TilemapImage": "../tiles/01-table.png",
             "TilemapStart": [0, ART_Y],
-            "TilemapSize": [SCREEN_W, CANVAS_H],
-            "BkgrndStartX": 0,
-            "BkgrndStartY": 0,
+            "TilemapSize": [playfield.WORLD_W, playfield.WORLD_H],
+            "BkgrndStartX": playfield.ORIGIN_X,
+            "BkgrndStartY": playfield.ORIGIN_Y,
         },
         "Objects": objects,
     }
@@ -1449,8 +1447,8 @@ def main():
     check_panel_columns()
 
     tiles = write_tileset(preview=preview)
-    grid = build_grid(build_kind_map())
-    write_collision_header(grid)
+    grid, gx0, gy0, gw, gh = build_world_grid()
+    write_collision_header(grid, gx0, gy0, gw, gh)
     nobjects = write_descriptors()
     nsprites = write_sprites()
     write_images()
@@ -1459,7 +1457,7 @@ def main():
     solid_cells = sum(1 for row in grid for c in row if c)
     print(f"sprites: {nsprites}, level objects: {nobjects}")
     print(f"table artwork: {tiles} unique tiles ({tiles * 256} bytes of tileset)")
-    print(f"collision grid: {GRID_W}x{GRID_H} = {GRID_W * GRID_H} bytes, {solid_cells} solid")
+    print(f"collision grid: {gw}x{gh} = {gw * gh} bytes, {solid_cells} solid")
     if tiles > 254:
         print("****Error: too many unique tiles (max 254)")
         return 1

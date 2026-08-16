@@ -31,12 +31,14 @@
  * sprites carry no erase code, so an object that simply stopped drawing would
  * leave its last digit on screen for good. */
 #define DIGIT_SPRITE_BLANK 10
+#define DIGIT_SPRITE_BALL 11
+#define DIGIT_SPRITE_BALL_BLANK 12
 
-/* Overlay sprites */
-#define LITE_SPRITE_POD 0
-#define LITE_SPRITE_CAP 1
-#define LITE_SPRITE_BUMPER 2
-#define LITE_SPRITE_MARK 3
+/* Foot overlays, in the order draw_lite_sheet() lays them out */
+#define LITE_SPRITE_TALL_LIVE 0
+#define LITE_SPRITE_TALL_SPENT 1
+#define LITE_SPRITE_WIDE_LIVE 2
+#define LITE_SPRITE_WIDE_SPENT 3
 
 /* Panel sprites, in the order they appear in 05-panel.json */
 #define PANEL_SPRITE_TONGUE1 0
@@ -55,13 +57,6 @@
 #define PANEL_MULTX_X (MULT_DIGIT_X + 2 * SCORE_DIGIT_PITCH)
 #define PANEL_MULTX_Y (MULT_DIGIT_Y + 2)
 
-/* Overlay kinds, passed to each overlay object as init data */
-#define LITE_KIND_PLUNGER 0
-#define LITE_KIND_BUMPER 1
-#define LITE_KIND_MARK 2
-
-#define NUM_PODS 2 /* the first NUM_PODS plungers are the big top boxes */
-
 /* Rules from the manual */
 #define BALLS_PER_GAME 3
 #define TONGUE_TARGET 12 /* top-mark hits needed to make the volcano erupt */
@@ -69,11 +64,11 @@
 
 /* Launcher */
 #define LANE_CX ((LANE_X0 + LANE_X1) / 2)
-#define LAUNCHER_REST_Y 192
-#define LAUNCHER_MAX_PULL 10
-#define LAUNCH_SPEED_MIN 1000 /* 8.8 fixed point pixels per frame */
-#define LAUNCH_STEP 90        /* added per notch of pull */
-#define LAUNCH_SPEED_MAX 1900
+#define LAUNCHER_REST_Y 180
+#define LAUNCHER_MAX_PULL 18
+#define LAUNCH_SPEED_MIN 1300 /* 8.8 fixed point pixels per frame */
+#define LAUNCH_STEP 115        /* added per notch of pull */
+#define LAUNCH_SPEED_MAX 3400
 
 enum GameState {
     /* Title screen is up; SPACE starts a game. */
@@ -102,7 +97,7 @@ typedef struct GameGlobals {
     byte score[4];     /* 8 BCD digits, score[0] most significant */
     byte highScore[4]; /* ditto */
     byte multiplier;   /* 1, 2, 3 or 10 */
-    byte plungerHit;   /* bit per plunger, cleared when they all reset */
+    byte feetHit[2];   /* bit per foot; nine of them, so nine bits */
     byte tongue;       /* top-mark hits so far this game */
     byte volcano;      /* non-zero once the volcano has erupted this ball */
     byte extraBalls;   /* 10,000-point thresholds already awarded */

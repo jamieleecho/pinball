@@ -1,10 +1,10 @@
 #ifdef DynospriteObject_DataDefinition
 
-/** sizeof(LiteObjectState) */
-#define DynospriteObject_DataSize 4
+/** sizeof(FootObjectState) */
+#define DynospriteObject_DataSize 2
 
-/** Two bytes of init data: which kind of target, and which one of them. */
-#define DynospriteObject_InitSize 2
+/** One byte of init data: which of the nine feet this is. */
+#define DynospriteObject_InitSize 1
 
 #else
 
@@ -14,15 +14,18 @@
 #include "dynosprite.h"
 
 /**
- * An overlay that shows a target's state.  The targets themselves are painted
- * into the tilemap, so only the ones that have changed cost a sprite draw.
+ * One of the nine feet.  The foot itself is painted into the tilemap; this
+ * object sits on top of it and draws it live (orange) or spent (cyan).
+ *
+ * It always draws one or the other, never nothing, because these sprites carry
+ * no erase code -- see the sheet in scripts/gen-assets.py.  "Stop drawing the
+ * cyan" would leave the cyan on screen for good, so the orange is what puts it
+ * back when the ball drains.
  */
-typedef struct LiteObjectState {
+typedef struct FootObjectState {
     byte spriteIdx; /* must be first */
-    byte kind;
-    byte index;
-    byte timer; /* frames left on a flash */
-} LiteObjectState;
+    byte index;     /* 0..NUM_FEET-1 */
+} FootObjectState;
 
 #endif /* _04_lite_h */
 

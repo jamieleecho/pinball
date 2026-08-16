@@ -11,40 +11,44 @@
   },
   "Sprites": [
     {
-      "Name": "PodHit",
+      "Name": "FootTallLive",
       "Location": [
         2,
         2
       ],
-      "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
-      "Name": "CapHit",
+      "Name": "FootTallSpent",
       "Location": [
-        40,
+        10,
         2
       ],
-      "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
-      "Name": "BumperHit",
+      "Name": "FootWideLive",
       "Location": [
-        70,
+        18,
         2
       ],
-      "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
-      "Name": "MarkHit",
+      "Name": "FootWideSpent",
       "Location": [
-        100,
+        28,
         2
       ],
-      "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
     }
   ]
 }
