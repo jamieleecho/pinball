@@ -232,6 +232,67 @@ SLINGSHOTS = [
 ]
 
 # ---------------------------------------------------------------------------
+# The right-hand panel
+#
+# The original devoted the strip beside the table to a picture of the valley,
+# stacked top to bottom: Vally's name in script, Vally herself with her head
+# down at the water hole, the fern desert beyond it, the barren ground, and
+# then the two score boards.  This lays that out in our 128 columns.
+#
+# The read-outs (the score digits, the ball count, the multiplier and Vally's
+# tongue) are sprites drawn over this artwork rather than part of it, so their
+# positions belong here too: they are emitted into table_data.h, which is how
+# the picture and the things drawn on top of it stay in step.
+# ---------------------------------------------------------------------------
+
+NAME_Y = 1  # "Vally", in script
+NAME_H = 30
+
+SCENE_Y = 33  # the peaks, the pond, and Vally drinking from it
+SCENE_H = 52
+
+DESERT_Y = 86  # ferns and cacti on the near shore
+DESERT_H = 20
+
+BARREN_Y = 107  # hatched ground between the desert and the boards
+BARREN_H = 18
+
+# Vally, in the panel scene: the top-left of her body, and the point her mouth
+# reaches, which is where the tongue sprite is anchored.
+VALLY_X = 232
+VALLY_Y = SCENE_Y + 4
+VALLY_MOUTH = (VALLY_X + 50, VALLY_Y + 22)
+
+# Score boards.  Seven digits each, grouped "0 000 000" as the original showed
+# them, in a frame drawn into the artwork: orange for the high score above,
+# teal for the score below.
+SCORE_DIGIT_W = 8
+SCORE_DIGIT_H = 11
+SCORE_DIGIT_X0 = 200
+SCORE_DIGIT_PITCH = 12
+SCORE_GROUP_GAP = 4  # extra space before digits 1 and 4
+SCORE_DIGITS = 7
+
+BOARD_X0 = 194
+BOARD_X1 = 294
+BOARD_PAD = 5  # clearance between the digits and the frame
+HIGH_DIGIT_Y = 133
+SCORE_DIGIT_Y = 159
+
+# The bottom row: balls left, then the score multiplier.  Both are drawn with
+# score digits, because the sprite compiler unrolls every sprite into
+# straight-line code and lettering is expensive.
+BALLS_LABEL = (196, 187)
+BALLS_DIGIT_X = 228
+BALLS_DIGIT_Y = 185
+MULT_DIGIT_X = 268
+MULT_DIGIT_Y = 185
+
+# Every sprite on the panel is compiled byte-aligned only, so all of the
+# columns above have to be even; the generator's check_panel_columns() asserts
+# it rather than leaving it to be noticed as a half-byte shift on screen.
+
+# ---------------------------------------------------------------------------
 # Collision grid
 # ---------------------------------------------------------------------------
 

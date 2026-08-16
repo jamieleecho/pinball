@@ -34,18 +34,44 @@ works from a script.
 ## The table is generated, not drawn
 
 `scripts/table_spec.py` is the single source of truth: palette, playfield
-outline, every target's bounding box, the flipper pivots, the drain. From it,
-`scripts/gen-assets.py` produces
+outline, every target's bounding box, the flipper pivots, the drain, and the
+layout of the right-hand panel. From it, `scripts/gen-assets.py` produces
 
 - `game/tiles/01-table.png` — the tileset image, which *is* the artwork; the
   build extracts unique 16x16 tiles from it and derives the tilemap
-- `game/objects/table_data.h` — the collision grid and lookup tables
+- `game/objects/table_data.h` — the collision grid and lookup tables, plus the
+  panel positions (`SCORE_DIGIT_Y`, `PANEL_TONGUE_X`, …). The read-outs are
+  sprites drawn over artwork drawn from the same constants, so placing them
+  from anywhere else is how a digit ends up sitting off its board
 - `game/levels/01-table.json` — the level descriptor and its object list
 - `game/sprites/*` — every sprite sheet and descriptor
 - `game/images/*`, `game/sounds/*` — splash screens and effects
 
 Never hand-edit anything under `game/` except the `.c`/`.h` files. Change the
 spec and regenerate, so the picture and the physics cannot drift apart.
+
+### The splash screens
+
+The menu backdrop and the level loading screen are both `art/boxart.jpg`, the
+1983 cassette cover, reduced by `coco_reduce()` to sixteen of the CoCo 3's
+sixty-four colours and Floyd-Steinberg dithered. Three things about that are
+worth keeping in mind:
+
+- **The palette is chosen before the dither.** Maximum-coverage quantisation
+  picks a spread of colours, each is snapped into the hardware's gamut, and
+  only then is the picture dithered onto what survives. Quantising to arbitrary
+  RGB and snapping afterwards moves every colour after its error has already
+  been diffused, and the banding shows.
+- **Splash images carry their own palette**, so they are not limited to the
+  table's sixteen. `build-images.py` also picks the loader's text and progress
+  bar colours out of that palette, which is why black and two bright inks are
+  reserved before the picture gets a say.
+- **A dithered photograph is expensive to load.** It barely compresses: the
+  320x200 backdrop is about 16KB and comes off the emulated floppy at roughly a
+  kilobyte a second, so the screen is black for some thirteen seconds before
+  the menu appears. Ordered dithering compresses about a third better and looks
+  markedly worse; fading more of the picture to true black is the cheaper
+  lever, since flat black costs almost nothing.
 
 ### The collision grid
 
@@ -158,6 +184,15 @@ waiting on stdin, which never closes under `docker run -i`. The makefile passes
 
 **An object drawing itself as something else** is almost always a state-size
 overrun — see `DynospriteObject_DataSize` above.
+
+**The whole screen comes up in the wrong colours, stretched, and frozen** is
+the tileset and the tilemap disagreeing: the tilemap indexes tiles that the
+tileset no longer has. The makefile's graphics rules used to depend only on the
+`.json` descriptors, so regenerating the artwork — which rewrites the PNGs and
+leaves the descriptors alone — did not rebuild either of them, and an
+incremental build shipped whichever half happened to be stale. The rules now
+depend on the images and on the generated headers as well. `make clean` is
+still the way out if the two ever get out of step.
 
 ## Sprites are compiled code
 
@@ -294,6 +329,13 @@ every few frames by reading emulated memory. Use it to check what the ball
 Note that the game samples input on its own 30 Hz tick, so a key held for a
 single video frame can be missed entirely — the driver holds each press and
 release across several frames for that reason.
+
+The driver taps SPACE until `GameGlobals` shows the ball object's magic number,
+rather than pressing it at a fixed frame, and everything after that is timed
+from when the game answered. It used to press at frame 1500; growing the menu
+splash from 1KB to 16KB pushed the menu past that, and the whole run failed
+with the game apparently never starting. Anything keyed off how long the floppy
+takes belongs on a signal from the game, not on a frame number.
 
 `scripts/shot.py` crops MAME's 640x239 snapshot back to a clean 320x200 view
 and can magnify a region.

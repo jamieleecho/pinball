@@ -283,33 +283,47 @@ def shade_table(img, oy):
 
 
 def draw_panel(img, oy):
-    """The Lost World scene and the score boards down the right-hand side.
+    """The valley and the score boards down the right-hand side.
 
-    Everything here is static: the score digits, multiplier, ball count and
-    Vally's tongue are all sprites drawn on top by the panel objects.
+    Stacked the way the original stacked them: Vally's name in script, Vally
+    herself with her head down at the water hole, the fern desert beyond it,
+    the barren ground, then the high score above the score.  The background is
+    the same white as the playfield, because on the original the whole screen
+    was one light field with the picture inked onto it.
+
+    Everything that changes -- the digits, the multiplier, the ball count and
+    Vally's tongue -- is a sprite drawn on top.  Those sprites are placed from
+    the same table_spec constants used here, so the read-outs cannot drift off
+    the artwork they belong to.
     """
     d = ImageDraw.Draw(img)
     x0 = PANEL_X
     cx = x0 + PANEL_W // 2
 
-    d.rectangle((x0, oy, SCREEN_W - 1, oy + CANVAS_H - 1), fill=BLACK)
+    d.rectangle((x0, oy, SCREEN_W - 1, oy + CANVAS_H - 1), fill=WHITE)
 
-    draw_text_centred(d, cx, oy + 3, "LOST WORLD", ORANGE, scale=1)
-    draw_text_centred(d, cx, oy + 12, "PINBALL", YELLOW, scale=1)
+    draw_script_name(d, cx, oy + NAME_Y)
+    draw_water_hole(d, x0 + 2, oy + SCENE_Y, PANEL_W - 4, SCENE_H)
+    draw_vally_drinking(d, VALLY_X, oy + VALLY_Y)
+    draw_desert(d, x0 + 2, oy + DESERT_Y, PANEL_W - 4, DESERT_H)
+    draw_barren(img, x0 + 2, oy + BARREN_Y, PANEL_W - 4, BARREN_H)
 
-    # The valley, seen from the table.
-    volcano_scene(d, x0 + 2, oy + 22, PANEL_W - 4, 74, big=False)
+    # Score boards.  The frames are drawn here; the digits are objects.  The
+    # original labelled neither and told them apart by the colour of the frame:
+    # the high score on top in orange, the score below it in teal.
+    for y, colour in ((HIGH_DIGIT_Y, ORANGE), (SCORE_DIGIT_Y, TEAL)):
+        d.rectangle(
+            (
+                BOARD_X0,
+                oy + y - BOARD_PAD,
+                BOARD_X1,
+                oy + y + SCORE_DIGIT_H + BOARD_PAD - 1,
+            ),
+            outline=colour,
+            width=2,
+        )
 
-    # Vally waits below.  Her tongue grows as the top marks are hit, so it is
-    # drawn by a sprite rather than baked in here.
-    draw_vally(d, x0 + 6, oy + 106, 1, tongue=False)
-
-    # Score boards.  The frames are drawn here; the digits are objects.
-    d.rectangle((x0 + 4, oy + 132, x0 + 123, oy + 152), outline=ORANGE, width=2)
-    d.rectangle((x0 + 4, oy + 160, x0 + 123, oy + 180), outline=TEAL, width=2)
-    draw_text(d, x0 + 4, oy + 154, "HIGH", TEAL, scale=1)
-
-    draw_text(d, x0 + 4, oy + 186, "BALLS", ORANGE, scale=1)
+    draw_text(d, BALLS_LABEL[0], oy + BALLS_LABEL[1], "BALLS", DMAGENTA)
 
 
 
@@ -514,6 +528,22 @@ def write_collision_header(grid):
 #define LANE_X1          {LANE_X1}
 #define LANE_TOP         {LANE_TOP}
 #define BALL_R           {BALL_R}
+
+/* The right-hand panel.  These are the same constants that placed the artwork
+ * underneath, so a read-out cannot end up off the board it belongs to. */
+#define PANEL_X           {PANEL_X}
+#define SCORE_DIGITS      {SCORE_DIGITS}
+#define SCORE_DIGIT_X0    {SCORE_DIGIT_X0}
+#define SCORE_DIGIT_PITCH {SCORE_DIGIT_PITCH}
+#define SCORE_GROUP_GAP   {SCORE_GROUP_GAP}
+#define HIGH_DIGIT_Y      {HIGH_DIGIT_Y}
+#define SCORE_DIGIT_Y     {SCORE_DIGIT_Y}
+#define BALLS_DIGIT_X     {BALLS_DIGIT_X}
+#define BALLS_DIGIT_Y     {BALLS_DIGIT_Y}
+#define MULT_DIGIT_X      {MULT_DIGIT_X}
+#define MULT_DIGIT_Y      {MULT_DIGIT_Y}
+#define PANEL_TONGUE_X    {VALLY_MOUTH[0]}
+#define PANEL_TONGUE_Y    {VALLY_MOUTH[1]}
 
 #define BUMPER_R         {BUMPERS[0][2]}
 #define NUM_PLUNGERS     {len(PODS) + len(CAPSULES)}
@@ -725,8 +755,10 @@ DIGIT_FONT = {
     "9": [".###.", "#...#", "#...#", ".####", "....#", "...#.", ".##.."],
 }
 
-DIGIT_W = 8
-DIGIT_H = 11
+# One definition, in table_spec, because the score board frames are sized from
+# it as well as the digits that go inside them.
+DIGIT_W = SCORE_DIGIT_W
+DIGIT_H = SCORE_DIGIT_H
 
 
 def draw_digit_sheet(d, img):
@@ -734,21 +766,21 @@ def draw_digit_sheet(d, img):
     for i in range(10):
         x0 = 2 + i * (DIGIT_W + 4)
         y0 = 2
-        # An opaque black tile, so drawing a digit also wipes the one before it
-        # and every digit is exactly the same size.
-        d.rectangle((x0, y0, x0 + DIGIT_W - 1, y0 + DIGIT_H - 1), fill=BLACK)
+        # An opaque tile in the panel's own white, so drawing a digit also
+        # wipes the one before it and every digit is exactly the same size.
+        d.rectangle((x0, y0, x0 + DIGIT_W - 1, y0 + DIGIT_H - 1), fill=WHITE)
         rows = DIGIT_FONT[str(i)]
         for ry, row in enumerate(rows):
             for rx, ch in enumerate(row):
                 if ch == "#":
-                    d.point((x0 + 1 + rx, y0 + 2 + ry), fill=ORANGE)
+                    d.point((x0 + 1 + rx, y0 + 2 + ry), fill=MAGENTA)
         sprites.append((f"Digit{i}", x0, y0, False, False))
 
     # A blank cell.  Read-outs that switch off (the flashing high score, the
     # multiplier at 1X) draw this instead of going inactive, because a sprite
     # with no erase code would otherwise stay on screen for ever.
     x0 = 2 + 10 * (DIGIT_W + 4)
-    d.rectangle((x0, 2, x0 + DIGIT_W - 1, 2 + DIGIT_H - 1), fill=BLACK)
+    d.rectangle((x0, 2, x0 + DIGIT_W - 1, 2 + DIGIT_H - 1), fill=WHITE)
     sprites.append(("DigitBlank", x0, 2, False, False))
     return sprites
 
@@ -845,7 +877,7 @@ def draw_panel_sheet(d, img):
     # The "X" of the score multiplier.  It is a sprite rather than part of the
     # panel artwork so it can disappear along with the digits at 1X.
     x0, y0 = 160, 34
-    draw_text(d, x0, y0, "X", YELLOW, scale=1)
+    draw_text(d, x0, y0, "X", MAGENTA, scale=1)
     sprites.append(("MultX", x0, y0, False))
 
     return sprites
@@ -906,10 +938,6 @@ def glyph(ch):
     return DIGIT_FONT.get(ch, LETTER_FONT[" "])
 
 
-def text_width(s, scale=1, spacing=1):
-    return len(s) * (5 + spacing) * scale - spacing * scale
-
-
 def draw_text(d, x, y, s, colour, scale=1, spacing=1):
     """Draws s at scale, one 5x7 cell per character."""
     for ch in s.upper():
@@ -924,133 +952,318 @@ def draw_text(d, x, y, s, colour, scale=1, spacing=1):
     return x
 
 
-def draw_text_centred(d, cx, y, s, colour, scale=1, spacing=1):
-    w = text_width(s, scale, spacing)
-    return draw_text(d, cx - w // 2, y, s, colour, scale, spacing)
+# ---------------------------------------------------------------------------
+# The right-hand panel.
+#
+# Almost everything down this strip is a curve, so it is drawn as strokes
+# through control points rather than as rectangles: the 5x7 cell font cannot
+# say "handwriting", and the pond and the hills read as scenery only if their
+# edges wobble.
+# ---------------------------------------------------------------------------
+
+
+def spline(pts, steps=8):
+    """Sample a Catmull-Rom curve through every one of pts."""
+    p = [pts[0]] + list(pts) + [pts[-1]]
+    out = []
+    for i in range(len(p) - 3):
+        p0, p1, p2, p3 = p[i : i + 4]
+        for s in range(steps + 1):
+            t = s / steps
+            t2 = t * t
+            t3 = t2 * t
+            out.append(
+                tuple(
+                    0.5
+                    * (
+                        2 * p1[k]
+                        + (-p0[k] + p2[k]) * t
+                        + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2
+                        + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3
+                    )
+                    for k in (0, 1)
+                )
+            )
+    return out
+
+
+def stroke(d, pts, colour, width=2):
+    d.line(spline(pts), fill=colour, width=width, joint="curve")
+
+
+# "Vally", as the original wrote it: joined-up script, in a box VALLY_SCRIPT_W
+# wide and 31 tall, with the x-height top at y=12, the baseline at y=22 and the
+# y's tail dropping to y=30.  Each entry is one pen stroke, given as the control
+# points of a Catmull-Rom curve.
+VALLY_SCRIPT_W = 112
+VALLY_SCRIPT = [
+    # The capital V: down to the point, up to the top right, then a hook that
+    # hands over to the a.
+    [(1, 3), (7, 13), (12, 22), (18, 12), (23, 2), (27, 6), (27, 13)],
+    # "ally", written without lifting the pen.  The l's are the fiddly part:
+    # their loops only read as loops if the up stroke and the down stroke are
+    # about six pixels apart at the top, which is why each one leans so far.
+    [
+        (27, 13), (33, 12),                                          # into the a
+        (28, 14), (28, 19), (33, 21), (36, 18), (36, 12),            # a, bowl
+        (36, 21), (40, 21),                                          # a, stem
+        (46, 13), (52, 4), (47, 2), (44, 7), (46, 14), (49, 21),     # first l
+        (53, 20),
+        (59, 13), (65, 4), (60, 2), (57, 7), (59, 14), (62, 21),     # second l
+        (66, 20),
+        (70, 12), (72, 21), (77, 17), (79, 11),                      # y, bowl
+        (80, 20), (79, 26), (74, 30), (69, 29), (71, 24),            # y, tail
+    ],
+    # The flourish the tail runs into, sweeping back under the whole word.
+    [(71, 24), (80, 29), (91, 30), (102, 26), (111, 19)],
+]
+
+
+def draw_script_name(d, cx, y):
+    """Vally's name, centred on cx with its top at y."""
+    left = cx - VALLY_SCRIPT_W // 2
+    for pen in VALLY_SCRIPT:
+        stroke(d, [(left + px, y + py) for px, py in pen], MAGENTA, 2)
+
+
+def draw_water_hole(d, x0, y0, w, h):
+    """Two peaks on the skyline and the water hole below them.
+
+    The pond is an outline rather than a filled shape, as it was in the
+    original: the water is the same white as the ground and only its rim is
+    inked, which is also what lets Vally's head cross the rim and read as being
+    in the water.
+    """
+    horizon = y0 + h // 2
+
+    d.polygon([(x0, horizon), (x0 + 16, y0 + 5), (x0 + 34, horizon)], fill=MAGENTA)
+    d.polygon(
+        [(x0 + 62, horizon), (x0 + 90, y0 + 2), (x0 + w - 1, horizon)], fill=MAGENTA
+    )
+
+    d.ellipse((x0 + 2, horizon - 2, x0 + w - 3, y0 + h - 5), outline=ORANGE, width=2)
+
+    # Ripples, to say that the outline is water and not a crater.
+    for dx, dy, span in ((14, 10, 16), (44, 14, 12), (74, 11, 14)):
+        d.line([(x0 + dx, horizon + dy), (x0 + dx + span, horizon + dy)], fill=TEAL)
+
+
+def draw_vally_drinking(d, x, y):
+    """Vally at the water hole, her neck arched over and her head in it.
+
+    (x, y) is the top-left of her body.  Her mouth has to end up at
+    VALLY_MOUTH, because that is where the tongue sprite is anchored; the two
+    are checked against each other here rather than left to drift.
+    """
+    # Tail, drooping away over the far shore.  Laid down as circles of
+    # shrinking radius along a curve: a polygon of the same shape kinks at
+    # every control point and reads as a spike rather than a tail.
+    path = spline(
+        [(x + 4, y + 12), (x - 3, y + 17), (x - 13, y + 22), (x - 24, y + 24),
+         (x - 34, y + 24)],
+        steps=10,
+    )
+    for i, (tx, ty) in enumerate(path):
+        r = 4.2 * (1.0 - i / (len(path) - 1)) ** 1.2 + 0.6
+        d.ellipse((tx - r, ty - r, tx + r, ty + r), fill=TEAL)
+
+    # Body, with a lumpy back.
+    d.ellipse((x, y + 4, x + 30, y + 16), fill=TEAL)
+    for hx in (3, 11, 19):
+        d.ellipse((x + hx, y + 1, x + hx + 9, y + 8), fill=TEAL)
+
+    # Legs, planted on the shore.
+    for lx in (5, 20):
+        d.rectangle((x + lx, y + 14, x + lx + 4, y + 22), fill=DTEAL)
+
+    # Neck, thick as a sauropod's, coming down over the rim, and the head at
+    # the end of it turned to face out of the picture with its muzzle in the
+    # water: two eyes rather than one is the whole difference between a head
+    # seen from the side and a head looking at you.
+    stroke(
+        d,
+        [(x + 24, y + 6), (x + 32, y + 4), (x + 39, y + 10), (x + 42, y + 18)],
+        TEAL,
+        6,
+    )
+    d.ellipse((x + 34, y + 13, x + 50, y + 24), fill=TEAL)  # skull
+    d.ellipse((x + 38, y + 20, x + 47, y + 29), fill=TEAL)  # muzzle, in the water
+    for ex in (37, 45):
+        d.rectangle((x + ex, y + 16, x + ex + 1, y + 17), fill=WHITE)
+
+    mouth = (VALLY_X + 50, VALLY_Y + 22)
+    assert mouth == VALLY_MOUTH, f"tongue anchor {VALLY_MOUTH} is not at {mouth}"
+
+
+def draw_desert(d, x0, y0, w, h):
+    """The near shore, dotted with the little teal Y's the original used for
+    cycads -- about as much as block graphics can say about a plant."""
+    base = y0 + h - 1
+    for px, dy, s in (
+        (5, 0, 6), (20, 5, 9), (37, 1, 6), (54, 6, 10), (71, 0, 7),
+        (87, 5, 9), (103, 1, 6), (117, 6, 10),
+    ):
+        x, ty = x0 + px, base - dy
+        arm = 1 + s // 3
+        d.line([(x, ty), (x, ty - s)], fill=TEAL)
+        d.line([(x - arm, ty - s - arm), (x, ty - s + 1)], fill=TEAL)
+        d.line([(x + arm, ty - s - arm), (x, ty - s + 1)], fill=TEAL)
+
+
+def draw_barren(img, x0, y0, w, h):
+    """The barren ground between the desert and the score boards.
+
+    The original hatched it, which in block graphics means a chequer.  An
+    unbroken 2x2 chequer is a single unique 16x16 tile however much of it there
+    is, so the band is nearly free; only its ragged edges cost anything.
+    """
+    mask = Image.new("1", (w, h), 0)
+    md = ImageDraw.Draw(mask)
+    md.polygon(
+        spline([(0, 7), (w // 3, 2), (2 * w // 3, 5), (w - 1, 1)])
+        + spline([(w - 1, h - 6), (2 * w // 3, h - 1), (w // 3, h - 3), (0, h - 1)]),
+        fill=1,
+    )
+    mp = mask.load()
+    px = img.load()
+    for yy in range(h):
+        for xx in range(w):
+            if mp[xx, yy] and not (((xx >> 1) + (yy >> 1)) & 1):
+                px[x0 + xx, y0 + yy] = MAGENTA
 
 
 # ---------------------------------------------------------------------------
 # Splash images: the main menu backdrop and the level loading screen.
+#
+# Both are the 1983 cassette cover, reduced to sixteen of the CoCo 3's
+# sixty-four colours and dithered.  Splash images are not tied to the table's
+# palette -- scripts/build-images.py stores a palette per image -- so each one
+# gets the sixteen that suit it.
 # ---------------------------------------------------------------------------
 
 IMAGE_DIR = os.path.join(ROOT, "game", "images")
+BOX_ART = os.path.join(ROOT, "art", "boxart.jpg")
+
+# Two bits per channel is the whole of the CoCo 3's gamut.
+COCO_LEVELS = (0, 85, 170, 255)
+COCO_GAMUT = [(r, g, b) for r in COCO_LEVELS for g in COCO_LEVELS for b in COCO_LEVELS]
+
+# A pixel in the 320x200 mode is 1.2 times taller than it is wide on a 4:3
+# screen, so a picture only comes out undistorted if the source is cropped to
+# the aspect it will be *displayed* at rather than to the pixel one.
+PIXEL_TALL = 1.2
+
+# The loader picks the colours for its menu text, its loading message and its
+# progress bar out of the image's own palette (see images.json below), so black
+# and two bright inks are reserved whether or not the picture wants them.
+IMAGE_RESERVED = [(0, 0, 0), (255, 255, 0), (255, 170, 0)]
 
 
-def volcano_scene(d, x0, y0, w, h, big=True):
-    """The Lost World: night sky, twin peaks, lava, and a lake."""
-    d.rectangle((x0, y0, x0 + w - 1, y0 + h - 1), fill=DBLUE)
+def coco_snap(rgb):
+    """The nearest of the CoCo's 64 colours."""
+    return tuple(COCO_LEVELS[min(3, (v + 42) // 85)] for v in rgb)
 
-    # Stars.
-    step = 23 if big else 17
-    for i in range(w * h // (step * step)):
-        sx = x0 + (i * 37 + 11) % w
-        sy = y0 + (i * 19 + 5) % (h // 2)
-        d.point((sx, sy), fill=WHITE)
 
-    peak = y0 + h // 5
-    base = y0 + (h * 3) // 5
-    d.polygon(
-        [(x0 + w // 8, base), (x0 + w // 3, peak), (x0 + w // 2 + w // 12, base)],
-        fill=MAGENTA,
+def palette_image(colours):
+    """A 'P' image carrying just these colours, to quantise against."""
+    p = Image.new("P", (1, 1))
+    flat = [c for rgb in colours for c in rgb]
+    p.putpalette(flat + [0] * (768 - len(flat)))
+    return p
+
+
+def coco_reduce(rgb, n=16):
+    """Reduce a photograph to n of the CoCo's colours, dithered.
+
+    The palette is settled *before* the dither: maximum-coverage quantisation
+    picks a spread of colours, each is snapped into the hardware's gamut, and
+    only then is the picture Floyd-Steinberg dithered onto what survives.
+    Quantising to arbitrary RGB and snapping afterwards would move every colour
+    after its error had already been diffused, which comes out as banding.
+    """
+    chosen = list(IMAGE_RESERVED)
+    seed = rgb.quantize(colors=n, method=Image.Quantize.MAXCOVERAGE).getpalette()
+    for i in range(n):
+        c = coco_snap(tuple(seed[i * 3 : i * 3 + 3]))
+        if c not in chosen and len(chosen) < n:
+            chosen.append(c)
+
+    # Snapping collapses near neighbours onto each other, so top the palette
+    # back up with whatever the picture uses most and has not got yet.
+    hist = rgb.quantize(
+        palette=palette_image(COCO_GAMUT), dither=Image.Dither.NONE
+    ).histogram()
+    for i in sorted(range(len(COCO_GAMUT)), key=lambda j: -hist[j]):
+        if len(chosen) >= n:
+            break
+        if COCO_GAMUT[i] not in chosen:
+            chosen.append(COCO_GAMUT[i])
+
+    return rgb.quantize(
+        palette=palette_image(chosen), dither=Image.Dither.FLOYDSTEINBERG
     )
-    d.polygon(
-        [(x0 + w // 2, base), (x0 + (w * 2) // 3, peak + h // 10), (x0 + w - w // 8, base)],
-        fill=DMAGENTA,
-    )
-    # Lava in the crater and running down the side.
-    d.polygon(
-        [
-            (x0 + w // 3 - max(2, w // 40), peak + max(2, h // 20)),
-            (x0 + w // 3, peak),
-            (x0 + w // 3 + max(2, w // 40), peak + max(2, h // 20)),
-        ],
-        fill=RED,
-    )
-    d.line(
-        [(x0 + w // 3, peak + max(2, h // 20)), (x0 + w // 3 + w // 12, base)],
-        fill=ORANGE,
-    )
-
-    # Lake and shore.
-    d.rectangle((x0, base, x0 + w - 1, base + h // 8), fill=BLUE)
-    shore = base + h // 8
-    d.rectangle((x0, shore, x0 + w - 1, y0 + h - 1), fill=DTEAL)
-
-    # Ferns, as in the original's valley.
-    fy = shore + 3
-    for i in range(w // 18):
-        fx = x0 + 6 + i * 18 + (i % 2) * 5
-        if fy + 5 <= y0 + h - 1:
-            d.line([(fx, fy), (fx, fy + 5)], fill=TEAL)
-            d.line([(fx - 3, fy + 1), (fx, fy - 2)], fill=TEAL)
-            d.line([(fx + 3, fy + 1), (fx, fy - 2)], fill=TEAL)
 
 
-def draw_vally(d, x, y, scale=1, tongue=True):
-    """A long-necked dinosaur, in profile, facing right."""
-    s = scale
-    d.rectangle((x, y + 10 * s, x + 26 * s, y + 16 * s), fill=TEAL)  # body
-    d.rectangle((x + 18 * s, y, x + 22 * s, y + 12 * s), fill=TEAL)  # neck
-    d.rectangle((x + 18 * s, y - 3 * s, x + 27 * s, y + 1 * s), fill=TEAL)  # head
-    d.rectangle((x + 24 * s, y - 2 * s, x + 25 * s, y - 1 * s), fill=WHITE)  # eye
-    d.rectangle((x + 2 * s, y + 16 * s, x + 6 * s, y + 22 * s), fill=DTEAL)  # legs
-    d.rectangle((x + 18 * s, y + 16 * s, x + 22 * s, y + 22 * s), fill=DTEAL)
-    d.polygon(  # tail
-        [(x, y + 11 * s), (x - 12 * s, y + 6 * s), (x, y + 15 * s)],
-        fill=TEAL,
-    )
-    if tongue:
-        # Tongue, out after a fly.
-        d.line([(x + 27 * s, y - s), (x + 33 * s, y - 4 * s)], fill=ORANGE)
+def fade_below(img, start, end, floor, black=40):
+    """Fade the picture down from row start to row end, and flatten what is
+    left very dark to true black.
+
+    Dithering near-black into near-black is just speckle, and speckle is what
+    makes text drawn on top of it unreadable.
+    """
+    px = img.load()
+    w, h = img.size
+    for y in range(start, h):
+        f = floor if y >= end else 1.0 + (floor - 1.0) * (y - start) / (end - start)
+        for x in range(w):
+            r, g, b = (int(v * f) for v in px[x, y])
+            px[x, y] = (0, 0, 0) if max(r, g, b) < black else (r, g, b)
+
+
+def box_art(w, h, top_trim=0, fade=None):
+    """The cover, cropped to what will look undistorted at w x h, and reduced.
+
+    top_trim is how much of the source to lose off the top; the rest of the
+    crop comes off the bottom, which on this cover is the least interesting
+    part of the picture.
+    """
+    src = Image.open(BOX_ART).convert("RGB")
+    keep = int(round(src.width * PIXEL_TALL * h / w))
+    img = src.crop(
+        (0, top_trim, src.width, min(src.height, top_trim + keep))
+    ).resize((w, h), Image.LANCZOS)
+    if fade:
+        fade_below(img, *fade)
+    return coco_reduce(img)
 
 
 def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
-    # --- main menu backdrop -------------------------------------------------
-    img = Image.new("P", (SCREEN_W, SCREEN_H), BLACK)
-    img.putpalette(palette_bytes())
-    d = ImageDraw.Draw(img)
+    # The menu draws its four option lines and its prompt over rows 99 to 192
+    # of the backdrop (engine/menu.asm), so the lower half is faded down far
+    # enough for that text to read over it.
+    box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45)).save(
+        os.path.join(IMAGE_DIR, "00-mainmenu.png")
+    )
 
-    volcano_scene(d, 0, 60, SCREEN_W, SCREEN_H - 60)
-    draw_vally(d, 190, 128, 2)
-
-    draw_text_centred(d, SCREEN_W // 2, 8, "LOST WORLD", ORANGE, scale=4)
-    draw_text_centred(d, SCREEN_W // 2, 40, "PINBALL", YELLOW, scale=2)
-    draw_text_centred(d, SCREEN_W // 2 + 60, 178, "TANDY 1983", MAGENTA, scale=1)
-    img.save(os.path.join(IMAGE_DIR, "00-mainmenu.png"))
-
-    # --- level loading screen ----------------------------------------------
-    img = Image.new("P", (132, 96), BLACK)
-    img.putpalette(palette_bytes())
-    d = ImageDraw.Draw(img)
-    volcano_scene(d, 0, 20, 132, 76, big=False)
-    draw_vally(d, 78, 54, 1)
-    draw_text_centred(d, 66, 2, "LOST WORLD", ORANGE, scale=1)
-    draw_text_centred(d, 66, 11, "PINBALL", YELLOW, scale=1)
-    img.save(os.path.join(IMAGE_DIR, "01-level1.png"))
+    # The loading screen centres its picture and puts the message underneath
+    # it, so this one is left alone.  The loader reserves 64 rows for that
+    # message, which leaves 136 for the image.
+    box_art(160, 116).save(os.path.join(IMAGE_DIR, "01-level1.png"))
 
     import json
 
+    # One entry per image, in file order: the menu backdrop, then one loading
+    # screen per level.  The colours are looked up in each image's palette,
+    # which is why coco_reduce reserves them.
+    inks = {
+        "BackgroundColor": "000000",
+        "ForegroundColor": "ffaa00",
+        "ProgressColor": "ffff00",
+    }
     with open(os.path.join(IMAGE_DIR, "images.json"), "w") as f:
-        json.dump(
-            {
-                "images": [
-                    {
-                        "BackgroundColor": "000000",
-                        "ForegroundColor": "ffaa00",
-                        "ProgressColor": "ffff00",
-                    },
-                    {
-                        "BackgroundColor": "000000",
-                        "ForegroundColor": "ffaa00",
-                        "ProgressColor": "ffff00",
-                    },
-                ]
-            },
-            f,
-            indent=2,
-        )
+        json.dump({"images": [dict(inks), dict(inks)]}, f, indent=2)
         f.write("\n")
 
 
@@ -1212,10 +1425,28 @@ def write_descriptors():
     return len(objects)
 
 
+def check_panel_columns():
+    """Every panel sprite is compiled byte-aligned only, so each of them has to
+    land on an even pixel column or it will be drawn half a byte out."""
+    cols = [BALLS_DIGIT_X, VALLY_MOUTH[0]]
+    cols += [MULT_DIGIT_X + n * SCORE_DIGIT_PITCH for n in range(3)]
+    cols += [
+        SCORE_DIGIT_X0
+        + c * SCORE_DIGIT_PITCH
+        + (SCORE_GROUP_GAP if c >= 1 else 0)
+        + (SCORE_GROUP_GAP if c >= 4 else 0)
+        for c in range(SCORE_DIGITS)
+    ]
+    odd = [c for c in cols if c & 1]
+    assert not odd, f"panel sprite columns must be even: {odd}"
+
+
 def main():
     preview = "--preview" in sys.argv
     for d in (TILE_DIR, LEVEL_DIR, OBJ_DIR):
         os.makedirs(d, exist_ok=True)
+
+    check_panel_columns()
 
     tiles = write_tileset(preview=preview)
     grid = build_grid(build_kind_map())

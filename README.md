@@ -9,6 +9,11 @@ graphics. This version keeps that table's layout and its rules, and gives it a
 320x200 16-colour playfield, a ball with real velocity and reflection physics,
 and flippers that swing.
 
+The strip beside the table is the original's too, stacked the same way: Vally's
+name in script, Vally herself with her head down at the water hole, the fern
+desert on the near shore, the barren ground, and then the high score above the
+score — orange frame and teal frame, unlabelled, as the original had them.
+
 ## Building
 
 The toolchain (lwasm, CMOC, ToolShed, ffmpeg) lives in a Docker image:
@@ -56,7 +61,11 @@ LOADM"PINBALL"
 EXEC
 ```
 
-then press SPACE at the title screen.
+then press SPACE at the title screen. The title and loading screens are the
+1983 cassette cover, dithered down to sixteen of the CoCo's colours. A dithered
+photograph hardly compresses, so the backdrop is nearly 16KB and takes about
+twelve seconds to come off the floppy: expect a black screen for that long
+after `EXEC` before the menu appears.
 
 | Key | |
 |---|---|
@@ -133,15 +142,16 @@ game/
   levels/   the table: descriptor plus its per-frame hook
   objects/  ball physics and rules, flippers, score digits, lamps, panel
   sprites/  generated sheets and their descriptors
-  tiles/    generated tileset and playfield artwork
-  images/   generated splash screens
+  tiles/    generated tileset: the playfield and the panel beside it
+  images/   splash screens, generated from art/
   sounds/   generated effects
 scripts/    asset generator, table spec, build tools, playtest harness
+art/        the 1983 cassette cover, source for both splash screens
 ```
 
 ## Credits
 
-*Lost World Pinball* © 1983 Tandy Corporation.
+*Lost World Pinball*, and the cover art in `art/`, © 1983 Tandy Corporation.
 
 DynoSprite © 2013–2014 Richard Goedeken,
 <https://github.com/richard42/dynosprite>.

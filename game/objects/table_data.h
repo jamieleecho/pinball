@@ -35,6 +35,22 @@
 #define LANE_TOP         40
 #define BALL_R           3
 
+/* The right-hand panel.  These are the same constants that placed the artwork
+ * underneath, so a read-out cannot end up off the board it belongs to. */
+#define PANEL_X           192
+#define SCORE_DIGITS      7
+#define SCORE_DIGIT_X0    200
+#define SCORE_DIGIT_PITCH 12
+#define SCORE_GROUP_GAP   4
+#define HIGH_DIGIT_Y      133
+#define SCORE_DIGIT_Y     159
+#define BALLS_DIGIT_X     228
+#define BALLS_DIGIT_Y     185
+#define MULT_DIGIT_X      268
+#define MULT_DIGIT_Y      185
+#define PANEL_TONGUE_X    282
+#define PANEL_TONGUE_Y    59
+
 #define BUMPER_R         12
 #define NUM_PLUNGERS     5
 #define NUM_MARKS        9
