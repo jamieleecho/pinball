@@ -44,16 +44,14 @@
 #define PANEL_SPRITE_MULTX 7
 #define PANEL_TONGUE_STAGES 6
 
-/* Where the panel read-outs sit.  The multiplier and ball count are drawn
- * with score digits, so they use the digit grid. */
-#define PANEL_TONGUE_X 224
-#define PANEL_TONGUE_Y 105
+/* Where the panel read-outs sit.  The multiplier and ball count are drawn with
+ * score digits, so they use the digit grid.  Everything on the panel is placed
+ * by table_data.h, from the same constants that drew the artwork beneath it --
+ * PANEL_TONGUE_X/Y, for instance, is exactly where the generator put Vally's
+ * mouth.  Only the end-of-game plate is positioned here, because it is drawn
+ * across the table rather than on the panel. */
 #define PANEL_OVER_X 54
 #define PANEL_OVER_Y 96
-#define BALLS_DIGIT_X 240
-#define BALLS_DIGIT_Y 184
-#define MULT_DIGIT_X 276
-#define MULT_DIGIT_Y 104
 #define PANEL_MULTX_X (MULT_DIGIT_X + 2 * SCORE_DIGIT_PITCH)
 #define PANEL_MULTX_Y (MULT_DIGIT_Y + 2)
 
@@ -68,16 +66,6 @@
 #define BALLS_PER_GAME 3
 #define TONGUE_TARGET 12 /* top-mark hits needed to make the volcano erupt */
 #define FLASH_FRAMES 10  /* how long a struck target stays lit */
-
-/* Score boards on the right-hand panel.  Seven digits each, grouped
- * "0 000 000" the way the original displayed them. */
-#define PANEL_X 192
-#define SCORE_DIGIT_X0 200
-#define SCORE_DIGIT_PITCH 12
-#define SCORE_GROUP_GAP 4
-#define SCORE_DIGIT_Y 136
-#define HIGH_DIGIT_Y 164
-#define SCORE_DIGITS 7
 
 /* Launcher */
 #define LANE_CX ((LANE_X0 + LANE_X1) / 2)
