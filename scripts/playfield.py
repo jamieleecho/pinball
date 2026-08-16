@@ -61,14 +61,20 @@ LANE_TOP = 30  # above this the lane opens into the table
 
 # The flippers.  Each is one of the little dinosaurs, 30x16, pivoting on its
 # outer end so the tips meet over the drain.
-# Each dinosaur's head, with its eye, is the outer upper end; the chunky orange
-# tail is the inner lower one, and the two tails all but meet over the drain.
-# The flippers pivot on those tails, so the tips sweep outward and upward.
-FLIPPER_PIVOTS = ((84, 171), (121, 171))
-FLIPPER_LEN = 20
+# The paddles are the dinosaurs' tails.  Each tail is the chunky orange block
+# at the inboard lower end of its dinosaur, and it pivots where it joins the
+# body -- source x 78 and 126, either side of the drain's centre line at 102.5.
+#
+# The left tail sweeps from 315 degrees at rest to 45 when pressed, the right
+# from 225 to 135; in this file's convention, which measures downwards from
+# horizontal, that is +45 to -45 with the right one mirrored.  A length of 19
+# puts the resting tips at x 91 and 113, leaving 21 pixels between them -- the
+# width of three balls -- directly over the drain mouth at x 93..112.
+FLIPPER_PIVOTS = ((78, 169), (126, 169))
+FLIPPER_LEN = 19
 FLIPPER_HALF_THICK = 4
-FLIPPER_REST_DEG = -21  # the angle the artwork already draws them at
-FLIPPER_UP_DEG = -55    # swept up
+FLIPPER_REST_DEG = 45   # below horizontal, at rest
+FLIPPER_UP_DEG = -45    # above horizontal, fully raised
 FLIPPER_FRAMES = 6
 
 BALL_R = 3
@@ -125,6 +131,17 @@ def in_box(x, y, box):
     return box[0] <= x <= box[2] and box[1] <= y <= box[3]
 
 
+def in_sweep(x, y):
+    """Inside the quarter-disc one of the tails sweeps through."""
+    reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2
+    for (px, py), outward in zip(FLIPPER_PIVOTS, (1, -1)):
+        dx = (x - px) * outward
+        dy = y - py
+        if 0 <= dx and dx * dx + dy * dy <= reach * reach and abs(dy) <= dx + 1:
+            return True
+    return False
+
+
 def source():
     """The table artwork and the set of pixels belonging to the nine feet."""
     src = _load("pinball.png").convert("RGB")
@@ -174,10 +191,12 @@ def kind_at(src_px, feet, x, y):
         # surface.  Leaving it solid means the ball rattles about on top of it
         # and is never lost; the ball object counts it out by crossing DRAIN_Y.
         return K_EMPTY
-    if any(in_box(x, y, b) for b in FLIPPER_BOXES):
-        # The flippers swing, so they cannot live in a grid that never moves.
-        # They are objects, and the ball meets them analytically from the pivot
-        # and the current angle; here they are simply a hole in the table.
+    if in_sweep(x, y):
+        # The arc the tails sweep through cannot live in a grid that never
+        # moves.  The paddles are objects and the ball meets them analytically
+        # from the pivot and the current angle, so the arc is a hole; the rest
+        # of each dinosaur stays solid, or the ball would sail through the one
+        # thing on the table that visibly is not a gap.
         return K_EMPTY
     if (x, y) in feet:
         return K_FOOT
@@ -199,12 +218,6 @@ def world_image():
     sp, dp = src.load(), img.load()
     for y in range(src.height):
         for x in range(src.width):
-            # The flippers swing, so they are sprites and the background needs
-            # a hole where they sit.  Leaving the dinosaurs painted in means
-            # their spikes and legs show around whichever frame is drawn on
-            # top, and nothing ever erases them.
-            if any(in_box(x, y, b) for b in FLIPPER_BOXES):
-                continue
             dp[x + ORIGIN_X, y + ORIGIN_Y] = PALETTE.get(sp[x, y], BLACK)
     return img
 

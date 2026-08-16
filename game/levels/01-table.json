@@ -51,8 +51,8 @@
       "GroupID": 2,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 92,
-      "globalY": 183,
+      "globalX": 86,
+      "globalY": 181,
       "InitData": [
         0
       ]
@@ -62,8 +62,8 @@
       "GroupID": 2,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 129,
-      "globalY": 183,
+      "globalX": 134,
+      "globalY": 181,
       "InitData": [
         1
       ]

@@ -450,9 +450,9 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     # ball is meant to be launched from.
     fdx, fdy, fnx, fny = [], [], [], []
     frames = playfield.FLIPPER_FRAMES
-    # Entries for the left flipper first.  Its tip points outward, which is to
-    # the left, so it is the mirrored one now that the pivot has moved inboard.
-    for mirror in (True, False):
+    # Entries for the left flipper first.  Its tail sweeps to the right, away
+    # from the pivot, so it is the unmirrored one.
+    for mirror in (False, True):
         for f in range(frames):
             deg = playfield.FLIPPER_REST_DEG + (
                 playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
@@ -727,12 +727,12 @@ def draw_flipper_sheet(d, img):
             (pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
         od.point((pivot_x, pivot_y), fill=RED)
 
-        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, 0))
-        left.append(
-            (f"LeftFlip{f}", f * cell + cell - 1 - pivot_x, pivot_y, False))
+        img.paste(one, (f * cell, 0))
+        left.append((f"LeftFlip{f}", f * cell + pivot_x, pivot_y, False))
 
-        img.paste(one, (f * cell, cell))
-        right.append((f"RightFlip{f}", f * cell + pivot_x, cell + pivot_y, False))
+        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, cell))
+        right.append(
+            (f"RightFlip{f}", f * cell + cell - 1 - pivot_x, cell + pivot_y, False))
 
     # Both pivots sit on even pixel columns, so these never need the
     # single-pixel-position variant -- which would double the code.
