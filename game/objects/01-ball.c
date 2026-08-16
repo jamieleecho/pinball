@@ -64,15 +64,21 @@ static void addPos(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
 }
 
 static byte probeCell(int x, int y) {
+    /* The grid covers the table only, not the whole world, so a world position
+     * has to be brought back to the grid's origin before it can be indexed.
+     * Getting this wrong does not fail loudly: the ball simply reads cells
+     * belonging to somewhere else and walks out through the wall. */
+    x -= TBL_ORIGIN_X;
+    y -= TBL_ORIGIN_Y;
     if (x < 0) {
         x = 0;
-    } else if (x > PLAYFIELD_RIGHT) {
-        x = PLAYFIELD_RIGHT;
+    } else if (x >= TBL_GRID_W * TBL_CELL) {
+        x = TBL_GRID_W * TBL_CELL - 1;
     }
     if (y < 0) {
         y = 0;
     } else if (y >= TBL_GRID_H * TBL_CELL) {
-        return 0;
+        return 0; /* below the table: the ball is on its way out */
     }
     return tblGrid[((y >> TBL_CELL_SHIFT) * TBL_GRID_W) + (x >> TBL_CELL_SHIFT)];
 }
@@ -148,9 +154,10 @@ static int findBox(const unsigned char *boxes, byte count, int x, int y) {
     return -1;
 }
 
-/** Every plunger has been hit, so they reset and the multiplier steps up. */
+/** Every foot has been hit, so they all reset and the multiplier steps up. */
 static void stepMultiplier(void) {
-    globals->plungerHit = 0;
+    globals->feetHit[0] = 0;
+    globals->feetHit[1] = 0;
     if (globals->multiplier == 1) {
         globals->multiplier = 2;
     } else if (globals->multiplier == 2) {
@@ -158,38 +165,19 @@ static void stepMultiplier(void) {
     }
 }
 
-static void hitPlunger(int x, int y) {
-    int idx = findBox(tblPlungerBox, NUM_PLUNGERS, x, y);
-    byte bit;
-    if (idx < 0) {
-        return;
-    }
-    bit = 1 << idx;
-    if (globals->plungerHit & bit) {
-        return; /* already green: no score until it resets */
-    }
-    globals->plungerHit |= bit;
-    scoreTens(2);
-    PlaySound(SOUND_TARGET);
-    if (globals->plungerHit == (1 << NUM_PLUNGERS) - 1) {
-        stepMultiplier();
-    }
+/** Nine feet need nine bits, which is one more than a byte will hold. */
+static byte footSpent(byte idx) {
+    return globals->feetHit[idx >> 3] & (byte)(1 << (idx & 7));
 }
 
-static void hitMark(int x, int y) {
-    int idx = findBox(tblMarkBox, NUM_MARKS, x, y);
+static void spendFoot(byte idx) {
+    globals->feetHit[idx >> 3] |= (byte)(1 << (idx & 7));
     scoreTens(3);
     PlaySound(SOUND_TARGET);
-    /* Only the marks under the top pods feed Vally's tongue. */
-    if (idx >= 0 && idx < NUM_TOP_MARKS && globals->tongue < TONGUE_TARGET) {
-        globals->tongue++;
-        if (globals->tongue == TONGUE_TARGET && !globals->volcano) {
-            /* Vally catches the fly, the volcano erupts, and everything is
-             * worth ten times as much for the rest of this ball. */
-            globals->volcano = 1;
-            globals->multiplier = 10;
-            PlaySound(SOUND_DRAIN);
-        }
+    /* All nine: they come back and scoring steps up, which is what the manual
+     * described for the plungers on the original table. */
+    if (globals->feetHit[0] == 0xff && globals->feetHit[1] == 0x01) {
+        stepMultiplier();
     }
 }
 
@@ -199,8 +187,31 @@ static void hitMark(int x, int y) {
 static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
                        signed char nx, signed char ny) {
     byte kind = TBL_KIND(cell);
+    byte kick = 0;
 
     if (kind == K_BUMPER) {
+        kick = 1;
+        if (!s->cooldown) {
+            scoreTens(1);
+            PlaySound(SOUND_BUMPER);
+            s->cooldown = TARGET_COOLDOWN;
+        }
+    } else if (kind == K_FOOT) {
+        /* A foot is a bumper until it is hit.  After that it turns cyan and is
+         * ordinary scenery -- still solid, because it is part of the pod or the
+         * crest it hangs off, but it neither kicks nor scores until the ball
+         * drains and all nine come back. */
+        int idx = findBox(tblFootBox, NUM_FEET, hx, hy);
+        if (idx >= 0 && !footSpent((byte)idx)) {
+            kick = 1;
+            if (!s->cooldown) {
+                spendFoot((byte)idx);
+                s->cooldown = TARGET_COOLDOWN;
+            }
+        }
+    }
+
+    if (kick) {
         /* A bumper does not so much bounce the ball as throw it.  The kick is
          * deliberately thrown off-axis, alternating side each time: a ball
          * that lands squarely on top of a bumper under a vertical gap would
@@ -210,44 +221,11 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
         s->vy = (int)ny * (BUMPER_KICK >> 5);
         s->nudge ^= 1;
         jitter(s, nx, ny);
-        if (!s->cooldown) {
-            scoreTens(1);
-            PlaySound(SOUND_BUMPER);
-            s->cooldown = TARGET_COOLDOWN;
-        }
         return;
     }
 
     reflect(s, nx, ny, kind == K_SCENERY ? GAIN_SCENERY : GAIN_WALL);
     jitter(s, nx, ny);
-
-    switch (kind) {
-    case K_SLING:
-        s->vx += (int)nx * (SLING_KICK >> 5);
-        s->vy += (int)ny * (SLING_KICK >> 5);
-        break;
-    case K_STRIP:
-        if (!s->cooldown) {
-            scoreTens(1);
-            PlaySound(SOUND_TARGET);
-            s->cooldown = TARGET_COOLDOWN;
-        }
-        break;
-    case K_PLUNGER:
-        if (!s->cooldown) {
-            hitPlunger(hx, hy);
-            s->cooldown = TARGET_COOLDOWN;
-        }
-        break;
-    case K_MARK:
-        if (!s->cooldown) {
-            hitMark(hx, hy);
-            s->cooldown = TARGET_COOLDOWN;
-        }
-        break;
-    default:
-        break;
-    }
 }
 
 /**
@@ -395,7 +373,9 @@ static void placeOnLauncher(DynospriteCOB *cob, BallObjectState *s, byte pull) {
 static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     globals->gameState = GameStateReady;
     globals->multiplier = 1;
-    globals->plungerHit = 0;
+    /* The nine feet come back with every new ball. */
+    globals->feetHit[0] = 0;
+    globals->feetHit[1] = 0;
     globals->volcano = 0;
     s->pull = 0;
     s->cooldown = 0;

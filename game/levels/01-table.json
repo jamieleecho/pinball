@@ -9,7 +9,7 @@
       4,
       5
     ],
-    "MaxObjectTableSize": 43,
+    "MaxObjectTableSize": 38,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -17,11 +17,11 @@
       16
     ],
     "TilemapSize": [
-      320,
-      208
+      336,
+      224
     ],
-    "BkgrndStartX": 0,
-    "BkgrndStartY": 0
+    "BkgrndStartX": 8,
+    "BkgrndStartY": 12
   },
   "Objects": [
     {
@@ -29,8 +29,8 @@
       "GroupID": 1,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 180,
-      "globalY": 190,
+      "globalX": 188,
+      "globalY": 178,
       "InitData": [
         0
       ]
@@ -40,8 +40,8 @@
       "GroupID": 1,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 180,
-      "globalY": 192,
+      "globalX": 188,
+      "globalY": 180,
       "InitData": [
         1
       ]
@@ -51,8 +51,8 @@
       "GroupID": 2,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 54,
-      "globalY": 174,
+      "globalX": 92,
+      "globalY": 183,
       "InitData": [
         0
       ]
@@ -62,8 +62,8 @@
       "GroupID": 2,
       "ObjectID": 0,
       "Active": 3,
-      "globalX": 120,
-      "globalY": 174,
+      "globalX": 129,
+      "globalY": 183,
       "InitData": [
         1
       ]
@@ -237,7 +237,7 @@
       ]
     },
     {
-      "_comment": "ball count",
+      "_comment": "ball indicator 0",
       "GroupID": 3,
       "ObjectID": 0,
       "Active": 3,
@@ -246,6 +246,42 @@
       "InitData": [
         2,
         0
+      ]
+    },
+    {
+      "_comment": "ball indicator 1",
+      "GroupID": 3,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        1
+      ]
+    },
+    {
+      "_comment": "ball indicator 2",
+      "GroupID": 3,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        2
+      ]
+    },
+    {
+      "_comment": "ball indicator 3",
+      "GroupID": 3,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        3
       ]
     },
     {
@@ -273,206 +309,101 @@
       ]
     },
     {
-      "_comment": "plunger lamp 0",
+      "_comment": "foot 0",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        0,
         0
       ]
     },
     {
-      "_comment": "plunger lamp 1",
+      "_comment": "foot 1",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        0,
         1
       ]
     },
     {
-      "_comment": "plunger lamp 2",
+      "_comment": "foot 2",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        0,
         2
       ]
     },
     {
-      "_comment": "plunger lamp 3",
+      "_comment": "foot 3",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        0,
         3
       ]
     },
     {
-      "_comment": "plunger lamp 4",
+      "_comment": "foot 4",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        0,
         4
       ]
     },
     {
-      "_comment": "bumper lamp 0",
+      "_comment": "foot 5",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        1,
-        0
-      ]
-    },
-    {
-      "_comment": "bumper lamp 1",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        1,
-        1
-      ]
-    },
-    {
-      "_comment": "bumper lamp 2",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        1,
-        2
-      ]
-    },
-    {
-      "_comment": "mark lamp 0",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
-        0
-      ]
-    },
-    {
-      "_comment": "mark lamp 1",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
-        1
-      ]
-    },
-    {
-      "_comment": "mark lamp 2",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
-        2
-      ]
-    },
-    {
-      "_comment": "mark lamp 3",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
-        3
-      ]
-    },
-    {
-      "_comment": "mark lamp 4",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
-        4
-      ]
-    },
-    {
-      "_comment": "mark lamp 5",
-      "GroupID": 4,
-      "ObjectID": 0,
-      "Active": 1,
-      "globalX": 0,
-      "globalY": 0,
-      "InitData": [
-        2,
         5
       ]
     },
     {
-      "_comment": "mark lamp 6",
+      "_comment": "foot 6",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        2,
         6
       ]
     },
     {
-      "_comment": "mark lamp 7",
+      "_comment": "foot 7",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        2,
         7
       ]
     },
     {
-      "_comment": "mark lamp 8",
+      "_comment": "foot 8",
       "GroupID": 4,
       "ObjectID": 0,
-      "Active": 1,
+      "Active": 3,
       "globalX": 0,
       "globalY": 0,
       "InitData": [
-        2,
         8
       ]
     },

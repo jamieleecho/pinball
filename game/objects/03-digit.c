@@ -25,12 +25,20 @@ void DigitInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
 
     s->board = initData[0];
     s->column = initData[1];
-    s->spriteIdx = 0;
+    /* Whatever this read-out ends up being, it must start on a sprite the
+     * same size as the ones it will draw later.  None of these save the
+     * background, so a taller sprite drawn even once leaves the rows the
+     * shorter one cannot reach on screen for good -- and in one buffer only,
+     * so it blinks.  Digit0 is eleven rows; a ball is eight. */
+    s->spriteIdx = (initData[0] == DIGIT_BOARD_BALLS) ? DIGIT_SPRITE_BALL_BLANK : 0;
 
     switch (s->board) {
     case DIGIT_BOARD_BALLS:
+        /* One indicator per ball, stacked up the strip between the table and
+         * the boards.  Indicator 0 is the bottom one, so losing a ball takes
+         * the top of the pile away. */
         cob->globalX = BALLS_DIGIT_X;
-        cob->globalY = BALLS_DIGIT_Y;
+        cob->globalY = BALLS_DIGIT_Y - (unsigned)s->column * BALLS_PITCH;
         break;
     case DIGIT_BOARD_MULT_TENS:
         cob->globalX = MULT_DIGIT_X;
@@ -65,7 +73,11 @@ byte DigitUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
     switch (s->board) {
     case DIGIT_BOARD_BALLS:
-        s->spriteIdx = globals->ballsLeft > 9 ? 9 : globals->ballsLeft;
+        /* A ball is drawn for every ball still to play.  Both sprites are
+         * opaque and neither saves the background, so the blank is what takes
+         * a used ball away -- simply not drawing would leave it there. */
+        s->spriteIdx = (s->column < globals->ballsLeft) ? DIGIT_SPRITE_BALL
+                                                       : DIGIT_SPRITE_BALL_BLANK;
         cob->active = OBJECT_ACTIVE;
         return 0;
 

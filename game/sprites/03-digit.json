@@ -108,6 +108,24 @@
       ],
       "SinglePixelPosition": false,
       "SaveBackground": false
+    },
+    {
+      "Name": "BallLive",
+      "Location": [
+        134,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "BallBlank",
+      "Location": [
+        146,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
     }
   ]
 }
