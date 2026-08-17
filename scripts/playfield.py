@@ -66,10 +66,12 @@ LANE_TOP = 34  # above this the lane opens into the table
 # so the ball cannot come back.  It is a sprite rather than artwork because it
 # is only there once the ball is in play.
 #
-# Measured off the artwork column by column, then squared off: the bar runs a
-# little into the border above and the divider below, which costs nothing and
-# leaves no seam at either end.
-GATE_BOX = (169, 14, 176, 40)  # source x0, y0, x1, y1, inclusive
+# Measured off the artwork column by column, then squared off, and then given a
+# row at each end on top of that.  The border above and the divider below both
+# start lower on some columns than others, so a bar that stops exactly where
+# the measurement says leaves what look like missing pixels at its ends; the
+# extra row buries them.
+GATE_BOX = (169, 13, 176, 41)  # source x0, y0, x1, y1, inclusive
 GATE_W = GATE_BOX[2] - GATE_BOX[0] + 1
 GATE_H = GATE_BOX[3] - GATE_BOX[1] + 1
 
