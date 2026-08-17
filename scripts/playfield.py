@@ -117,6 +117,15 @@ MULT_XY = (272, 158)
 BALLS_XY = (188, 186)
 BALLS_PITCH = 10
 
+# The volcano: the left peak in the panel.  Measured off the artwork -- the
+# apex, and the point on each slope where the mountain meets the ground.  Lava
+# runs from the apex down both slopes, which is the upside-down V the original
+# drew, so these three points are all the path needs.
+VOLCANO_APEX = (220, 48)
+VOLCANO_LEFT_FOOT = (200, 69)
+VOLCANO_RIGHT_FOOT = (236, 64)
+LAVA_DROPS = 6  # per slope
+
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.
 TONGUE_XY = (266, 68)

@@ -1,0 +1,30 @@
+{
+  "Main": {
+    "Group": 6,
+    "Image": "06-lava.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "LavaHot",
+      "Location": [
+        2,
+        2
+      ],
+      "SinglePixelPosition": true
+    },
+    {
+      "Name": "LavaCool",
+      "Location": [
+        10,
+        2
+      ],
+      "SinglePixelPosition": true
+    }
+  ]
+}

@@ -540,6 +540,18 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALLS_PITCH       {playfield.BALLS_PITCH}
 #define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
 #define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
+
+/* The volcano, and the two slopes the lava runs down. */
+#define VOLCANO_X         {playfield.VOLCANO_APEX[0] + playfield.ORIGIN_X}
+#define VOLCANO_Y         {playfield.VOLCANO_APEX[1] + playfield.ORIGIN_Y}
+/* Distances from the apex to the foot of each slope, as magnitudes: the left
+ * one runs left, the right one right, and both run down.  Keeping them
+ * positive keeps the shifts in 06-lava.c off negative numbers. */
+#define LAVA_L_DX         {abs(playfield.VOLCANO_LEFT_FOOT[0] - playfield.VOLCANO_APEX[0])}
+#define LAVA_L_DY         {abs(playfield.VOLCANO_LEFT_FOOT[1] - playfield.VOLCANO_APEX[1])}
+#define LAVA_R_DX         {abs(playfield.VOLCANO_RIGHT_FOOT[0] - playfield.VOLCANO_APEX[0])}
+#define LAVA_R_DY         {abs(playfield.VOLCANO_RIGHT_FOOT[1] - playfield.VOLCANO_APEX[1])}
+#define LAVA_DROPS        {playfield.LAVA_DROPS}
 #define GATE_X0           {playfield.GATE_BOX[0] + playfield.ORIGIN_X}
 #define GATE_Y0           {playfield.GATE_BOX[1] + playfield.ORIGIN_Y}
 #define GATE_X1           {playfield.GATE_BOX[2] + playfield.ORIGIN_X}
@@ -907,6 +919,25 @@ def draw_panel_sheet(d, img):
     return sprites
 
 
+def draw_lava_sheet(d, img):
+    """Two drops of lava, hot and cooling.
+
+    They move, so unlike almost everything else here they save the background
+    and they need SinglePixelPosition: a drop that could only land on even
+    columns would step down the slope two pixels at a time.  At 2x3 pixels
+    both of those cost almost nothing.
+    """
+    sprites = []
+    for i, (name, top, bottom) in enumerate(
+        (("LavaHot", YELLOW, ORANGE), ("LavaCool", ORANGE, RED))
+    ):
+        x0 = 2 + i * 8
+        d.rectangle((x0, 2, x0 + 1, 2), fill=top)
+        d.rectangle((x0, 3, x0 + 1, 4), fill=bottom)
+        sprites.append((name, x0, 2, True))
+    return sprites
+
+
 def write_sprites():
     os.makedirs(SPRITE_DIR, exist_ok=True)
     total = 0
@@ -915,6 +946,7 @@ def write_sprites():
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
     total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
+    total += write_sprite_group(6, "lava", (32, 16), draw_lava_sheet)
     return total
 
 
@@ -1455,11 +1487,20 @@ def write_descriptors():
     for i, what in enumerate(("tongue", "game over", "multiplier X", "lane gate")):
         obj(what, 5, 3 if what == "lane gate" else 1, 0, 0, [i])
 
+    # Lava, once the volcano goes off: drops running down both slopes, spread
+    # around the run so they do not fall in step.  They start inactive and the
+    # object switches itself on.
+    for side in (0, 1):
+        for i in range(playfield.LAVA_DROPS):
+            phase = (i * 256) // playfield.LAVA_DROPS
+            obj(f"lava {'right' if side else 'left'} {i}", 6, 1, 0, 0,
+                [side, phase])
+
     level = {
         "Level": {
             "Name": "Lost World Pinball",
             "Description": "Three balls. Hit anything red.",
-            "ObjectGroups": [1, 2, 3, 4, 5],
+            "ObjectGroups": [1, 2, 3, 4, 5, 6],
             "MaxObjectTableSize": len(objects) + 2,
             "Tileset": 1,
             "TilemapImage": "../tiles/01-table.png",

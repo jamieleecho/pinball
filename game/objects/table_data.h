@@ -65,6 +65,18 @@
 #define BALLS_PITCH       10
 #define PANEL_TONGUE_X    274
 #define PANEL_TONGUE_Y    80
+
+/* The volcano, and the two slopes the lava runs down. */
+#define VOLCANO_X         228
+#define VOLCANO_Y         60
+/* Distances from the apex to the foot of each slope, as magnitudes: the left
+ * one runs left, the right one right, and both run down.  Keeping them
+ * positive keeps the shifts in 06-lava.c off negative numbers. */
+#define LAVA_L_DX         20
+#define LAVA_L_DY         21
+#define LAVA_R_DX         16
+#define LAVA_R_DY         16
+#define LAVA_DROPS        6
 #define GATE_X0           177
 #define GATE_Y0           25
 #define GATE_X1           184

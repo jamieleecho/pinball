@@ -7,9 +7,10 @@
       2,
       3,
       4,
-      5
+      5,
+      6
     ],
-    "MaxObjectTableSize": 39,
+    "MaxObjectTableSize": 51,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -449,6 +450,150 @@
       "globalY": 0,
       "InitData": [
         3
+      ]
+    },
+    {
+      "_comment": "lava left 0",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        0
+      ]
+    },
+    {
+      "_comment": "lava left 1",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        42
+      ]
+    },
+    {
+      "_comment": "lava left 2",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        85
+      ]
+    },
+    {
+      "_comment": "lava left 3",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        128
+      ]
+    },
+    {
+      "_comment": "lava left 4",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        170
+      ]
+    },
+    {
+      "_comment": "lava left 5",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        0,
+        213
+      ]
+    },
+    {
+      "_comment": "lava right 0",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        0
+      ]
+    },
+    {
+      "_comment": "lava right 1",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        42
+      ]
+    },
+    {
+      "_comment": "lava right 2",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        85
+      ]
+    },
+    {
+      "_comment": "lava right 3",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        128
+      ]
+    },
+    {
+      "_comment": "lava right 4",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        170
+      ]
+    },
+    {
+      "_comment": "lava right 5",
+      "GroupID": 6,
+      "ObjectID": 0,
+      "Active": 1,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        213
       ]
     }
   ]

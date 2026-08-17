@@ -47,6 +47,10 @@
 #define PANEL_SPRITE_MULTX 7
 #define PANEL_SPRITE_GATE_SHUT 8
 #define PANEL_SPRITE_GATE_OPEN 9
+
+/* Lava sprites, in the order draw_lava_sheet() lays them out */
+#define LAVA_SPRITE_HOT 0
+#define LAVA_SPRITE_COOL 1
 #define PANEL_TONGUE_STAGES 6
 
 /* Where the panel read-outs sit.  The multiplier and ball count are drawn with
