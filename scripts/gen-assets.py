@@ -1240,12 +1240,18 @@ def fade_below(img, start, end, floor, black=40):
             px[x, y] = (0, 0, 0) if max(r, g, b) < black else (r, g, b)
 
 
-def box_art(w, h, top_trim=0, fade=None):
+def box_art(w, h, top_trim=0, fade=None, black_box=None):
     """The cover, cropped to what will look undistorted at w x h, and reduced.
 
     top_trim is how much of the source to lose off the top; the rest of the
     crop comes off the bottom, which on this cover is the least interesting
     part of the picture.
+
+    black_box is (x, y, w, h) painted flat black before the reduction, which
+    is how the menu gets a plain backdrop to draw its options over.  Doing it
+    here rather than at run time costs nothing: black is a reserved palette
+    entry, so it survives the dither exactly, and the loader has one less thing
+    to draw.
     """
     src = Image.open(BOX_ART).convert("RGB")
     keep = int(round(src.width * PIXEL_TALL * h / w))
@@ -1254,16 +1260,26 @@ def box_art(w, h, top_trim=0, fade=None):
     ).resize((w, h), Image.LANCZOS)
     if fade:
         fade_below(img, *fade)
+    if black_box:
+        bx, by, bw, bh = black_box
+        ImageDraw.Draw(img).rectangle((bx, by, bx + bw - 1, by + bh - 1),
+                                      fill=(0, 0, 0))
     return coco_reduce(img)
 
 
 def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
-    # The menu draws its four option lines and its prompt over rows 99 to 192
-    # of the backdrop (engine/menu.asm), so the lower half is faded down far
-    # enough for that text to read over it.
-    box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45)).save(
+    # The menu draws four option lines at rows 99, 115, 131 and 147, each nine
+    # rows tall and spanning columns 6..191 (engine/menu.asm draws them at
+    # x = 3 bytes), then a prompt down at row 184.  The options get a flat
+    # black box to sit on; the prompt is on its own, which is why the lower
+    # half of the picture is still faded down behind it.
+    #
+    # 58 rows, not 48: four lines starting at 99 reach row 155, and a 48-row
+    # box would leave the last option hanging off the bottom of it.
+    box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45),
+            black_box=(6, 99, 192, 58)).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 

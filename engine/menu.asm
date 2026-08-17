@@ -144,7 +144,7 @@ Menu_RunMain
             bra         SoundMenuInitTextDone@
 !           ldx         #Menu_Orc90
 SoundMenuInitTextDone@
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #131
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
@@ -158,7 +158,7 @@ MusicMenuInitOff@
             clr         Menu_MusicEnabled
             ldx         #Menu_MusicNo
 MusicMenuInitTextDone@
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #147
             puls        u
             jsr         Gfx_DrawTextLine_Back
@@ -242,7 +242,7 @@ Menu_Keypress_S
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #131
             ldu         #13
             jsr         Menu_EraseBox
@@ -259,7 +259,7 @@ SoundMenuTextDone@
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #131
             jsr         Gfx_DrawTextLine
             * update audio hardware state if necessary
@@ -305,7 +305,7 @@ MusicToggleDone@
 ***********************************************************
 Menu_RedrawMusic
             sync
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #147
             ldu         #3
             jsr         Menu_EraseBox
@@ -317,7 +317,7 @@ Menu_RedrawMusic
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+8*4
+            ldb         #5+10*4
             lda         #147
             jsr         Gfx_DrawTextLine
             rts
