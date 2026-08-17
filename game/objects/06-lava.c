@@ -5,31 +5,26 @@ extern "C" {
 #include "06-lava.h"
 #include "object_info.h"
 
-static byte didNotInit = TRUE;
-static GameGlobals *globals;
-
 #ifdef __APPLE__
 void LavaClassInit() {
-    didNotInit = TRUE;
 }
 #endif
 
 void LavaInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
 
-    if (didNotInit) {
-        didNotInit = FALSE;
-        globals = gameGlobals();
-    }
-
+    /* No globals here: the lava runs all the time, so it has nothing to ask
+     * the game about. */
     s->side = initData[0];
     s->along = initData[1];
-    /* A little spread, so the drops do not run in lockstep down the slope. */
-    s->speed = 3 + (initData[1] & 3);
+    /* One or two 256ths of the slope per tick.  At thirty ticks a second that
+     * is a pixel every few tenths of a second -- lava oozes, it does not run.
+     * Mixing the two speeds keeps the drops from moving in lockstep. */
+    s->speed = 1 + (initData[1] & 1);
     s->spriteIdx = LAVA_SPRITE_HOT;
     cob->globalX = VOLCANO_X;
     cob->globalY = VOLCANO_Y;
-    cob->active = OBJECT_UPDATE_ACTIVE;
+    cob->active = OBJECT_ACTIVE;
 }
 
 byte LavaReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
@@ -40,15 +35,10 @@ byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
     unsigned along;
 
-    if (!globals->volcano) {
-        /* Nothing to see until it erupts.  Back to the apex so the next
-         * eruption starts from the top rather than mid-slope. */
-        s->along = 0;
-        cob->active = OBJECT_UPDATE_ACTIVE;
-        return 0;
-    }
-
-    /* `along` is a byte, so this wraps at the foot of the slope on its own and
+    /* The volcano is always simmering: the lava runs whether or not it has
+     * erupted, and erupting is what the multiplier and the shake are for.
+     *
+     * `along` is a byte, so this wraps at the foot of the slope on its own and
      * the drop reappears at the apex. */
     s->along += s->speed;
     along = (unsigned)s->along;
