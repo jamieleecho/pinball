@@ -678,7 +678,11 @@ def draw_ball_sheet(d, img):
     d.rectangle((lx - 4, ly - 3, lx + 4, ly - 2), fill=YELLOW)
     d.rectangle((lx - 4, ly + 2, lx + 4, ly + 3), fill=BROWN)
 
-    return [("Ball", cx, cy, True), ("Launcher", lx, ly, True)]
+    # The ball goes anywhere, so it needs both the byte-aligned draw and the
+    # shifted one.  The launcher only ever sits at LANE_CX, which is even, so
+    # it gets the aligned half alone -- SinglePixelPosition emits two draw
+    # routines instead of one, and the second is dead weight here.
+    return [("Ball", cx, cy, True), ("Launcher", lx, ly, False)]
 
 
 def flipper_points(pivot, deg):
