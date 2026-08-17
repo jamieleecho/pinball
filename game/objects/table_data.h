@@ -79,7 +79,7 @@
 #define LAVA_L_DY         21
 #define LAVA_R_DX         16
 #define LAVA_R_DY         16
-#define LAVA_DROPS        6
+#define LAVA_DROPS        9
 #define GATE_X0           177
 #define GATE_Y0           25
 #define GATE_X1           184

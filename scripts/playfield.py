@@ -124,7 +124,7 @@ BALLS_PITCH = 10
 VOLCANO_APEX = (220, 48)
 VOLCANO_LEFT_FOOT = (200, 69)
 VOLCANO_RIGHT_FOOT = (236, 64)
-LAVA_DROPS = 6  # per slope
+LAVA_DROPS = 9  # per slope
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.

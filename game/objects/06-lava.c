@@ -16,11 +16,11 @@ void LavaInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     /* No globals here: the lava runs all the time, so it has nothing to ask
      * the game about. */
     s->side = initData[0];
-    s->along = initData[1];
-    /* One or two 256ths of the slope per tick.  At thirty ticks a second that
-     * is a pixel every few tenths of a second -- lava oozes, it does not run.
-     * Mixing the two speeds keeps the drops from moving in lockstep. */
-    s->speed = 1 + (initData[1] & 1);
+    s->along = (unsigned)initData[1] << 8;
+    /* Half a step a tick, near enough: a drop takes something like a quarter
+     * of a minute to reach the foot.  Mixing two speeds keeps them from moving
+     * in lockstep. */
+    s->speed = (initData[1] & 1) ? 128 : 192;
     s->spriteIdx = LAVA_SPRITE_HOT;
     cob->globalX = VOLCANO_X;
     cob->globalY = VOLCANO_Y;
@@ -41,7 +41,9 @@ byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
      * `along` is a byte, so this wraps at the foot of the slope on its own and
      * the drop reappears at the apex. */
     s->along += s->speed;
-    along = (unsigned)s->along;
+    /* The high byte is the position along the slope, and it wraps at the foot
+     * on its own, putting the drop back at the apex. */
+    along = (s->along >> 8) & 0xff;
 
     if (s->side) {
         cob->globalX = VOLCANO_X + (unsigned)((LAVA_R_DX * along) >> 8);
@@ -52,7 +54,7 @@ byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     }
 
     /* Cooling as it goes, and flickering on the way. */
-    s->spriteIdx = (s->along & 8) ? LAVA_SPRITE_HOT : LAVA_SPRITE_COOL;
+    s->spriteIdx = (along & 8) ? LAVA_SPRITE_HOT : LAVA_SPRITE_COOL;
     cob->active = OBJECT_ACTIVE;
     return 0;
 }

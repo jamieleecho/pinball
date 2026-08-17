@@ -934,9 +934,14 @@ def draw_lava_sheet(d, img):
     for i, (name, top, bottom) in enumerate(
         (("LavaHot", YELLOW, ORANGE), ("LavaCool", ORANGE, RED))
     ):
-        x0 = 2 + i * 8
-        d.rectangle((x0, 2, x0 + 1, 2), fill=top)
-        d.rectangle((x0, 3, x0 + 1, 4), fill=bottom)
+        x0 = 2 + i * 10
+        # A 3x4 blob with the corners off, so it reads as a drop rather than a
+        # brick.  The middle column joins every row, which the flood fill that
+        # finds each sprite needs -- diagonal contact does not count.
+        d.point((x0 + 1, 2), fill=top)
+        d.rectangle((x0, 3, x0 + 2, 4), fill=top)
+        d.rectangle((x0, 4, x0 + 2, 4), fill=bottom)
+        d.point((x0 + 1, 5), fill=bottom)
         sprites.append((name, x0, 2, True))
     return sprites
 
