@@ -525,6 +525,9 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALL_R           {playfield.BALL_R}
 
 #define NUM_FEET         {len(feet_world)}
+/* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
+ * says feed Vally's tongue.  foot_boxes() returns them top row first. */
+#define NUM_TOP_FEET     {sum(1 for f in feet_world if f[1] == feet_world[0][1])}
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      {playfield.SCORE_DIGITS}

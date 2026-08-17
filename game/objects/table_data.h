@@ -50,6 +50,9 @@
 #define BALL_R           3
 
 #define NUM_FEET         9
+/* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
+ * says feed Vally's tongue.  foot_boxes() returns them top row first. */
+#define NUM_TOP_FEET     4
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      7

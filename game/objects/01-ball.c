@@ -174,6 +174,19 @@ static void spendFoot(byte idx) {
     globals->feetHit[idx >> 3] |= (byte)(1 << (idx & 7));
     scoreTens(3);
     PlaySound(SOUND_TARGET);
+
+    /* Only the feet under the top pods feed Vally's tongue, as the manual has
+     * it.  Twelve of them and she catches the fly: the volcano erupts, lava
+     * runs down it, and the rest of the ball is worth ten times as much.
+     * Tongue length carries across the whole game, not just this ball. */
+    if (idx < NUM_TOP_FEET && globals->tongue < TONGUE_TARGET) {
+        globals->tongue++;
+        if (globals->tongue == TONGUE_TARGET && !globals->volcano) {
+            globals->volcano = 1;
+            globals->multiplier = 10;
+            PlaySound(SOUND_DRAIN);
+        }
+    }
     /* All nine: they come back and scoring steps up, which is what the manual
      * described for the plungers on the original table. */
     if (globals->feetHit[0] == 0xff && globals->feetHit[1] == 0x01) {
