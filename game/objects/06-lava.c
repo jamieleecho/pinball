@@ -5,6 +5,12 @@ extern "C" {
 #include "06-lava.h"
 #include "object_info.h"
 
+/* Ticks each frame is held.  Eight frames carry the gobbets one spacing down
+ * the slope, and there are four spacings in a slope, so a gobbet takes 32
+ * frame changes to travel it.  At 56 ticks a frame and 30 ticks a second that
+ * is about a minute from apex to foot. */
+#define LAVA_FRAME_TICKS 56
+
 #ifdef __APPLE__
 void LavaClassInit() {
 }
@@ -13,15 +19,11 @@ void LavaClassInit() {
 void LavaInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
 
-    /* No globals here: the lava runs all the time, so it has nothing to ask
-     * the game about. */
-    s->side = initData[0];
-    s->along = (unsigned)initData[1] << 8;
-    /* Half a step a tick, near enough: a drop takes something like a quarter
-     * of a minute to reach the foot.  Mixing two speeds keeps them from moving
-     * in lockstep. */
-    s->speed = (initData[1] & 1) ? 128 : 192;
-    s->spriteIdx = LAVA_SPRITE_HOT;
+    /* No globals: the volcano simmers all the time, so the flow has nothing to
+     * ask the game about.  Erupting is what the multiplier is for. */
+    s->frame = 0;
+    s->timer = LAVA_FRAME_TICKS;
+    s->spriteIdx = 0;
     cob->globalX = VOLCANO_X;
     cob->globalY = VOLCANO_Y;
     cob->active = OBJECT_ACTIVE;
@@ -33,33 +35,22 @@ byte LavaReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 
 byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
-    unsigned along;
 
-    /* The volcano is always simmering: the lava runs whether or not it has
-     * erupted, and erupting is what the multiplier and the shake are for.
-     *
-     * `along` is a byte, so this wraps at the foot of the slope on its own and
-     * the drop reappears at the apex. */
-    s->along += s->speed;
-    /* The high byte is the position along the slope, and it wraps at the foot
-     * on its own, putting the drop back at the apex. */
-    along = (s->along >> 8) & 0xff;
-
-    if (s->side) {
-        cob->globalX = VOLCANO_X + (unsigned)((LAVA_R_DX * along) >> 8);
-        cob->globalY = VOLCANO_Y + (unsigned)((LAVA_R_DY * along) >> 8);
-    } else {
-        cob->globalX = VOLCANO_X - (unsigned)((LAVA_L_DX * along) >> 8);
-        cob->globalY = VOLCANO_Y + (unsigned)((LAVA_L_DY * along) >> 8);
+    if (--s->timer == 0) {
+        s->timer = LAVA_FRAME_TICKS;
+        if (++s->frame >= LAVA_FRAMES) {
+            s->frame = 0;
+        }
+        s->spriteIdx = s->frame;
     }
 
-    /* Cooling as it goes, and flickering on the way. */
-    s->spriteIdx = (along & 8) ? LAVA_SPRITE_HOT : LAVA_SPRITE_COOL;
+    /* This one saves its background, so it has to be drawn every tick: stop
+     * and the engine puts the mountain back over it. */
     cob->active = OBJECT_ACTIVE;
     return 0;
 }
 
-RegisterObject(LavaClassInit, LavaInit, 2, LavaReactivate, LavaUpdate, NULL,
+RegisterObject(LavaClassInit, LavaInit, 1, LavaReactivate, LavaUpdate, NULL,
                sizeof(LavaObjectState));
 
 #ifdef __cplusplus

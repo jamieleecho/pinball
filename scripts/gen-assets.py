@@ -554,7 +554,7 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define LAVA_L_DY         {abs(playfield.VOLCANO_LEFT_FOOT[1] - playfield.VOLCANO_APEX[1])}
 #define LAVA_R_DX         {abs(playfield.VOLCANO_RIGHT_FOOT[0] - playfield.VOLCANO_APEX[0])}
 #define LAVA_R_DY         {abs(playfield.VOLCANO_RIGHT_FOOT[1] - playfield.VOLCANO_APEX[1])}
-#define LAVA_DROPS        {playfield.LAVA_DROPS}
+#define LAVA_FRAMES       {playfield.LAVA_FRAMES}
 #define GATE_X0           {playfield.GATE_BOX[0] + playfield.ORIGIN_X}
 #define GATE_Y0           {playfield.GATE_BOX[1] + playfield.ORIGIN_Y}
 #define GATE_X1           {playfield.GATE_BOX[2] + playfield.ORIGIN_X}
@@ -923,26 +923,43 @@ def draw_panel_sheet(d, img):
 
 
 def draw_lava_sheet(d, img):
-    """Two drops of lava, hot and cooling.
+    """The lava, as frames of one flow rather than a swarm of moving drops.
 
-    They move, so unlike almost everything else here they save the background
-    and they need SinglePixelPosition: a drop that could only land on even
-    columns would step down the slope two pixels at a time.  At 2x3 pixels
-    both of those cost almost nothing.
+    Thirty-six drops, each saving and restoring the background every tick, cost
+    the game a third of its frame rate.  This is one sprite in one place, so
+    what it costs no longer grows with how much lava is drawn.
+
+    Each frame is two streams running from the apex down both slopes with
+    gobbets riding on them, and the gobbets shift a fraction of their spacing
+    between frames so the cycle reads as flow.  The streams meet at the apex on
+    purpose: a sprite is found by flood fill, so a frame of separate blobs would
+    come back as whichever blob the anchor landed on and the rest would
+    silently vanish.
     """
+    frames = playfield.LAVA_FRAMES
+    ax, ay = playfield.VOLCANO_APEX
+    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
+
+    x0 = min(f[0] for f in slopes)
+    cell_w = max(f[0] for f in slopes) - x0 + 6
+    cell_h = max(f[1] for f in slopes) - ay + 6
+
     sprites = []
-    for i, (name, top, bottom) in enumerate(
-        (("LavaHot", YELLOW, ORANGE), ("LavaCool", ORANGE, RED))
-    ):
-        x0 = 2 + i * 10
-        # A 3x4 blob with the corners off, so it reads as a drop rather than a
-        # brick.  The middle column joins every row, which the flood fill that
-        # finds each sprite needs -- diagonal contact does not count.
-        d.point((x0 + 1, 2), fill=top)
-        d.rectangle((x0, 3, x0 + 2, 4), fill=top)
-        d.rectangle((x0, 4, x0 + 2, 4), fill=bottom)
-        d.point((x0 + 1, 5), fill=bottom)
-        sprites.append((name, x0, 2, True))
+    for f in range(frames):
+        ox = (f % 4) * cell_w + 2
+        oy = (f // 4) * cell_h + 2
+        apex = (ox + ax - x0, oy + 2)
+
+        for foot in slopes:
+            fx, fy = ox + foot[0] - x0, oy + 2 + foot[1] - ay
+            d.line([apex, (fx, fy)], fill=ORANGE, width=2)
+            for k in range(playfield.LAVA_BULGES):
+                t = (k + f / frames) / playfield.LAVA_BULGES
+                bx = apex[0] + (fx - apex[0]) * t
+                by = apex[1] + (fy - apex[1]) * t
+                d.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
+                d.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
+        sprites.append((f"LavaFlow{f}", apex[0], apex[1], False))
     return sprites
 
 
@@ -954,7 +971,7 @@ def write_sprites():
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
     total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
-    total += write_sprite_group(6, "lava", (32, 16), draw_lava_sheet)
+    total += write_sprite_group(6, "lava", (192, 72), draw_lava_sheet, chunk=8)
     return total
 
 
@@ -1498,11 +1515,9 @@ def write_descriptors():
     # Lava, once the volcano goes off: drops running down both slopes, spread
     # around the run so they do not fall in step.  They start inactive and the
     # object switches itself on.
-    for side in (0, 1):
-        for i in range(playfield.LAVA_DROPS):
-            phase = (i * 256) // playfield.LAVA_DROPS
-            obj(f"lava {'right' if side else 'left'} {i}", 6, 1, 0, 0,
-                [side, phase])
+    # One object for the whole flow: it never moves, and only its frame
+    # changes.
+    obj("lava", 6, 3, 0, 0, [0])
 
     level = {
         "Level": {

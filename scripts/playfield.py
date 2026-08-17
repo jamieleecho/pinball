@@ -121,10 +121,14 @@ BALLS_PITCH = 10
 # apex, and the point on each slope where the mountain meets the ground.  Lava
 # runs from the apex down both slopes, which is the upside-down V the original
 # drew, so these three points are all the path needs.
-VOLCANO_APEX = (220, 48)
-VOLCANO_LEFT_FOOT = (200, 69)
-VOLCANO_RIGHT_FOOT = (236, 64)
-LAVA_DROPS = 9  # per slope
+# Inset from the edges the measurement gives: the lava is five pixels across,
+# and a path drawn along the mountain's own outline hangs half of it out over
+# the white behind.
+VOLCANO_APEX = (220, 52)
+VOLCANO_LEFT_FOOT = (205, 67)
+VOLCANO_RIGHT_FOOT = (231, 63)
+LAVA_FRAMES = 8   # frames of the flow animation
+LAVA_BULGES = 4   # gobbets riding each stream
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.

@@ -11,20 +11,76 @@
   },
   "Sprites": [
     {
-      "Name": "LavaHot",
+      "Name": "LavaFlow0",
       "Location": [
-        2,
-        2
+        17,
+        4
       ],
-      "SinglePixelPosition": true
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
     },
     {
-      "Name": "LavaCool",
+      "Name": "LavaFlow1",
       "Location": [
-        12,
-        2
+        49,
+        4
       ],
-      "SinglePixelPosition": true
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow2",
+      "Location": [
+        81,
+        4
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow3",
+      "Location": [
+        113,
+        4
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow4",
+      "Location": [
+        17,
+        25
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow5",
+      "Location": [
+        49,
+        25
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow6",
+      "Location": [
+        81,
+        25
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "LavaFlow7",
+      "Location": [
+        113,
+        25
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
     }
   ]
 }
