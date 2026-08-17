@@ -1,7 +1,7 @@
 #ifdef DynospriteObject_DataDefinition
 
 /** sizeof(PanelObjectState) */
-#define DynospriteObject_DataSize 2
+#define DynospriteObject_DataSize 4
 
 /** One byte of init data: which read-out this instance is. */
 #define DynospriteObject_InitSize 1
@@ -22,6 +22,7 @@
 typedef struct PanelObjectState {
     byte spriteIdx; /* must be first */
     byte role;
+    byte redraw;    /* the gate only: buffers still to be painted */
 } PanelObjectState;
 
 #endif /* _05_panel_h */

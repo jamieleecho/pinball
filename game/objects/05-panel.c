@@ -40,6 +40,7 @@ void PanelInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
         cob->globalX = GATE_X0;
         cob->globalY = GATE_Y0;
         s->spriteIdx = PANEL_SPRITE_GATE_OPEN;
+        s->redraw = 2;
     } else {
         cob->globalX = PANEL_TONGUE_X;
         cob->globalY = PANEL_TONGUE_Y;
@@ -59,9 +60,20 @@ byte PanelUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
         /* The gate always draws, shut or open.  These sprites save no
          * background, so going inactive would leave the bar across the lane
          * for good; the open one is what takes it away. */
-        s->spriteIdx = globals->gate ? PANEL_SPRITE_GATE_SHUT
-                                     : PANEL_SPRITE_GATE_OPEN;
-        cob->active = OBJECT_ACTIVE;
+        byte idx = globals->gate ? PANEL_SPRITE_GATE_SHUT
+                                 : PANEL_SPRITE_GATE_OPEN;
+        /* Saves no background and never moves, so it only needs painting into
+         * each of the two buffers when it changes -- not every frame. */
+        if (s->spriteIdx != idx) {
+            s->spriteIdx = idx;
+            s->redraw = 2;
+        }
+        if (s->redraw) {
+            s->redraw--;
+            cob->active = OBJECT_ACTIVE;
+        } else {
+            cob->active = OBJECT_UPDATE_ACTIVE;
+        }
         return 0;
     }
 
