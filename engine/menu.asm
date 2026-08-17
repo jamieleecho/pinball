@@ -93,21 +93,21 @@ Menu_RunMain
             tfr         d,u
             pshs        u
             ldx         #Menu_Monitor
-            ldb         #3
+            ldb         #30
             lda         #107
             jsr         Gfx_DrawTextLine_Back
             ldx         #Menu_Control
-            ldb         #3
+            ldb         #30
             lda         #123
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
             ldx         #Menu_Sound
-            ldb         #3
+            ldb         #30
             lda         #139
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
             ldx         #Menu_Music
-            ldb         #3
+            ldb         #30
             lda         #155
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
@@ -125,14 +125,14 @@ Menu_RunMain
             tst         <Gfx_MonitorIsRGB
             beq         >
             ldx         #Menu_RGB
-!           ldb         #5+10*4
+!           ldb         #32+10*4
             lda         #107
             jsr         Gfx_DrawTextLine_Back
             ldx         #Menu_Joystick
             tst         <Input_UseKeyboard
             beq         >
             ldx         #Menu_Keyboard
-!           ldb         #5+10*4
+!           ldb         #32+10*4
             lda         #123
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
@@ -144,7 +144,7 @@ Menu_RunMain
             bra         SoundMenuInitTextDone@
 !           ldx         #Menu_Orc90
 SoundMenuInitTextDone@
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #139
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
@@ -158,7 +158,7 @@ MusicMenuInitOff@
             clr         Menu_MusicEnabled
             ldx         #Menu_MusicNo
 MusicMenuInitTextDone@
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #155
             puls        u
             jsr         Gfx_DrawTextLine_Back
@@ -213,7 +213,7 @@ Menu_Keypress_C
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #123
             ldu         #8
             jsr         Menu_EraseBox
@@ -226,7 +226,7 @@ Menu_Keypress_C
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #123
             jsr         Gfx_DrawTextLine
             rts
@@ -242,7 +242,7 @@ Menu_Keypress_S
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #139
             ldu         #13
             jsr         Menu_EraseBox
@@ -259,7 +259,7 @@ SoundMenuTextDone@
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #139
             jsr         Gfx_DrawTextLine
             * update audio hardware state if necessary
@@ -305,7 +305,7 @@ MusicToggleDone@
 ***********************************************************
 Menu_RedrawMusic
             sync
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #155
             ldu         #3
             jsr         Menu_EraseBox
@@ -317,7 +317,7 @@ Menu_RedrawMusic
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #155
             jsr         Gfx_DrawTextLine
             rts
@@ -328,7 +328,7 @@ Menu_Keypress_M
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #107
             ldu         #9
             jsr         Menu_EraseBox
@@ -341,7 +341,7 @@ Menu_Keypress_M
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #5+10*4
+            ldb         #32+10*4
             lda         #107
             jsr         Gfx_DrawTextLine
             * set new palette

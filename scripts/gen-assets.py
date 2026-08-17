@@ -1271,15 +1271,16 @@ def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
     # The menu draws four option lines at rows 107, 123, 139 and 155, each nine
-    # rows tall and spanning columns 6..191 (engine/menu.asm draws them at
-    # x = 3 bytes), then a prompt down at row 184.  The options get a flat
-    # black box to sit on; the prompt is on its own, which is why the lower
-    # half of the picture is still faded down behind it.
+    # rows tall: the labels from x 60 and the values from x 144 (engine/menu.asm
+    # draws them at 30 and 32+10*4 bytes), with the longest value reaching about
+    # x 248.  Then a prompt down at row 184.  The options get a flat black box
+    # to sit on; the prompt is on its own, which is why the lower half of the
+    # picture is still faded down behind it.
     #
-    # The box moves down with the text and gains a row: 107..165, against text
-    # that runs 107..163.
-    box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45),
-            black_box=(6, 107, 192, 59)).save(
+    # The box is x 58..255 by rows 105..170, which clears the text on every
+    # side.  The picture is cropped harder at the top to suit.
+    box_art(SCREEN_W, SCREEN_H, top_trim=12, fade=(92, 124, 0.45),
+            black_box=(58, 105, 198, 66)).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 
