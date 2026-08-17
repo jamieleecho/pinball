@@ -137,6 +137,16 @@ and only the fraction is kept in object state — see `addPos()` in
 - The COT is searched from the front, so the ball is listed first in the level
   descriptor and the lamp objects can find it in O(1).
 
+## The engine is no longer pristine
+
+`engine/` came across from space-bandits untouched, and everything else here
+still is, but `engine/menu.asm` now differs: the four option rows moved from
+99/115/131/147 down to 107/123/139/155, and the Sound and Music values moved
+right to line up with the other two.  The menu is drawn entirely by the engine
+and offers no hook, so there was nowhere else to put those changes.  Each row
+appears four times -- label, value, erase and redraw -- so all sixteen have to
+move together.
+
 ## When something goes wrong
 
 Failures here surface a long way from their cause. These are the ones that have

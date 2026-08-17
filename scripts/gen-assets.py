@@ -1270,16 +1270,16 @@ def box_art(w, h, top_trim=0, fade=None, black_box=None):
 def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
-    # The menu draws four option lines at rows 99, 115, 131 and 147, each nine
+    # The menu draws four option lines at rows 107, 123, 139 and 155, each nine
     # rows tall and spanning columns 6..191 (engine/menu.asm draws them at
     # x = 3 bytes), then a prompt down at row 184.  The options get a flat
     # black box to sit on; the prompt is on its own, which is why the lower
     # half of the picture is still faded down behind it.
     #
-    # 58 rows, not 48: four lines starting at 99 reach row 155, and a 48-row
-    # box would leave the last option hanging off the bottom of it.
+    # The box moves down with the text and gains a row: 107..165, against text
+    # that runs 107..163.
     box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45),
-            black_box=(6, 99, 192, 58)).save(
+            black_box=(6, 107, 192, 59)).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 
