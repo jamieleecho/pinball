@@ -24,8 +24,26 @@ void TableInit(void) {
 }
 
 byte TableCalculateBkgrndNewXY(void) {
-    DynospriteDirectPageGlobalsPtr->Gfx_BkgrndNewX = CAMERA_X;
-    DynospriteDirectPageGlobalsPtr->Gfx_BkgrndNewY = CAMERA_Y;
+    GameGlobals *g = gameGlobals();
+    int dx = 0;
+    int dy = 0;
+
+    /* The volcano is the one thing that moves the camera.  The shake is not
+     * random: it walks a short fixed loop, which at this size is indis-
+     * tinguishable from noise and costs nothing to work out.  The horizontal
+     * step stays even because the background scrolls a byte at a time, which
+     * at four bits a pixel is two pixels. */
+    if (g->quake) {
+        byte phase = g->quake & 7;
+        g->quake--;
+        dx = (phase & 1) ? QUAKE_X : -QUAKE_X;
+        dy = (phase & 2) ? QUAKE_Y : -QUAKE_Y;
+        if (phase & 4) {
+            dy = -dy;
+        }
+    }
+    DynospriteDirectPageGlobalsPtr->Gfx_BkgrndNewX = CAMERA_X + dx;
+    DynospriteDirectPageGlobalsPtr->Gfx_BkgrndNewY = CAMERA_Y + dy;
     return 0;
 }
 

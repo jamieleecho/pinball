@@ -511,6 +511,10 @@ static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     globals->volcano = 0;
     /* The lines go out with the ball that set them up. */
     globals->plunger = 0;
+    /* Nothing else ever clears this, and UserGlobals comes up holding
+     * whatever was there before: without this the table shakes itself to
+     * pieces for the first two seconds of a cold start. */
+    globals->quake = 0;
     s->pull = 0;
     s->cooldown = 0;
     s->clank = 0;

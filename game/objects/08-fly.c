@@ -64,6 +64,7 @@ byte FlyUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
         s->caught = TRUE;
         globals->volcano = 1;
         globals->multiplier = 10;
+        globals->quake = QUAKE_TICKS;
         PlaySound(SOUND_DRAIN);
     }
 

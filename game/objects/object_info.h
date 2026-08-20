@@ -59,6 +59,13 @@
 #define LITE_KIND_DIAMOND 1
 #define LITE_KIND_PLUNGER 2
 
+/* How long the volcano throws the table about, and how far.  The horizontal
+ * offset has to stay even: the background scrolls in whole bytes, which at
+ * four bits a pixel is two pixels at a time. */
+#define QUAKE_TICKS 64
+#define QUAKE_X 4
+#define QUAKE_Y 3
+
 /* Ticks a struck bumper's middle stays magenta -- about half a second */
 #define DIAMOND_FLASH 20
 
@@ -143,6 +150,9 @@ typedef struct GameGlobals {
     /* Where the fly is in its flight, so Vally's tongue can strike in time
      * with it rather than keeping a second clock of its own. */
     byte flyTick;
+    /* Ticks of eruption still to run.  The volcano going up is the one time
+     * the camera moves, which is why the world is bigger than the screen. */
+    byte quake;
 } GameGlobals;
 
 MAYBE_UNUSED
