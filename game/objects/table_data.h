@@ -80,6 +80,11 @@ const unsigned char tblDiamondBox[] = {
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         228
 #define VOLCANO_Y         64
+/* The box every frame of the flow is drawn into.  The flow is opaque across
+ * it and always in the same place, so it saves no background and is painted
+ * only when the frame changes. */
+#define LAVA_BOX_X        210
+#define LAVA_BOX_Y        62
 /* Distances from the apex to the foot of each slope, as magnitudes: the left
  * one runs left, the right one right, and both run down.  Keeping them
  * positive keeps the shifts in 06-lava.c off negative numbers. */

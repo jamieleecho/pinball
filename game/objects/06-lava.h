@@ -1,7 +1,7 @@
 #ifdef DynospriteObject_DataDefinition
 
 /** sizeof(LavaObjectState) */
-#define DynospriteObject_DataSize 4
+#define DynospriteObject_DataSize 5
 
 /** One byte of init data, unused: there is only ever one flow. */
 #define DynospriteObject_InitSize 1
@@ -26,6 +26,10 @@ typedef struct LavaObjectState {
     byte spriteIdx; /* must be first */
     byte frame;     /* which frame of the flow */
     byte timer;     /* ticks left on this frame */
+    /* Ticks of drawing still owed.  The flow saves no background now, so it
+     * only needs painting into each of the two buffers when the frame
+     * changes -- which is once in fifty-six. */
+    byte redraw;
 } LavaObjectState;
 
 #endif /* _06_lava_h */

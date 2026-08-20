@@ -464,6 +464,10 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     for x0, y0, x1, y1 in feet_world:
         foot_vals += [x0, y0, x1, y1]
 
+    lava_box_world = playfield.world(
+        *lava_box([lava_frame_pixels(i) for i in range(playfield.LAVA_FRAMES)])[:2]
+    )
+
     fly = [playfield.world(x, y) for x, y in playfield.fly_path()]
     fly_x = [p[0] for p in fly]
     fly_y = [p[1] for p in fly]
@@ -593,6 +597,11 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         {playfield.VOLCANO_APEX[0] + playfield.ORIGIN_X}
 #define VOLCANO_Y         {playfield.VOLCANO_APEX[1] + playfield.ORIGIN_Y}
+/* The box every frame of the flow is drawn into.  The flow is opaque across
+ * it and always in the same place, so it saves no background and is painted
+ * only when the frame changes. */
+#define LAVA_BOX_X        {lava_box_world[0]}
+#define LAVA_BOX_Y        {lava_box_world[1]}
 /* Distances from the apex to the foot of each slope, as magnitudes: the left
  * one runs left, the right one right, and both run down.  Keeping them
  * positive keeps the shifts in 06-lava.c off negative numbers. */
@@ -1037,6 +1046,59 @@ def draw_panel_sheet(d, img):
     return sprites
 
 
+LAVA_PAD = 4  # room round the flow for the gobbets to bulge into
+
+
+def lava_frame_pixels(frame):
+    """One frame of the flow, as {(source x, source y): ink}.
+
+    Drawn into a scratch image and read back rather than drawn straight into
+    the sheet, because the sprites now need a box big enough for every frame
+    and there is no way to know how big that is without drawing them all
+    first.
+    """
+    ax, ay = playfield.VOLCANO_APEX
+    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
+    x0 = min(ax, *(f[0] for f in slopes)) - LAVA_PAD
+    y0 = ay - LAVA_PAD
+    w = max(ax, *(f[0] for f in slopes)) - x0 + LAVA_PAD
+    h = max(f[1] for f in slopes) - y0 + LAVA_PAD
+
+    scratch = new_sheet(w, h)
+    sd = ImageDraw.Draw(scratch)
+    apex = (ax - x0, ay - y0)
+    for foot in slopes:
+        fx, fy = foot[0] - x0, foot[1] - y0
+        sd.line([apex, (fx, fy)], fill=ORANGE, width=2)
+        for k in range(playfield.LAVA_BULGES):
+            t = (k + frame / playfield.LAVA_FRAMES) / playfield.LAVA_BULGES
+            bx = apex[0] + (fx - apex[0]) * t
+            by = apex[1] + (fy - apex[1]) * t
+            sd.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
+            sd.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
+    sp = scratch.load()
+    return {
+        (x + x0, y + y0): sp[x, y]
+        for y in range(h)
+        for x in range(w)
+        if sp[x, y] != TRANSPARENT
+    }
+
+
+def lava_box(frames):
+    """The one box every frame of the flow is drawn into, in source pixels.
+
+    Left edge pulled to an even world column: these are drawn byte-aligned and
+    a byte is two pixels at four bits each.
+    """
+    allpx = set().union(*(set(f) for f in frames))
+    x0 = min(p[0] for p in allpx)
+    if (x0 + playfield.ORIGIN_X) % 2:
+        x0 -= 1
+    return (x0, min(p[1] for p in allpx),
+            max(p[0] for p in allpx), max(p[1] for p in allpx))
+
+
 def draw_lava_sheet(d, img):
     """The lava, as frames of one flow rather than a swarm of moving drops.
 
@@ -1051,30 +1113,23 @@ def draw_lava_sheet(d, img):
     come back as whichever blob the anchor landed on and the rest would
     silently vanish.
     """
-    frames = playfield.LAVA_FRAMES
-    ax, ay = playfield.VOLCANO_APEX
-    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
-
-    x0 = min(f[0] for f in slopes)
-    cell_w = max(f[0] for f in slopes) - x0 + 6
-    cell_h = max(f[1] for f in slopes) - ay + 6
+    frames = [lava_frame_pixels(f) for f in range(playfield.LAVA_FRAMES)]
+    box = lava_box(frames)
+    bx0, by0, bx1, by1 = box
+    w, h = bx1 - bx0 + 1, by1 - by0 + 1
+    world = playfield.world_image().load()
 
     sprites = []
-    for f in range(frames):
-        ox = (f % 4) * cell_w + 2
-        oy = (f // 4) * cell_h + 2
-        apex = (ox + ax - x0, oy + 2)
-
-        for foot in slopes:
-            fx, fy = ox + foot[0] - x0, oy + 2 + foot[1] - ay
-            d.line([apex, (fx, fy)], fill=ORANGE, width=2)
-            for k in range(playfield.LAVA_BULGES):
-                t = (k + f / frames) / playfield.LAVA_BULGES
-                bx = apex[0] + (fx - apex[0]) * t
-                by = apex[1] + (fy - apex[1]) * t
-                d.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
-                d.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
-        sprites.append((f"LavaFlow{f}", apex[0], apex[1], False))
+    for i, flow in enumerate(frames):
+        cx = 2 + (i % 4) * (w + 4)
+        cy = 2 + (i // 4) * (h + 4)
+        for j in range(h):
+            for k in range(w):
+                wx, wy = playfield.world(bx0 + k, by0 + j)
+                d.point((cx + k, cy + j), fill=world[wx, wy])
+        for (sx, sy), ink in flow.items():
+            d.point((cx + sx - bx0, cy + sy - by0), fill=ink)
+        sprites.append((f"LavaFlow{i}", cx, cy, False, False))
     return sprites
 
 
