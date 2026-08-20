@@ -5,6 +5,10 @@ extern "C" {
 #include "02-flipper.h"
 #include "object_info.h"
 
+/* Two frame buffers, so a sprite that saves no background has to be painted
+ * into each of them and then not again until what it shows changes. */
+#define BUFFERS 2
+
 static byte didNotInit = TRUE;
 static GameGlobals *globals;
 
@@ -34,6 +38,7 @@ void FlipperInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
         cob->globalY = FLIP_L_Y;
         s->spriteIdx = 0;
     }
+    s->redraw = BUFFERS;
 }
 
 byte FlipperReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
@@ -42,7 +47,7 @@ byte FlipperReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 
 byte FlipperUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     FlipperObjectState *s = (FlipperObjectState *)(cob->statePtr);
-    byte held;
+    byte held, idx;
 
     /* The flippers only answer the keys while a ball is actually in play, so
      * they sit still during the pause after a drain. */
@@ -62,8 +67,20 @@ byte FlipperUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
         s->frame--;
     }
 
-    s->spriteIdx = (s->side == FLIPPER_RIGHT ? FLIPPER_FRAMES : 0) + s->frame;
-    cob->active = OBJECT_ACTIVE;
+    idx = (byte)((s->side == FLIPPER_RIGHT ? FLIPPER_FRAMES : 0) + s->frame);
+    if (s->spriteIdx != idx) {
+        s->spriteIdx = idx;
+        s->redraw = BUFFERS;
+    }
+    /* A flipper at rest is the common case by a long way, and it now costs
+     * nothing: every frame of the sweep is opaque over the same box, so one
+     * paints out the last and there is no background to put back. */
+    if (s->redraw) {
+        s->redraw--;
+        cob->active = OBJECT_ACTIVE;
+    } else {
+        cob->active = OBJECT_UPDATE_ACTIVE;
+    }
     return 0;
 }
 

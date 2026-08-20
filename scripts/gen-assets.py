@@ -826,32 +826,68 @@ def draw_flipper_sheet(d, img):
     """
     cell = 40
     pivot_x, pivot_y = 6, 20
-    left, right = [], []
+    world = playfield.world_image().load()
+    pivots = [playfield.world(*p) for p in playfield.FLIPPER_PIVOTS]
 
+    # Every frame of the sweep, as pixel sets in cell coordinates.
+    shapes = []
     for f in range(playfield.FLIPPER_FRAMES):
         deg = playfield.FLIPPER_REST_DEG + (
             playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
         ) * f / (playfield.FLIPPER_FRAMES - 1)
-
         one = Image.new("P", (cell, cell), TRANSPARENT)
         one.putpalette(sprite_palette())
         od = ImageDraw.Draw(one)
         od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=DTEAL)
-        # Hub, drawn last so the anchor pixel is always opaque.
-        od.ellipse(
-            (pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
+        # Hub, drawn last so the pivot pixel is always opaque.
+        od.ellipse((pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
         od.point((pivot_x, pivot_y), fill=RED)
+        sp = one.load()
+        shapes.append({
+            (x, y): sp[x, y]
+            for y in range(cell)
+            for x in range(cell)
+            if sp[x, y] != TRANSPARENT
+        })
 
-        img.paste(one, (f * cell, 0))
-        left.append((f"LeftFlip{f}", f * cell + pivot_x, pivot_y, False))
+    # One box big enough for the whole sweep, filled with the playfield under
+    # it, so a frame paints out the one before it and none of them needs to
+    # save a background.  The left edge of each side is nudged to land on an
+    # even column: these are drawn byte-aligned, and at four bits a pixel a
+    # byte is two pixels.  BOX_L/BOX_R are in each side's own cell
+    # coordinates, the right side's being mirrored.
+    allpx = set().union(*(set(sh) for sh in shapes))
+    y0 = min(p[1] for p in allpx)
+    y1 = max(p[1] for p in allpx)
+    x0 = min(p[0] for p in allpx)
+    x1 = max(p[0] for p in allpx)
+    box = [(x0 - 1, x1), (cell - 1 - x1 - 1, cell - 1 - x0)]
+    mirror_pivot = cell - 1 - pivot_x
 
-        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, cell))
-        right.append(
-            (f"RightFlip{f}", f * cell + cell - 1 - pivot_x, cell + pivot_y, False))
-
-    # Both pivots sit on even pixel columns, so these never need the
-    # single-pixel-position variant -- which would double the code.
-    return left + right
+    out = []
+    for side in range(2):
+        px0, px1 = box[side]
+        piv = pivot_x if side == 0 else mirror_pivot
+        wx0 = pivots[side][0] - (piv - px0)
+        wy0 = pivots[side][1] - (pivot_y - y0)
+        assert wx0 % 2 == 0, f"flipper box {side} starts on an odd column"
+        w, h = px1 - px0 + 1, y1 - y0 + 1
+        for f, shape in enumerate(shapes):
+            cx = 2 + f * (w + 4)
+            cy = 2 + side * (h + 4)
+            for j in range(h):
+                for k in range(w):
+                    img.putpixel((cx + k, cy + j), world[wx0 + k, wy0 + j])
+            for (sx, sy), ink in shape.items():
+                mx = sx if side == 0 else cell - 1 - sx
+                img.putpixel((cx + mx - px0, cy + sy - y0), ink)
+            # The anchor sits on the pivot, so the object can go on standing
+            # where the collision tables expect it while the sprite is drawn
+            # from the corner of the box.
+            out.append((
+                f'{"Left" if side == 0 else "Right"}Flip{f}',
+                cx + piv - px0, cy + pivot_y - y0, False, False))
+    return out
 
 
 # A compact 5x7 digit font: one string of five characters per row.

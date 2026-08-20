@@ -14,109 +14,121 @@
       "Name": "LeftFlip0",
       "Location": [
         6,
-        20
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "LeftFlip1",
       "Location": [
-        46,
-        20
+        34,
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "LeftFlip2",
       "Location": [
-        86,
-        20
+        62,
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "LeftFlip3",
       "Location": [
-        126,
-        20
+        90,
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "LeftFlip4",
       "Location": [
-        166,
-        20
+        118,
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "LeftFlip5",
       "Location": [
-        206,
-        20
+        146,
+        17
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip0",
       "Location": [
-        33,
-        60
+        22,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip1",
       "Location": [
-        73,
-        60
+        50,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip2",
       "Location": [
-        113,
-        60
+        78,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip3",
       "Location": [
-        153,
-        60
+        106,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip4",
       "Location": [
-        193,
-        60
+        134,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "RightFlip5",
       "Location": [
-        233,
-        60
+        162,
+        51
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     }
   ]
 }
