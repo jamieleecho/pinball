@@ -103,6 +103,14 @@ def main(argv):
         help="Optimization level",
     )
     parser.add_argument(
+        "--cmoc-flag",
+        dest="cmoc_flags",
+        metavar="FLAG",
+        action="append",
+        required=False,
+        help="Extra flag to pass straight through to cmoc",
+    )
+    parser.add_argument(
         "--output-dir", metavar="DIR", type=str, required=True, help="Output directory"
     )
     parser.add_argument(
@@ -138,6 +146,7 @@ def main(argv):
         cmoc_args.append(include_dir)
     for define in args.cmoc_defines or []:
         cmoc_args.append(f"-D{define}")
+    cmoc_args.extend(args.cmoc_flags or [])
     cmoc_args.append(args.file)
     retval = subprocess.call(cmoc_args)
 

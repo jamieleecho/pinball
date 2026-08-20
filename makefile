@@ -123,6 +123,11 @@ SYMBOLASM = $(GENASMDIR)/dynosprite-symbols.asm
 AUDIORATE = $(shell grep -E "AudioSamplingRate\s+EQU\s+[0-9]+" $(SRCDIR)/globals.asm | grep -oE "[0-9]+")
 
 # options
+# Passed straight through to cmoc.  Functions that call nothing can keep their
+# locals off a frame pointer, which saves the prologue, the epilogue and a
+# register throughout -- and this game's object code is up against the page
+# limit that made it take a third page.
+CMOCFLAGS = --cmoc-flag=-fomit-frame-pointer
 ASMFLAGS = -I $(GENASMDIR)
 ifneq ($(RELEASE), 1)
   ASMFLAGS += --define=DEBUG
@@ -260,7 +265,7 @@ $(SYMBOLASM): $(SCRIPTDIR)/symbol-extract.py $(PASS1LIST)
 
 # 6a. Compile C Object handling routines to raw
 $(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
-	cd $(OBJECTDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=object $(notdir $<)
+	cd $(OBJECTDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) $(CMOCFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=object $(notdir $<)
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 
@@ -272,7 +277,7 @@ $(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.asm $(GAMEHDR) $(SRCDIR)/datastruct.asm
 # 6a. Compile C Level handling routines to raw
 # 7a. Compile C Level handling routines to raw
 $(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
-	cd $(LEVELDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=level $(notdir $<)
+	cd $(LEVELDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) $(CMOCFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=level $(notdir $<)
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 
