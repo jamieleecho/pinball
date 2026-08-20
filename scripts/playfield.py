@@ -132,7 +132,7 @@ LAVA_BULGES = 4   # gobbets riding each stream
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.
-TONGUE_XY = (266, 68)
+TONGUE_XY = (260, 77)  # Vally's mouth, down at the pond she is drinking from
 
 CELL = 4  # collision cells, as before: 4x4 pixels, one byte each
 
@@ -328,7 +328,10 @@ def vally_tongue_path():
     """
     mx, my = TONGUE_XY
     fx, fy = fly_path()[FLY_PERIOD // 2]
-    tip_x = fx + FLY_W // 2 - 2
+    # Land on the fly's body, on an even column: the sprite is drawn
+    # byte-aligned, and at four bits a pixel a byte is two pixels, so an odd
+    # left edge would put the whole tongue a pixel off its mouth.
+    tip_x = (fx + FLY_W // 2) & ~1
     tip_y = fy + FLY_H // 2
     corner_y = my + 10
     return [(mx, my), (mx, corner_y), (tip_x, corner_y), (tip_x, tip_y)]

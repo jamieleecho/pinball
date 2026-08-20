@@ -13,7 +13,7 @@
     {
       "Name": "Tongue1",
       "Location": [
-        5,
+        3,
         62
       ],
       "SinglePixelPosition": false,
@@ -22,7 +22,7 @@
     {
       "Name": "Tongue2",
       "Location": [
-        75,
+        63,
         62
       ],
       "SinglePixelPosition": false,
@@ -31,7 +31,7 @@
     {
       "Name": "Tongue3",
       "Location": [
-        145,
+        123,
         62
       ],
       "SinglePixelPosition": false,
@@ -40,8 +40,8 @@
     {
       "Name": "Tongue4",
       "Location": [
-        47,
-        99
+        36,
+        90
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
@@ -49,8 +49,8 @@
     {
       "Name": "Tongue5",
       "Location": [
-        109,
-        99
+        95,
+        90
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
@@ -58,8 +58,8 @@
     {
       "Name": "Tongue6",
       "Location": [
-        165,
-        99
+        144,
+        90
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8

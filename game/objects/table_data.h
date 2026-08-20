@@ -74,8 +74,8 @@ const unsigned char tblDiamondBox[] = {
 #define BALLS_DIGIT_X     196
 #define BALLS_DIGIT_Y     198
 #define BALLS_PITCH       10
-#define PANEL_TONGUE_X    274
-#define PANEL_TONGUE_Y    80
+#define PANEL_TONGUE_X    268
+#define PANEL_TONGUE_Y    89
 
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         228
