@@ -23,6 +23,13 @@
 #define SOUND_DRAIN 4
 #define SOUND_LAUNCH 5
 #define SOUND_LANE 6
+/* Six notes of a pentatonic scale, 7..12.  A scoring target picks one by its
+ * index, so the table has a voice rather than a thump. */
+#define SOUND_NOTE 7
+#define NUM_NOTES 6
+/* The clank is the flipper's own clack, reused for anything that is struck but
+ * does not score: a wall, a piece of scenery, a foot already spent. */
+#define SOUND_CLANK SOUND_FLIPPER
 
 /* Ball sprites */
 #define BALL_SPRITE_BALL 0
@@ -35,11 +42,20 @@
 #define DIGIT_SPRITE_BALL 11
 #define DIGIT_SPRITE_BALL_BLANK 12
 
-/* Foot overlays, in the order draw_lite_sheet() lays them out */
-#define LITE_SPRITE_TALL_LIVE 0
-#define LITE_SPRITE_TALL_SPENT 1
-#define LITE_SPRITE_WIDE_LIVE 2
-#define LITE_SPRITE_WIDE_SPENT 3
+/* Table overlays, in the order draw_lite_sheet() lays them out */
+#define LITE_SPRITE_DIAMOND_HOT 0
+#define LITE_SPRITE_DIAMOND_COOL 1
+#define LITE_SPRITE_TALL_LIVE 2
+#define LITE_SPRITE_TALL_SPENT 3
+#define LITE_SPRITE_WIDE_LIVE 4
+#define LITE_SPRITE_WIDE_SPENT 5
+
+/* Which sort of overlay an instance is, passed as its first init byte */
+#define LITE_KIND_FOOT 0
+#define LITE_KIND_DIAMOND 1
+
+/* Ticks a struck bumper's middle stays magenta -- about half a second */
+#define DIAMOND_FLASH 20
 
 /* Panel sprites, in the order they appear in 05-panel.json */
 #define PANEL_SPRITE_TONGUE1 0
@@ -106,6 +122,7 @@ typedef struct GameGlobals {
     byte multiplier;   /* 1, 2, 3 or 10 */
     byte feetHit[2];   /* bit per foot; nine of them, so nine bits */
     byte tongue;       /* top-mark hits so far this game */
+    byte diamondHit;   /* bit per bumper the ball has just struck */
     byte gate;         /* the lane gate is shut once the shot is in play */
     byte volcano;      /* non-zero once the volcano has erupted this ball */
     byte extraBalls;   /* 10,000-point thresholds already awarded */

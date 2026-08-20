@@ -160,6 +160,47 @@ def in_box(x, y, box):
     return box[0] <= x <= box[2] and box[1] <= y <= box[3]
 
 
+# The three big bumpers.  Their middles flash when the ball strikes them, and
+# the middle is a 6x6 box inset five pixels from the corner: that covers the
+# white hole plus a ring of the bumper's own orange, and lands on an even
+# column, which byte-aligned sprites need.
+DIAMOND_SIZE = 16
+DIAMOND_MID_OFF = 5
+DIAMOND_MID = 6
+
+
+def diamond_boxes():
+    """The bumpers that flash, found by their size rather than written down.
+
+    Only the three big ones qualify; the strips and the small wall diamonds are
+    the same colour but a different shape, and they do not flash.
+    """
+    src, _ = source()
+    p = src.load()
+    seen, boxes = set(), []
+    for y in range(src.height):
+        for x in range(TABLE_X0, TABLE_X1 + 1):
+            if p[x, y] != SRC_ORANGE or (x, y) in seen:
+                continue
+            stack, blob = [(x, y)], []
+            seen.add((x, y))
+            while stack:
+                cx, cy = stack.pop()
+                blob.append((cx, cy))
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx + dx, cy + dy)
+                    if (TABLE_X0 <= n[0] <= TABLE_X1 and 0 <= n[1] < src.height
+                            and n not in seen and p[n] == SRC_ORANGE):
+                        seen.add(n)
+                        stack.append(n)
+            xs = [b[0] for b in blob]
+            ys = [b[1] for b in blob]
+            if (max(xs) - min(xs) + 1 == DIAMOND_SIZE
+                    and max(ys) - min(ys) + 1 == DIAMOND_SIZE):
+                boxes.append((min(xs), min(ys), max(xs), max(ys)))
+    return sorted(boxes, key=lambda b: (b[1], b[0]))
+
+
 def in_sweep(x, y):
     """Inside the quarter-disc one of the tails sweeps through."""
     reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2

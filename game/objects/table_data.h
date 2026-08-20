@@ -53,6 +53,14 @@
 /* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
  * says feed Vally's tongue.  foot_boxes() returns them top row first. */
 #define NUM_TOP_FEET     4
+#define NUM_DIAMONDS     3
+#define DIAMOND_MID_OFF  5
+
+/* The three big bumpers, as x0, y0, x1, y1.  Striking one flashes its middle;
+ * the strips and the small wall diamonds score but do not flash. */
+const unsigned char tblDiamondBox[] = {
+    103, 85, 118, 100, 87, 100, 102, 115, 119, 100, 134, 115,
+};
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      7

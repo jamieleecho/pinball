@@ -46,14 +46,14 @@ static NSString *MenuSoundHigh = @"HiFi";
     _isTransitioning = NO;
     self.isDone = NO;
     if (self.labels.count < 1) {
-        [self addLabelWithText:@"[D]isplay:" atPosition:CGPointMake(3, 99)];
-        _resolutionLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 99)];
-        [self addLabelWithText:@"[C]ontrol:" atPosition:CGPointMake(3, 115)];
-        _controlLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 115)];
-        [self addLabelWithText:@"[S]ound:" atPosition:CGPointMake(3, 131)];
-        _soundLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 131)];
-        [self addLabelWithText:@"M[u]sic:" atPosition:CGPointMake(3, 147)];
-        _musicLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 147)];
+        [self addLabelWithText:@"[D]isplay:" atPosition:CGPointMake(30, 107)];
+        _resolutionLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 107)];
+        [self addLabelWithText:@"[C]ontrol:" atPosition:CGPointMake(30, 123)];
+        _controlLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 123)];
+        [self addLabelWithText:@"[S]ound:" atPosition:CGPointMake(30, 139)];
+        _soundLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 139)];
+        [self addLabelWithText:@"M[u]sic:" atPosition:CGPointMake(30, 155)];
+        _musicLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(120, 155)];
         [self addLabelWithText:@"[Space] or joystick button to start" atPosition:CGPointMake(20, 184)];
 
         _resolution = self.resourceController.hiresMode ? DSInitSceneDisplayHigh : DSInitSceneDisplayLow;

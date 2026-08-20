@@ -28,6 +28,37 @@ local GLOBALS    = 0x2620
 local MAGIC0     = 0x5a
 local MAGIC1     = 0x3c
 
+-- These offsets are hand-maintained against the GameGlobals struct in
+-- game/objects/object_info.h.  Inserting a field there shifts everything after
+-- it, and this file goes on reading the old places without complaining, so
+-- check them first whenever a traced value looks impossible.
+local G_STATE, G_BALLS, G_SCORE = 3, 4, 5
+local G_MULT, G_FEET, G_TONGUE  = 13, 14, 16
+local G_GATE, G_TICK            = 18, 22
+
+-- The Current Object Table is an array of 16-byte COBs: groupIdx at 0, active
+-- at 2, globalX at 4, globalY at 6, statePtr at 8.
+local COB_SIZE   = 16
+local COT_PTR    = 0x2089
+local BALL_GROUP = 1
+
+-- The ball is drawn last, so it is listed last, and looking it up by group
+-- alone would find the launcher head instead -- that shares the group and
+-- comes first.  BallObjectState keeps the role in its second byte and the
+-- ball's is zero, so scan for that.  Entries past the end of the table are
+-- garbage, but they are all past the ball, so the first match is the right one.
+local function findBall(mem)
+  local cot = mem:read_u16(COT_PTR)
+  for i = 0, 79 do
+    local cob = cot + i * COB_SIZE
+    if mem:read_u8(cob) == BALL_GROUP then
+      local st = mem:read_u16(cob + 8)
+      if mem:read_u8(st + 1) == 0 then return cob, st end
+    end
+  end
+  return nil, nil
+end
+
 -- The launcher springs back if it is held too long, so rather than guess a
 -- hold length the driver watches the game's own "pull" counter and lets go the
 -- moment it reaches full stretch.
@@ -90,9 +121,10 @@ local function tick()
   -- The release has to last several video frames.  The game only samples the
   -- keyboard on its own 30Hz tick, so a one-frame release can fall between two
   -- ticks and be missed entirely, leaving the plunger winding round for ever.
-  local state = mem:read_u8(GLOBALS + 3)
-  local cot = mem:read_u16(0x2089)
-  local pull = mem:read_u8(mem:read_u16(cot + 8) + 9)
+  local state = mem:read_u8(GLOBALS + G_STATE)
+  local cob, st = findBall(mem)
+  if cob == nil then return end
+  local pull = mem:read_u8(st + 9)
   if frames >= release_until then
     if state == 1 and pull >= MAX_PULL then
       release_until = frames + 12
@@ -117,19 +149,17 @@ local function tick()
   if TRACE and (frames - play_from) % TRACE == 0 then
     local g = GLOBALS
     local function u8(o) return mem:read_u8(g + o) end
-    -- The ball is the first entry of the Current Object Table; the COB layout
-    -- is groupIdx, objectIdx, active, res1, globalX, globalY, statePtr...
-    local bx = mem:read_u16(cot + 4)
-    local by = mem:read_u16(cot + 6)
-    local st = mem:read_u16(cot + 8)
+    local bx = mem:read_u16(cob + 4)
+    local by = mem:read_u16(cob + 6)
     print(string.format(
       "f=%d state=%d balls=%d score=%02x%02x%02x%02x mult=%d feet=%02x%02x tongue=%d gate=%d " ..
       "| ball %d,%d act=%d vx=%d vy=%d pull=%d tick=%d",
-      frames, u8(3), u8(4), u8(5), u8(6), u8(7), u8(8), u8(13), u8(15), u8(14),
-      u8(16), u8(17),
-      bx, by, mem:read_u8(cot + 2),
+      frames, u8(G_STATE), u8(G_BALLS), u8(G_SCORE), u8(G_SCORE + 1),
+      u8(G_SCORE + 2), u8(G_SCORE + 3), u8(G_MULT), u8(G_FEET + 1), u8(G_FEET),
+      u8(G_TONGUE), u8(G_GATE),
+      bx, by, mem:read_u8(cob + 2),
       s16(mem:read_u16(st + 4)), s16(mem:read_u16(st + 6)), mem:read_u8(st + 9),
-      u8(21)))
+      u8(G_TICK)))
   end
 end
 

@@ -437,6 +437,10 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     flat = [grid[y][x] for y in range(gh) for x in range(gw)]
 
     _, feet = playfield.source()
+    diamonds = playfield.diamond_boxes()
+    diamond_vals = []
+    for x0, y0, x1, y1 in diamonds:
+        diamond_vals += list(playfield.world(x0, y0)) + list(playfield.world(x1, y1))
     feet_world = [
         playfield.world(x0, y0) + playfield.world(x1, y1)
         for x0, y0, x1, y1 in playfield.foot_boxes(feet)
@@ -528,6 +532,12 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
  * says feed Vally's tongue.  foot_boxes() returns them top row first. */
 #define NUM_TOP_FEET     {sum(1 for f in feet_world if f[1] == feet_world[0][1])}
+#define NUM_DIAMONDS     {len(diamonds)}
+#define DIAMOND_MID_OFF  {playfield.DIAMOND_MID_OFF}
+
+/* The three big bumpers, as x0, y0, x1, y1.  Striking one flashes its middle;
+ * the strips and the small wall diamonds score but do not flash. */
+{c_table("tblDiamondBox", diamond_vals, per_line=16)}
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      {playfield.SCORE_DIGITS}
@@ -836,7 +846,24 @@ def draw_lite_sheet(d, img):
     for x0, y0, x1, y1 in playfield.foot_boxes(feet):
         shapes.setdefault((x1 - x0 + 1, y1 - y0 + 1), (x0, y0))
 
-    x = 2
+    # The bumper middles, hot and cool.  Both are lifted straight out of the
+    # artwork so the ring of orange around the hole matches the bumper exactly;
+    # the hot one just has magenta where the hole is.
+    src, _ = playfield.source()
+    sp = src.load()
+    dx0, dy0 = playfield.diamond_boxes()[0][:2]
+    mid = playfield.DIAMOND_MID
+    for i, hole in enumerate((MAGENTA, WHITE)):
+        x0 = 2 + i * (mid + 4)
+        for j in range(mid):
+            for k in range(mid):
+                c = sp[dx0 + playfield.DIAMOND_MID_OFF + k,
+                       dy0 + playfield.DIAMOND_MID_OFF + j]
+                d.point((x0 + k, 2 + j),
+                        fill=ORANGE if c == playfield.SRC_ORANGE else hole)
+        sprites.append((f'Diamond{"Hot" if i == 0 else "Cool"}', x0, 2, False, False))
+
+    x = 2 + 2 * (mid + 4) + 4
     for (w, h), (sx, sy) in sorted(shapes.items()):
         for ink, tag in ((ORANGE, "Live"), (TEAL, "Spent")):
             d.rectangle((x, 2, x + w - 1, 2 + h - 1), fill=WHITE)
@@ -1390,6 +1417,9 @@ def write_wav(name, samples):
 # effects are therefore given a fast decay rather than a short duration.
 SND_MIN_MS = 220
 
+# A pentatonic scale: C, D, E, G, A, and the octave.
+SND_SCALE = (262, 294, 330, 392, 440, 523)
+
 
 def envelope(t, decay):
     if decay <= 0:
@@ -1448,6 +1478,14 @@ def write_sounds():
     # the shortness is all in the decay.
     write_wav("06-lane.wav", tone(150, 140, SND_MIN_MS, "square", decay=26.0))
 
+    # Notes for the scoring targets, so a good run sounds like a tune rather
+    # than a series of thumps.  Plain square waves, and a pentatonic scale
+    # because any two of its notes sit together -- the ball chooses the order,
+    # and it has no ear.  All well under the 800Hz the 2kHz DAC can carry.
+    for i, freq in enumerate(SND_SCALE):
+        write_wav(f"{7 + i:02d}-note{i + 1}.wav",
+                  tone(freq, freq, SND_MIN_MS, "square", decay=9.0))
+
 
 def write_descriptors():
     import json
@@ -1487,7 +1525,6 @@ def write_descriptors():
     # The ball must come first: the overlays find it with a search that stops
     # at the first object of its group.
     lane_cx = (playfield.LANE_X0 + playfield.LANE_X1) // 2 + playfield.ORIGIN_X
-    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
     obj("launcher", 1, 3, lane_cx, LAUNCHER_REST_Y, [1])
     obj("left flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[0]), [0])
     obj("right flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[1]), [1])
@@ -1507,7 +1544,9 @@ def write_descriptors():
     # One overlay per foot; it places itself from tblFootBox.
     _, feet = playfield.source()
     for i in range(len(playfield.foot_boxes(feet))):
-        obj(f"foot {i}", 4, 3, 0, 0, [i])
+        obj(f"foot {i}", 4, 3, 0, 0, [0, i])
+    for i in range(len(playfield.diamond_boxes())):
+        obj(f"bumper middle {i}", 4, 3, 0, 0, [1, i])
 
     for i, what in enumerate(("tongue", "game over", "multiplier X", "lane gate")):
         obj(what, 5, 3 if what == "lane gate" else 1, 0, 0, [i])
@@ -1518,6 +1557,11 @@ def write_descriptors():
     # One object for the whole flow: it never moves, and only its frame
     # changes.
     obj("lava", 6, 3, 0, 0, [0])
+
+    # The ball goes last, so it is drawn over everything else.  It matters most
+    # around the feet: those save no background, so when one changes colour it
+    # repaints itself, and anything drawn before it would be painted over.
+    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
 
     level = {
         "Level": {

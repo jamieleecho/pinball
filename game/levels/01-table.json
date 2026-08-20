@@ -10,7 +10,7 @@
       5,
       6
     ],
-    "MaxObjectTableSize": 40,
+    "MaxObjectTableSize": 43,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -25,17 +25,6 @@
     "BkgrndStartY": 12
   },
   "Objects": [
-    {
-      "_comment": "ball",
-      "GroupID": 1,
-      "ObjectID": 0,
-      "Active": 3,
-      "globalX": 188,
-      "globalY": 178,
-      "InitData": [
-        0
-      ]
-    },
     {
       "_comment": "launcher",
       "GroupID": 1,
@@ -317,6 +306,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         0
       ]
     },
@@ -328,6 +318,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         1
       ]
     },
@@ -339,6 +330,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         2
       ]
     },
@@ -350,6 +342,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         3
       ]
     },
@@ -361,6 +354,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         4
       ]
     },
@@ -372,6 +366,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         5
       ]
     },
@@ -383,6 +378,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         6
       ]
     },
@@ -394,6 +390,7 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         7
       ]
     },
@@ -405,7 +402,44 @@
       "globalX": 0,
       "globalY": 0,
       "InitData": [
+        0,
         8
+      ]
+    },
+    {
+      "_comment": "bumper middle 0",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        0
+      ]
+    },
+    {
+      "_comment": "bumper middle 1",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        1
+      ]
+    },
+    {
+      "_comment": "bumper middle 2",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        1,
+        2
       ]
     },
     {
@@ -459,6 +493,17 @@
       "Active": 3,
       "globalX": 0,
       "globalY": 0,
+      "InitData": [
+        0
+      ]
+    },
+    {
+      "_comment": "ball",
+      "GroupID": 1,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 188,
+      "globalY": 178,
       "InitData": [
         0
       ]

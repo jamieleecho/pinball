@@ -30,6 +30,9 @@ extern "C" {
 #define FLIPPER_KICK 72
 
 #define TARGET_COOLDOWN 8
+/* The clank is only a sound, so it has its own shorter guard.  Sharing the
+ * scoring cooldown made every wall bounce swallow the bumper hit after it. */
+#define CLANK_COOLDOWN 6
 #define STUCK_FRAMES 60
 #define STUCK_SPEED 120
 
@@ -173,7 +176,8 @@ static byte footSpent(byte idx) {
 static void spendFoot(byte idx) {
     globals->feetHit[idx >> 3] |= (byte)(1 << (idx & 7));
     scoreTens(3);
-    PlaySound(SOUND_TARGET);
+    /* Each foot has its own note, so working round them plays a phrase. */
+    PlaySound(SOUND_NOTE + (idx % NUM_NOTES));
 
     /* Only the feet under the top pods feed Vally's tongue, as the manual has
      * it.  Twelve of them and she catches the fly: the volcano erupts, lava
@@ -205,8 +209,17 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
     if (kind == K_BUMPER) {
         kick = 1;
         if (!s->cooldown) {
+            /* The three big bumpers flash their middles and each has its own
+             * note; the strips and the little wall diamonds score the same but
+             * take the note below them. */
+            int d = findBox(tblDiamondBox, NUM_DIAMONDS, hx, hy);
             scoreTens(1);
-            PlaySound(SOUND_BUMPER);
+            if (d >= 0) {
+                globals->diamondHit |= (byte)(1 << d);
+                PlaySound(SOUND_NOTE + (byte)d);
+            } else {
+                PlaySound(SOUND_NOTE + NUM_NOTES - 1);
+            }
             s->cooldown = TARGET_COOLDOWN;
         }
     } else if (kind == K_FOOT) {
@@ -221,6 +234,10 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
                 spendFoot((byte)idx);
                 s->cooldown = TARGET_COOLDOWN;
             }
+        } else if (!s->clank) {
+            /* Spent: it is scenery now, and sounds like it. */
+            PlaySound(SOUND_CLANK);
+            s->clank = CLANK_COOLDOWN;
         }
     }
 
@@ -237,6 +254,12 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
         return;
     }
 
+    /* Anything else the ball meets -- wall, scenery -- just clanks.  The
+     * guard keeps a ball running along a wall from rattling. */
+    if (!s->clank) {
+        PlaySound(SOUND_CLANK);
+        s->clank = CLANK_COOLDOWN;
+    }
     reflect(s, nx, ny, kind == K_SCENERY ? GAIN_SCENERY : GAIN_WALL);
     jitter(s, nx, ny);
 }
@@ -396,6 +419,7 @@ static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     globals->volcano = 0;
     s->pull = 0;
     s->cooldown = 0;
+    s->clank = 0;
     s->stillFor = 0;
     placeOnLauncher(cob, s, 0);
 }
@@ -451,6 +475,7 @@ void BallInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     s->fy = 0;
     s->pull = 0;
     s->cooldown = 0;
+    s->clank = 0;
     s->lastEnter = 0;
     s->stillFor = 0;
     s->nudge = 0;
@@ -478,6 +503,26 @@ byte BallReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
     return 0;
 }
 
+/**
+ * The ball, wherever it is in the object table.
+ *
+ * It shares its group with the launcher head, so a search on the group alone
+ * finds whichever of the two comes first -- which used to be the ball only
+ * because the ball was listed first.  It is listed last now, so that it draws
+ * over everything, and this asks for the role instead.
+ */
+static DynospriteCOB *findBall(void) {
+    DynospriteCOB *o = DynospriteDirectPageGlobalsPtr->Obj_CurrentTablePtr;
+    DynospriteCOB *end = o + DynospriteDirectPageGlobalsPtr->Obj_NumCurrent;
+    for (; o < end; ++o) {
+        if (o->groupIdx == BALL_GROUP_IDX &&
+            ((BallObjectState *)(o->statePtr))->role == BALL_ROLE_BALL) {
+            return o;
+        }
+    }
+    return 0;
+}
+
 byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     BallObjectState *s = (BallObjectState *)(cob->statePtr);
     byte state = globals->gameState;
@@ -485,8 +530,7 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     if (s->role == BALL_ROLE_LAUNCHER) {
         /* The launcher head mirrors however far the ball is drawn back, and
          * disappears once the ball is away. */
-        DynospriteCOB *ballCob = findObjectByGroup(
-            DynospriteDirectPageGlobalsPtr->Obj_CurrentTablePtr, BALL_GROUP_IDX);
+        DynospriteCOB *ballCob = findBall();
         byte pull = 0;
         if (ballCob) {
             pull = ((BallObjectState *)(ballCob->statePtr))->pull;
@@ -507,6 +551,9 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
     if (s->cooldown) {
         s->cooldown--;
+    }
+    if (s->clank) {
+        s->clank--;
     }
 
     switch (state) {

@@ -11,9 +11,29 @@
   },
   "Sprites": [
     {
-      "Name": "FootTallLive",
+      "Name": "DiamondHot",
       "Location": [
         2,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DiamondCool",
+      "Location": [
+        12,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8,
+      "SaveBackground": false
+    },
+    {
+      "Name": "FootTallLive",
+      "Location": [
+        26,
         2
       ],
       "SinglePixelPosition": true,
@@ -23,7 +43,7 @@
     {
       "Name": "FootTallSpent",
       "Location": [
-        10,
+        34,
         2
       ],
       "SinglePixelPosition": true,
@@ -33,7 +53,7 @@
     {
       "Name": "FootWideLive",
       "Location": [
-        18,
+        42,
         2
       ],
       "SinglePixelPosition": true,
@@ -43,7 +63,7 @@
     {
       "Name": "FootWideSpent",
       "Location": [
-        28,
+        52,
         2
       ],
       "SinglePixelPosition": true,
