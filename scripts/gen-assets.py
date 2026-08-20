@@ -449,6 +449,10 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     for x0, y0, x1, y1 in feet_world:
         foot_vals += [x0, y0, x1, y1]
 
+    # Each tongue's root block, in world pixels.
+    tongue_l = playfield.world(*playfield.DINO_TONGUE_ROOTS[0])
+    tongue_r = playfield.world(*playfield.DINO_TONGUE_ROOTS[1])
+
     # Flipper geometry, one entry per side per animation frame.  "dir" runs
     # from the pivot to the tip; "nrm" is the outward normal of the face the
     # ball is meant to be launched from.
@@ -569,6 +573,21 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define GATE_Y0           {playfield.GATE_BOX[1] + playfield.ORIGIN_Y}
 #define GATE_X1           {playfield.GATE_BOX[2] + playfield.ORIGIN_X}
 #define GATE_Y1           {playfield.GATE_BOX[3] + playfield.ORIGIN_Y}
+
+/* The dinosaurs' tongues.  Like the gate these come and go, so they cannot be
+ * cells in the grid; unlike the gate they lie at 45 degrees, so the ball tests
+ * its distance from a line rather than its place in a box.  X is the root
+ * block's outer edge -- the left tongue grows towards smaller x and the right
+ * towards larger -- and Y is the root block's bottom. */
+#define TONGUE_L_X        {tongue_l[0]}
+#define TONGUE_R_X        {tongue_r[0]}
+#define TONGUE_Y          {tongue_l[1]}
+#define TONGUE_MAX        {playfield.DINO_TONGUE_BLOCKS}
+#define TONGUE_PERIOD     {playfield.DINO_TONGUE_PERIOD}
+
+/* How far out a tongue is on each tick of its cycle.  The two run half a
+ * period apart, so one is always further out than the other. */
+{c_table("tblTongueLen", playfield.tongue_lengths(), per_line=16)}
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
@@ -990,6 +1009,31 @@ def draw_lava_sheet(d, img):
     return sprites
 
 
+def draw_tongue_sheet(d, img):
+    """Each tongue at each extension, both sides.
+
+    The anchor is the block at the head, which is drawn at every length, so the
+    object stands still and only the sprite changes.  That also keeps the drawn
+    edge on an even column whichever length is showing -- the left tongue grows
+    two pixels left at a time from an even root -- so neither side has to pay
+    for SinglePixelPosition.
+    """
+    sprites = []
+    for side in range(2):
+        for n in range(1, playfield.DINO_TONGUE_BLOCKS + 1):
+            px = playfield.tongue_pixels(side, n)
+            x0 = min(q[0] for q in px)
+            y0 = min(q[1] for q in px)
+            cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * 12
+            for qx, qy in px:
+                d.point((cx + qx - x0, 2 + qy - y0), fill=TEAL)
+            rx, ry = playfield.DINO_TONGUE_ROOTS[side]
+            sprites.append((
+                f'Tongue{"R" if side else "L"}{n}',
+                cx + rx - x0, 2 + ry - y0, False))
+    return sprites
+
+
 def write_sprites():
     os.makedirs(SPRITE_DIR, exist_ok=True)
     total = 0
@@ -999,6 +1043,8 @@ def write_sprites():
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
     total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
     total += write_sprite_group(6, "lava", (192, 72), draw_lava_sheet, chunk=8)
+    total += write_sprite_group(7, "tongue", (112, 16), draw_tongue_sheet,
+                                chunk=8)
     return total
 
 
@@ -1558,6 +1604,12 @@ def write_descriptors():
     # changes.
     obj("lava", 6, 3, 0, 0, [0])
 
+    # The two tongues.  They place themselves from the roots in table_data.h,
+    # and they update before the ball does, which is what lets the ball trust
+    # the extension each one publishes.
+    for i, name in enumerate(("left tongue", "right tongue")):
+        obj(name, 7, 3, 0, 0, [i])
+
     # The ball goes last, so it is drawn over everything else.  It matters most
     # around the feet: those save no background, so when one changes colour it
     # repaints itself, and anything drawn before it would be painted over.
@@ -1567,7 +1619,10 @@ def write_descriptors():
         "Level": {
             "Name": "Lost World Pinball",
             "Description": "Three balls. Hit anything red.",
-            "ObjectGroups": [1, 2, 3, 4, 5, 6],
+            # Every group an object in the list belongs to has to appear
+            # here, or the loader searches the sprite group table, falls
+            # off the end of it and traps.
+            "ObjectGroups": sorted({o["GroupID"] for o in objects}),
             "MaxObjectTableSize": len(objects) + 2,
             "Tileset": 1,
             "TilemapImage": "../tiles/01-table.png",

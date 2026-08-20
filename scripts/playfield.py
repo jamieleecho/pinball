@@ -201,6 +201,48 @@ def diamond_boxes():
     return sorted(boxes, key=lambda b: (b[1], b[0]))
 
 
+# The dinosaurs at the bottom flick their tongues out of their heads towards
+# the wall beside them.  Each is a chain of 2x2 blocks stepping outwards at 45
+# degrees -- up and out, so 135 degrees on the left and 45 on the right -- and
+# at full stretch the tip reaches the magenta border.  That is the whole point
+# of them: an extended tongue bridges the outlane, and the ball cannot get down
+# the side past it.
+DINO_TONGUE_ROOTS = ((56, 157), (148, 157))  # top-left of the block at the head
+DINO_TONGUE_BLOCKS = 4                       # blocks at full stretch
+DINO_TONGUE_PERIOD = 32                      # ticks for a full in-and-out
+
+
+def tongue_pixels(side, blocks):
+    """One tongue at a given extension, in source coordinates.
+
+    Blocks that step diagonally touch only at their corners, and a sprite is
+    found by flood fill, for which diagonal contact does not count.  Each joint
+    therefore carries one extra pixel: without it the fill would take the block
+    under the anchor and leave the rest of the tongue behind, silently.
+    """
+    step = -1 if side == 0 else 1
+    rx, ry = DINO_TONGUE_ROOTS[side]
+    px = set()
+    prev_y = None
+    for k in range(blocks):
+        bx, by = rx + 2 * k * step, ry - 2 * k
+        px |= {(bx + i, by + j) for i in range(2) for j in range(2)}
+        if prev_y is not None:
+            px.add((bx + (1 if step < 0 else 0), prev_y))
+        prev_y = by
+    return px
+
+
+def tongue_lengths():
+    """How far each tongue is out, one entry per tick of the cycle."""
+    half = DINO_TONGUE_PERIOD // 2
+    out = []
+    for i in range(DINO_TONGUE_PERIOD):
+        q = i if i < half else DINO_TONGUE_PERIOD - 1 - i
+        out.append(1 + (q * DINO_TONGUE_BLOCKS) // half)
+    return out
+
+
 def in_sweep(x, y):
     """Inside the quarter-disc one of the tails sweeps through."""
     reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2

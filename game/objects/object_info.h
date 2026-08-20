@@ -15,6 +15,7 @@
 #define FLIPPER_GROUP_IDX 2
 #define DIGIT_GROUP_IDX 3
 #define LITE_GROUP_IDX 4
+#define TONGUE_GROUP_IDX 7
 
 /* Sounds, numbered to match game/sounds/XX-*.wav */
 #define SOUND_BUMPER 1
@@ -128,6 +129,10 @@ typedef struct GameGlobals {
     byte extraBalls;   /* 10,000-point thresholds already awarded */
     byte stateTimer;   /* counts down state transitions */
     byte flashTimer;   /* free-running counter for flashing displays */
+    /* How far each dinosaur's tongue is out, in blocks.  The tongue objects
+     * publish it so the ball bounces off the shape actually on the screen.
+     * Kept at the end of the struct: the playtest driver reads by offset. */
+    byte tongueOut[2];
 } GameGlobals;
 
 MAYBE_UNUSED

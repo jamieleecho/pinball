@@ -268,6 +268,45 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
  * Moves the ball one sub-step and deals with whatever it touches.  Returns
  * non-zero if it hit something, in which case the step has been rolled back.
  */
+/**
+ * Ball against a dinosaur's tongue.
+ *
+ * The tongues come and go, so like the launch gate they cannot be cells in the
+ * grid; unlike the gate they lie at 45 degrees, so this measures a distance
+ * from a line instead of a place in a box.  Both u and v run outwards from the
+ * root block, so on the tongue itself they are equal and their difference is
+ * the distance across it, scaled by root two.  The sign of that difference is
+ * which face the ball is on.
+ */
+static byte tongueNormal(int ix, int iy, signed char *nx, signed char *ny) {
+    byte side;
+
+    for (side = 0; side < 2; side++) {
+        int reach = ((int)globals->tongueOut[side] << 1) - 1;
+        int u = side ? ix - TONGUE_R_X : (TONGUE_L_X + 1) - ix;
+        int v = (TONGUE_Y + 1) - iy;
+        int d;
+
+        if (u < -BALL_R || u > reach + BALL_R ||
+            v < -BALL_R || v > reach + BALL_R) {
+            continue;
+        }
+        d = u - v;
+        if (d < -(BALL_R + 2) || d > BALL_R + 2) {
+            continue;
+        }
+        if (side) {
+            *nx = d <= 0 ? -23 : 23;
+            *ny = d <= 0 ? -23 : 23;
+        } else {
+            *nx = d <= 0 ? 23 : -23;
+            *ny = d <= 0 ? -23 : 23;
+        }
+        return 1;
+    }
+    return 0;
+}
+
 static byte stepBall(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
     unsigned oldX = cob->globalX;
     unsigned oldY = cob->globalY;
@@ -323,6 +362,20 @@ static byte stepBall(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
             /* It is tall and narrow, so the ball is nearly always arriving
              * side-on; push it back the way it came. */
             reflect(s, ix < GATE_X0 ? -32 : 32, 0, GAIN_WALL);
+            return 1;
+        }
+        /* A tongue that is out bridges the outlane beside it, and the ball
+         * comes back into the table rather than running down the side. */
+        if (tongueNormal(ix, iy, &bnx, &bny)) {
+            cob->globalX = oldX;
+            cob->globalY = oldY;
+            s->fx = oldFx;
+            s->fy = oldFy;
+            reflect(s, bnx, bny, GAIN_WALL);
+            if (!s->clank) {
+                PlaySound(SOUND_CLANK);
+                s->clank = CLANK_COOLDOWN;
+            }
             return 1;
         }
         return 0;

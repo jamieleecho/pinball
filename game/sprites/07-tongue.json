@@ -1,0 +1,86 @@
+{
+  "Main": {
+    "Group": 7,
+    "Image": "07-tongue.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "TongueL1",
+      "Location": [
+        2,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueL2",
+      "Location": [
+        16,
+        4
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueL3",
+      "Location": [
+        30,
+        6
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueL4",
+      "Location": [
+        44,
+        8
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueR1",
+      "Location": [
+        50,
+        2
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueR2",
+      "Location": [
+        62,
+        4
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueR3",
+      "Location": [
+        74,
+        6
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    },
+    {
+      "Name": "TongueR4",
+      "Location": [
+        86,
+        8
+      ],
+      "SinglePixelPosition": false,
+      "ChunkHint": 8
+    }
+  ]
+}
