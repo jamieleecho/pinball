@@ -134,8 +134,12 @@ and only the fraction is kept in object state — see `addPos()` in
   keys at once, and a pinball game needs both flippers.
 - **One object type per C file.** Multiple behaviours come from instances with
   different `InitData` in the level descriptor.
-- The COT is searched from the front, so the ball is listed first in the level
-  descriptor and the lamp objects can find it in O(1).
+- **The ball is listed last**, so it draws over everything else — which matters
+  around the feet, since those save no background and repaint themselves. The
+  cost is that nothing can find the ball by taking the front of the COT: look
+  for the object whose group is the ball's *and* whose state says its role is
+  `BALL_ROLE_BALL`, because the launcher head shares that group and comes
+  first. `scripts/playtest.lua` had to learn the same lesson.
 
 ## The engine is no longer pristine
 
@@ -194,6 +198,20 @@ waiting on stdin, which never closes under `docker run -i`. The makefile passes
 
 **An object drawing itself as something else** is almost always a state-size
 overrun — see `DynospriteObject_DataSize` above.
+
+**An object that updates but never appears** may be sitting off the side of the
+world. CMOC types a conditional expression by its arms, so
+
+```c
+cob->globalX = side ? 156 : 64;   /* both fit a char: 156 arrives as -100 */
+```
+
+narrows to a signed char and sign-extends into `globalX`. Nothing warns and
+nothing traps; the object is simply outside the camera. Write the branch out
+longhand whenever an arm is above 127. The way to see it is to read the COB out
+of emulated memory — group index, `active`, `globalX`, `globalY`, and the first
+byte of the state — which settles in one run what guessing at the drawing code
+will not.
 
 **The whole screen comes up in the wrong colours, stretched, and frozen** is
 the tileset and the tilemap disagreeing: the tilemap indexes tiles that the

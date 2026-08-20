@@ -93,6 +93,26 @@ const unsigned char tblDiamondBox[] = {
 #define GATE_X1           184
 #define GATE_Y1           53
 
+/* The dinosaurs' tongues.  Like the gate these come and go, so they cannot be
+ * cells in the grid; unlike the gate they lie at 45 degrees, so the ball tests
+ * its distance from a line rather than its place in a box.  X is the root
+ * block's outer edge -- the left tongue grows towards smaller x and the right
+ * towards larger -- and Y is the root block's bottom. */
+#define TONGUE_L_X        64
+#define TONGUE_R_X        156
+#define TONGUE_Y          169
+#define TONGUE_MAX        4
+#define TONGUE_PERIOD     64
+
+/* How far out a tongue is on each tick of its cycle.  The two run half a
+ * period apart, so one is always further out than the other. */
+const unsigned char tblTongueLen[] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1,
+};
+
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
 const unsigned char tblFootBox[] = {

@@ -11,16 +11,26 @@ extern "C" {
  * is about a minute from apex to foot. */
 #define LAVA_FRAME_TICKS 56
 
+static byte didNotInit = TRUE;
+static GameGlobals *globals;
+
 #ifdef __APPLE__
 void LavaClassInit() {
+    didNotInit = TRUE;
 }
 #endif
 
 void LavaInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
 
-    /* No globals: the volcano simmers all the time, so the flow has nothing to
-     * ask the game about.  Erupting is what the multiplier is for. */
+    if (didNotInit) {
+        didNotInit = FALSE;
+        globals = gameGlobals();
+    }
+
+    /* The volcano simmers all the time rather than only when it erupts --
+     * erupting is what the multiplier is for -- but it simmers only while a
+     * ball is in play. */
     s->frame = 0;
     s->timer = LAVA_FRAME_TICKS;
     s->spriteIdx = 0;
@@ -36,7 +46,7 @@ byte LavaReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     LavaObjectState *s = (LavaObjectState *)(cob->statePtr);
 
-    if (--s->timer == 0) {
+    if (globals->gameState == GameStatePlaying && --s->timer == 0) {
         s->timer = LAVA_FRAME_TICKS;
         if (++s->frame >= LAVA_FRAMES) {
             s->frame = 0;
