@@ -102,13 +102,15 @@ const unsigned char tblDiamondBox[] = {
 #define TONGUE_R_X        156
 #define TONGUE_Y          169
 #define TONGUE_MAX        4
-#define TONGUE_PERIOD     32
+#define TONGUE_PERIOD     64
 
 /* How far out a tongue is on each tick of its cycle.  The two run half a
  * period apart, so one is always further out than the other. */
 const unsigned char tblTongueLen[] = {
-    1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4,
-    4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1,
 };
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it

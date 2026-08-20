@@ -1,7 +1,7 @@
 #ifdef DynospriteObject_DataDefinition
 
 /** sizeof(TongueObjectState) */
-#define DynospriteObject_DataSize 2
+#define DynospriteObject_DataSize 3
 
 /** One byte of init data: which side this tongue is on. */
 #define DynospriteObject_InitSize 1
@@ -31,6 +31,10 @@
 typedef struct TongueObjectState {
     byte spriteIdx; /* must be first */
     byte side;
+    /* Its own place in the cycle, rather than a phase read off the game's
+     * free-running counter: this one stops with the ball, and picking up
+     * where it left off is the point of keeping it here. */
+    byte phase;
 } TongueObjectState;
 
 #endif /* _07_tongue_h */

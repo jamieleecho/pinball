@@ -209,7 +209,7 @@ def diamond_boxes():
 # the side past it.
 DINO_TONGUE_ROOTS = ((56, 157), (148, 157))  # top-left of the block at the head
 DINO_TONGUE_BLOCKS = 4                       # blocks at full stretch
-DINO_TONGUE_PERIOD = 32                      # ticks for a full in-and-out
+DINO_TONGUE_PERIOD = 64                      # ticks for a full in-and-out
 
 
 def tongue_pixels(side, blocks):

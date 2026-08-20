@@ -23,6 +23,8 @@ void TongueInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     }
 
     s->side = initData[0];
+    /* Half a cycle apart, so one is always further out than the other. */
+    s->phase = (byte)(s->side ? TONGUE_PERIOD / 2 : 0);
     s->spriteIdx = (byte)(s->side ? TONGUE_MAX : 0);
     /* Written out rather than picked with ?:.  CMOC gives a conditional
      * expression whose arms are both small constants a char's type, and
@@ -45,10 +47,14 @@ byte TongueReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 
 byte TongueUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     TongueObjectState *s = (TongueObjectState *)(cob->statePtr);
-    byte phase = (byte)(globals->flashTimer +
-                        (s->side ? TONGUE_PERIOD / 2 : 0)) &
-                 (byte)(TONGUE_PERIOD - 1);
-    byte out = tblTongueLen[phase];
+    byte out;
+
+    /* Tongues flick only while a ball is in play.  A table sitting on its
+     * launcher, or waiting out a drain, holds still. */
+    if (globals->gameState == GameStatePlaying) {
+        s->phase = (byte)(s->phase + 1) & (byte)(TONGUE_PERIOD - 1);
+    }
+    out = tblTongueLen[s->phase];
 
     globals->tongueOut[s->side] = out;
     s->spriteIdx = (byte)((s->side ? TONGUE_MAX : 0) + out - 1);
