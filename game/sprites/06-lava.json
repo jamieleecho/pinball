@@ -1,7 +1,7 @@
 {
   "Main": {
-    "Group": 5,
-    "Image": "05-panel.png",
+    "Group": 6,
+    "Image": "06-lava.png",
     "Transparent": [
       255,
       0,
@@ -11,96 +11,76 @@
   },
   "Sprites": [
     {
-      "Name": "Tongue1",
+      "Name": "LavaFlow0",
       "Location": [
-        2,
-        26
+        17,
+        4
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "Tongue2",
+      "Name": "LavaFlow1",
       "Location": [
-        36,
-        26
+        49,
+        4
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "Tongue3",
+      "Name": "LavaFlow2",
       "Location": [
-        70,
-        26
+        81,
+        4
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "Tongue4",
+      "Name": "LavaFlow3",
       "Location": [
-        104,
-        26
+        113,
+        4
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "Tongue5",
+      "Name": "LavaFlow4",
       "Location": [
-        138,
-        26
+        17,
+        25
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "Tongue6",
+      "Name": "LavaFlow5",
       "Location": [
-        172,
-        26
+        49,
+        25
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "GameOver",
+      "Name": "LavaFlow6",
       "Location": [
-        2,
-        34
+        81,
+        25
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
     },
     {
-      "Name": "MultX",
+      "Name": "LavaFlow7",
       "Location": [
-        160,
-        34
+        113,
+        25
       ],
       "SinglePixelPosition": false,
       "ChunkHint": 8
-    },
-    {
-      "Name": "GateShut",
-      "Location": [
-        100,
-        30
-      ],
-      "SinglePixelPosition": true,
-      "ChunkHint": 8,
-      "SaveBackground": false
-    },
-    {
-      "Name": "GateOpen",
-      "Location": [
-        116,
-        30
-      ],
-      "SinglePixelPosition": true,
-      "ChunkHint": 8,
-      "SaveBackground": false
     }
   ]
 }

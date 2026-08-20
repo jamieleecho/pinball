@@ -136,7 +136,7 @@ regenerated.
 ## Layout
 
 ```
-engine/     DynoSprite engine (6809/6309 assembly), unmodified
+engine/     DynoSprite engine (6809/6309 assembly); only menu.asm differs
 mac/        the same engine reimplemented in Objective-C, plus the Xcode app
 game/
   levels/   the table: descriptor plus its per-frame hook

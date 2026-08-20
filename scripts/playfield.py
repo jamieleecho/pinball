@@ -57,18 +57,40 @@ FLIPPER_BOXES = ((55, 157, 84, 172), (121, 157, 150, 172))
 # The launch lane: an 8-pixel white channel running the full height of the
 # table down its right-hand side, walled off from the playfield by the divider.
 LANE_X0, LANE_X1 = 177, 184
-LANE_TOP = 30  # above this the lane opens into the table
+LANE_TOP = 34  # above this the lane opens into the table
+
+# The stopper.  The lane and the table are joined by one gap: the columns of
+# the divider, x 169..176, between the bottom of the curved top border (y 13-16
+# depending on the column) and the top of the divider itself (y 35-41).  A shot
+# on its way up goes through that gap into the table; the stopper then fills it
+# so the ball cannot come back.  It is a sprite rather than artwork because it
+# is only there once the ball is in play.
+#
+# Measured off the artwork column by column, then squared off, and then given a
+# row at each end on top of that.  The border above and the divider below both
+# start lower on some columns than others, so a bar that stops exactly where
+# the measurement says leaves what look like missing pixels at its ends; the
+# extra row buries them.
+GATE_BOX = (169, 13, 176, 41)  # source x0, y0, x1, y1, inclusive
+GATE_W = GATE_BOX[2] - GATE_BOX[0] + 1
+GATE_H = GATE_BOX[3] - GATE_BOX[1] + 1
 
 # The flippers.  Each is one of the little dinosaurs, 30x16, pivoting on its
 # outer end so the tips meet over the drain.
-# Each dinosaur's head, with its eye, is the outer upper end; the chunky orange
-# tail is the inner lower one, and the two tails all but meet over the drain.
-# The flippers pivot on those tails, so the tips sweep outward and upward.
-FLIPPER_PIVOTS = ((84, 171), (121, 171))
-FLIPPER_LEN = 20
+# The paddles are the dinosaurs' tails.  Each tail is the chunky orange block
+# at the inboard lower end of its dinosaur, and it pivots where it joins the
+# body -- source x 78 and 126, either side of the drain's centre line at 102.5.
+#
+# The left tail sweeps from 315 degrees at rest to 45 when pressed, the right
+# from 225 to 135; in this file's convention, which measures downwards from
+# horizontal, that is +45 to -45 with the right one mirrored.  A length of 19
+# puts the resting tips at x 91 and 113, leaving 21 pixels between them -- the
+# width of three balls -- directly over the drain mouth at x 93..112.
+FLIPPER_PIVOTS = ((78, 169), (126, 169))
+FLIPPER_LEN = 19
 FLIPPER_HALF_THICK = 4
-FLIPPER_REST_DEG = -21  # the angle the artwork already draws them at
-FLIPPER_UP_DEG = -55    # swept up
+FLIPPER_REST_DEG = 45   # below horizontal, at rest
+FLIPPER_UP_DEG = -45    # above horizontal, fully raised
 FLIPPER_FRAMES = 6
 
 BALL_R = 3
@@ -94,6 +116,19 @@ MULT_XY = (272, 158)
 # bottom and the rest pile upwards, which is why the pitch is subtracted.
 BALLS_XY = (188, 186)
 BALLS_PITCH = 10
+
+# The volcano: the left peak in the panel.  Measured off the artwork -- the
+# apex, and the point on each slope where the mountain meets the ground.  Lava
+# runs from the apex down both slopes, which is the upside-down V the original
+# drew, so these three points are all the path needs.
+# Inset from the edges the measurement gives: the lava is five pixels across,
+# and a path drawn along the mountain's own outline hangs half of it out over
+# the white behind.
+VOLCANO_APEX = (220, 52)
+VOLCANO_LEFT_FOOT = (205, 67)
+VOLCANO_RIGHT_FOOT = (231, 63)
+LAVA_FRAMES = 8   # frames of the flow animation
+LAVA_BULGES = 4   # gobbets riding each stream
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.
@@ -123,6 +158,58 @@ def _load(name):
 
 def in_box(x, y, box):
     return box[0] <= x <= box[2] and box[1] <= y <= box[3]
+
+
+# The three big bumpers.  Their middles flash when the ball strikes them, and
+# the middle is a 6x6 box inset five pixels from the corner: that covers the
+# white hole plus a ring of the bumper's own orange, and lands on an even
+# column, which byte-aligned sprites need.
+DIAMOND_SIZE = 16
+DIAMOND_MID_OFF = 5
+DIAMOND_MID = 6
+
+
+def diamond_boxes():
+    """The bumpers that flash, found by their size rather than written down.
+
+    Only the three big ones qualify; the strips and the small wall diamonds are
+    the same colour but a different shape, and they do not flash.
+    """
+    src, _ = source()
+    p = src.load()
+    seen, boxes = set(), []
+    for y in range(src.height):
+        for x in range(TABLE_X0, TABLE_X1 + 1):
+            if p[x, y] != SRC_ORANGE or (x, y) in seen:
+                continue
+            stack, blob = [(x, y)], []
+            seen.add((x, y))
+            while stack:
+                cx, cy = stack.pop()
+                blob.append((cx, cy))
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx + dx, cy + dy)
+                    if (TABLE_X0 <= n[0] <= TABLE_X1 and 0 <= n[1] < src.height
+                            and n not in seen and p[n] == SRC_ORANGE):
+                        seen.add(n)
+                        stack.append(n)
+            xs = [b[0] for b in blob]
+            ys = [b[1] for b in blob]
+            if (max(xs) - min(xs) + 1 == DIAMOND_SIZE
+                    and max(ys) - min(ys) + 1 == DIAMOND_SIZE):
+                boxes.append((min(xs), min(ys), max(xs), max(ys)))
+    return sorted(boxes, key=lambda b: (b[1], b[0]))
+
+
+def in_sweep(x, y):
+    """Inside the quarter-disc one of the tails sweeps through."""
+    reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2
+    for (px, py), outward in zip(FLIPPER_PIVOTS, (1, -1)):
+        dx = (x - px) * outward
+        dy = y - py
+        if 0 <= dx and dx * dx + dy * dy <= reach * reach and abs(dy) <= dx + 1:
+            return True
+    return False
 
 
 def source():
@@ -174,10 +261,12 @@ def kind_at(src_px, feet, x, y):
         # surface.  Leaving it solid means the ball rattles about on top of it
         # and is never lost; the ball object counts it out by crossing DRAIN_Y.
         return K_EMPTY
-    if any(in_box(x, y, b) for b in FLIPPER_BOXES):
-        # The flippers swing, so they cannot live in a grid that never moves.
-        # They are objects, and the ball meets them analytically from the pivot
-        # and the current angle; here they are simply a hole in the table.
+    if in_sweep(x, y):
+        # The arc the tails sweep through cannot live in a grid that never
+        # moves.  The paddles are objects and the ball meets them analytically
+        # from the pivot and the current angle, so the arc is a hole; the rest
+        # of each dinosaur stays solid, or the ball would sail through the one
+        # thing on the table that visibly is not a gap.
         return K_EMPTY
     if (x, y) in feet:
         return K_FOOT

@@ -1,10 +1,10 @@
 #ifdef DynospriteObject_DataDefinition
 
-/** sizeof(FootObjectState) */
-#define DynospriteObject_DataSize 2
+/** sizeof(LiteObjectState) */
+#define DynospriteObject_DataSize 6
 
-/** One byte of init data: which of the nine feet this is. */
-#define DynospriteObject_InitSize 1
+/** Two bytes of init data: which sort of overlay, and which one of them. */
+#define DynospriteObject_InitSize 2
 
 #else
 
@@ -14,18 +14,21 @@
 #include "dynosprite.h"
 
 /**
- * One of the nine feet.  The foot itself is painted into the tilemap; this
- * object sits on top of it and draws it live (orange) or spent (cyan).
+ * An overlay sitting on top of something painted into the tilemap: one of the
+ * nine feet, or the middle of one of the three big bumpers.
  *
- * It always draws one or the other, never nothing, because these sprites carry
- * no erase code -- see the sheet in scripts/gen-assets.py.  "Stop drawing the
- * cyan" would leave the cyan on screen for good, so the orange is what puts it
- * back when the ball drains.
+ * All of these draw one of two opaque sprites and never nothing, because they
+ * carry no erase code -- see the sheet in scripts/gen-assets.py.  "Stop
+ * drawing the second one" would leave it on screen for good, so it is the
+ * first that puts things back.
  */
-typedef struct FootObjectState {
+typedef struct LiteObjectState {
     byte spriteIdx; /* must be first */
-    byte index;     /* 0..NUM_FEET-1 */
-} FootObjectState;
+    byte kind;      /* LITE_KIND_FOOT or LITE_KIND_DIAMOND */
+    byte index;     /* which foot, or which bumper */
+    byte redraw;    /* buffers still to be painted with the current sprite */
+    byte timer;     /* bumpers only: ticks left of the flash */
+} LiteObjectState;
 
 #endif /* _04_lite_h */
 

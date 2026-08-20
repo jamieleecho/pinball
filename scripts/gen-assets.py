@@ -437,6 +437,10 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     flat = [grid[y][x] for y in range(gh) for x in range(gw)]
 
     _, feet = playfield.source()
+    diamonds = playfield.diamond_boxes()
+    diamond_vals = []
+    for x0, y0, x1, y1 in diamonds:
+        diamond_vals += list(playfield.world(x0, y0)) + list(playfield.world(x1, y1))
     feet_world = [
         playfield.world(x0, y0) + playfield.world(x1, y1)
         for x0, y0, x1, y1 in playfield.foot_boxes(feet)
@@ -450,9 +454,9 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     # ball is meant to be launched from.
     fdx, fdy, fnx, fny = [], [], [], []
     frames = playfield.FLIPPER_FRAMES
-    # Entries for the left flipper first.  Its tip points outward, which is to
-    # the left, so it is the mirrored one now that the pivot has moved inboard.
-    for mirror in (True, False):
+    # Entries for the left flipper first.  Its tail sweeps to the right, away
+    # from the pivot, so it is the unmirrored one.
+    for mirror in (False, True):
         for f in range(frames):
             deg = playfield.FLIPPER_REST_DEG + (
                 playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
@@ -525,6 +529,15 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALL_R           {playfield.BALL_R}
 
 #define NUM_FEET         {len(feet_world)}
+/* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
+ * says feed Vally's tongue.  foot_boxes() returns them top row first. */
+#define NUM_TOP_FEET     {sum(1 for f in feet_world if f[1] == feet_world[0][1])}
+#define NUM_DIAMONDS     {len(diamonds)}
+#define DIAMOND_MID_OFF  {playfield.DIAMOND_MID_OFF}
+
+/* The three big bumpers, as x0, y0, x1, y1.  Striking one flashes its middle;
+ * the strips and the small wall diamonds score but do not flash. */
+{c_table("tblDiamondBox", diamond_vals, per_line=16)}
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      {playfield.SCORE_DIGITS}
@@ -540,6 +553,22 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALLS_PITCH       {playfield.BALLS_PITCH}
 #define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
 #define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
+
+/* The volcano, and the two slopes the lava runs down. */
+#define VOLCANO_X         {playfield.VOLCANO_APEX[0] + playfield.ORIGIN_X}
+#define VOLCANO_Y         {playfield.VOLCANO_APEX[1] + playfield.ORIGIN_Y}
+/* Distances from the apex to the foot of each slope, as magnitudes: the left
+ * one runs left, the right one right, and both run down.  Keeping them
+ * positive keeps the shifts in 06-lava.c off negative numbers. */
+#define LAVA_L_DX         {abs(playfield.VOLCANO_LEFT_FOOT[0] - playfield.VOLCANO_APEX[0])}
+#define LAVA_L_DY         {abs(playfield.VOLCANO_LEFT_FOOT[1] - playfield.VOLCANO_APEX[1])}
+#define LAVA_R_DX         {abs(playfield.VOLCANO_RIGHT_FOOT[0] - playfield.VOLCANO_APEX[0])}
+#define LAVA_R_DY         {abs(playfield.VOLCANO_RIGHT_FOOT[1] - playfield.VOLCANO_APEX[1])}
+#define LAVA_FRAMES       {playfield.LAVA_FRAMES}
+#define GATE_X0           {playfield.GATE_BOX[0] + playfield.ORIGIN_X}
+#define GATE_Y0           {playfield.GATE_BOX[1] + playfield.ORIGIN_Y}
+#define GATE_X1           {playfield.GATE_BOX[2] + playfield.ORIGIN_X}
+#define GATE_Y1           {playfield.GATE_BOX[3] + playfield.ORIGIN_Y}
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
@@ -674,20 +703,21 @@ def draw_ball_sheet(d, img):
     d.rectangle((lx - 4, ly - 3, lx + 4, ly - 2), fill=YELLOW)
     d.rectangle((lx - 4, ly + 2, lx + 4, ly + 3), fill=BROWN)
 
-    return [("Ball", cx, cy, True), ("Launcher", lx, ly, True)]
+    # The ball goes anywhere, so it needs both the byte-aligned draw and the
+    # shifted one.  The launcher only ever sits at LANE_CX, which is even, so
+    # it gets the aligned half alone -- SinglePixelPosition emits two draw
+    # routines instead of one, and the second is dead weight here.
+    return [("Ball", cx, cy, True), ("Launcher", lx, ly, False)]
 
 
-def flipper_points(pivot, deg, mirror):
+def flipper_points(pivot, deg):
     """Outline of a flipper rotated deg degrees below horizontal."""
     px, py = pivot
     a = math.radians(deg)
-    sgn = -1 if mirror else 1
     ca, sa = math.cos(a), math.sin(a)
 
     def at(along, across):
-        x = px + sgn * (along * ca) - across * sa * sgn * sgn
-        y = py + along * sa + across * ca
-        return (x, y)
+        return (px + along * ca - across * sa, py + along * sa + across * ca)
 
     base = float(playfield.FLIPPER_HALF_THICK)
     tip = base / 2.0
@@ -700,38 +730,46 @@ def flipper_points(pivot, deg, mirror):
 
 
 def draw_flipper_sheet(d, img):
-    sprites = []
-    cell_w = 40
-    cell_h = 40
-    # Side 0 is the left flipper.  It pivots on its dinosaur's tail, which is
-    # the inboard end, so its tip points outward -- to the left -- and it is
-    # the mirrored one.  The collision tables in table_data.h are built in the
-    # same order, and the two have to agree or the ball bounces off a flipper
-    # drawn somewhere else.
-    for side in (0, 1):
-        mirror = side == 0
-        for f in range(playfield.FLIPPER_FRAMES):
-            col = f
-            row = side
-            # Anchor (the pivot) sits where the flipper's hub is, at whichever
-            # end of the cell leaves room for the body.
-            ax = col * cell_w + (34 if mirror else 6)
-            ay = row * cell_h + 20
-            deg = playfield.FLIPPER_REST_DEG + (
-                playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
-            ) * f / (
-                playfield.FLIPPER_FRAMES - 1
-            )
-            pts = flipper_points((ax, ay), deg, mirror)
-            d.polygon(pts, fill=TEAL, outline=DTEAL)
-            # Hub, drawn last so the anchor pixel is always opaque.
-            d.ellipse((ax - 3, ay - 3, ax + 3, ay + 3), fill=ORANGE)
-            d.point((ax, ay), fill=RED)
-            name = ("Left" if side == 0 else "Right") + f"Flip{f}"
-            # Both pivots sit on even pixel columns, so these never need the
-            # single-pixel-position variant -- which would double the code.
-            sprites.append((name, ax, ay, False))
-    return sprites
+    """Six frames of the right flipper; the left is those pixels mirrored.
+
+    Only one side is ever drawn.  Reflecting the outline and rasterising it
+    again rounds differently on each side and leaves the two a handful of
+    pixels apart -- enough to see, and enough to make one flipper hit sooner
+    than the other.  Mirroring the finished pixels makes them identical by
+    construction.
+
+    Side 0 is the left flipper.  It pivots on its dinosaur's tail, which is the
+    inboard end, so its tip points outward; the collision tables in
+    table_data.h are built in the same order and must agree.
+    """
+    cell = 40
+    pivot_x, pivot_y = 6, 20
+    left, right = [], []
+
+    for f in range(playfield.FLIPPER_FRAMES):
+        deg = playfield.FLIPPER_REST_DEG + (
+            playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
+        ) * f / (playfield.FLIPPER_FRAMES - 1)
+
+        one = Image.new("P", (cell, cell), TRANSPARENT)
+        one.putpalette(sprite_palette())
+        od = ImageDraw.Draw(one)
+        od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=DTEAL)
+        # Hub, drawn last so the anchor pixel is always opaque.
+        od.ellipse(
+            (pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
+        od.point((pivot_x, pivot_y), fill=RED)
+
+        img.paste(one, (f * cell, 0))
+        left.append((f"LeftFlip{f}", f * cell + pivot_x, pivot_y, False))
+
+        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, cell))
+        right.append(
+            (f"RightFlip{f}", f * cell + cell - 1 - pivot_x, cell + pivot_y, False))
+
+    # Both pivots sit on even pixel columns, so these never need the
+    # single-pixel-position variant -- which would double the code.
+    return left + right
 
 
 # A compact 5x7 digit font: one string of five characters per row.
@@ -808,7 +846,24 @@ def draw_lite_sheet(d, img):
     for x0, y0, x1, y1 in playfield.foot_boxes(feet):
         shapes.setdefault((x1 - x0 + 1, y1 - y0 + 1), (x0, y0))
 
-    x = 2
+    # The bumper middles, hot and cool.  Both are lifted straight out of the
+    # artwork so the ring of orange around the hole matches the bumper exactly;
+    # the hot one just has magenta where the hole is.
+    src, _ = playfield.source()
+    sp = src.load()
+    dx0, dy0 = playfield.diamond_boxes()[0][:2]
+    mid = playfield.DIAMOND_MID
+    for i, hole in enumerate((MAGENTA, WHITE)):
+        x0 = 2 + i * (mid + 4)
+        for j in range(mid):
+            for k in range(mid):
+                c = sp[dx0 + playfield.DIAMOND_MID_OFF + k,
+                       dy0 + playfield.DIAMOND_MID_OFF + j]
+                d.point((x0 + k, 2 + j),
+                        fill=ORANGE if c == playfield.SRC_ORANGE else hole)
+        sprites.append((f'Diamond{"Hot" if i == 0 else "Cool"}', x0, 2, False, False))
+
+    x = 2 + 2 * (mid + 4) + 4
     for (w, h), (sx, sy) in sorted(shapes.items()):
         for ink, tag in ((ORANGE, "Live"), (TEAL, "Spent")):
             d.rectangle((x, 2, x + w - 1, 2 + h - 1), fill=WHITE)
@@ -872,6 +927,66 @@ def draw_panel_sheet(d, img):
     draw_text(d, x0, y0, "X", MAGENTA, scale=1)
     sprites.append(("MultX", x0, y0, False))
 
+    # The gate across the mouth of the launch lane, shut and open.  Both are
+    # opaque over the same footprint and save no background, so the open one is
+    # what takes the bar away again -- there is no erase code to do it.
+    # The stopper across the gap between the table and the launch lane, shut
+    # and open.  Both are opaque over the same footprint and save no
+    # background, so the open one is what takes the bar away again.
+    #
+    # It sits on an odd column, so this is the one sprite in the game that pays
+    # for SinglePixelPosition.  Nudging it a pixel to suit the compiler would
+    # leave a slot down one side of the gap and eat a pixel of the table on the
+    # other.
+    for i, (name, ink) in enumerate((("GateShut", MAGENTA), ("GateOpen", WHITE))):
+        # Clear of the GameOver plate (x 2..67) and the tongue frames (y 2..26).
+        x0 = 100 + i * (playfield.GATE_W + 8)
+        y0 = 30
+        d.rectangle((x0, y0, x0 + playfield.GATE_W - 1, y0 + playfield.GATE_H - 1),
+                    fill=ink)
+        sprites.append((name, x0, y0, True, False))
+
+    return sprites
+
+
+def draw_lava_sheet(d, img):
+    """The lava, as frames of one flow rather than a swarm of moving drops.
+
+    Thirty-six drops, each saving and restoring the background every tick, cost
+    the game a third of its frame rate.  This is one sprite in one place, so
+    what it costs no longer grows with how much lava is drawn.
+
+    Each frame is two streams running from the apex down both slopes with
+    gobbets riding on them, and the gobbets shift a fraction of their spacing
+    between frames so the cycle reads as flow.  The streams meet at the apex on
+    purpose: a sprite is found by flood fill, so a frame of separate blobs would
+    come back as whichever blob the anchor landed on and the rest would
+    silently vanish.
+    """
+    frames = playfield.LAVA_FRAMES
+    ax, ay = playfield.VOLCANO_APEX
+    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
+
+    x0 = min(f[0] for f in slopes)
+    cell_w = max(f[0] for f in slopes) - x0 + 6
+    cell_h = max(f[1] for f in slopes) - ay + 6
+
+    sprites = []
+    for f in range(frames):
+        ox = (f % 4) * cell_w + 2
+        oy = (f // 4) * cell_h + 2
+        apex = (ox + ax - x0, oy + 2)
+
+        for foot in slopes:
+            fx, fy = ox + foot[0] - x0, oy + 2 + foot[1] - ay
+            d.line([apex, (fx, fy)], fill=ORANGE, width=2)
+            for k in range(playfield.LAVA_BULGES):
+                t = (k + f / frames) / playfield.LAVA_BULGES
+                bx = apex[0] + (fx - apex[0]) * t
+                by = apex[1] + (fy - apex[1]) * t
+                d.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
+                d.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
+        sprites.append((f"LavaFlow{f}", apex[0], apex[1], False))
     return sprites
 
 
@@ -883,6 +998,7 @@ def write_sprites():
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
     total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
+    total += write_sprite_group(6, "lava", (192, 72), draw_lava_sheet, chunk=8)
     return total
 
 
@@ -1212,12 +1328,18 @@ def fade_below(img, start, end, floor, black=40):
             px[x, y] = (0, 0, 0) if max(r, g, b) < black else (r, g, b)
 
 
-def box_art(w, h, top_trim=0, fade=None):
+def box_art(w, h, top_trim=0, fade=None, black_box=None):
     """The cover, cropped to what will look undistorted at w x h, and reduced.
 
     top_trim is how much of the source to lose off the top; the rest of the
     crop comes off the bottom, which on this cover is the least interesting
     part of the picture.
+
+    black_box is (x, y, w, h) painted flat black before the reduction, which
+    is how the menu gets a plain backdrop to draw its options over.  Doing it
+    here rather than at run time costs nothing: black is a reserved palette
+    entry, so it survives the dither exactly, and the loader has one less thing
+    to draw.
     """
     src = Image.open(BOX_ART).convert("RGB")
     keep = int(round(src.width * PIXEL_TALL * h / w))
@@ -1226,16 +1348,27 @@ def box_art(w, h, top_trim=0, fade=None):
     ).resize((w, h), Image.LANCZOS)
     if fade:
         fade_below(img, *fade)
+    if black_box:
+        bx, by, bw, bh = black_box
+        ImageDraw.Draw(img).rectangle((bx, by, bx + bw - 1, by + bh - 1),
+                                      fill=(0, 0, 0))
     return coco_reduce(img)
 
 
 def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
-    # The menu draws its four option lines and its prompt over rows 99 to 192
-    # of the backdrop (engine/menu.asm), so the lower half is faded down far
-    # enough for that text to read over it.
-    box_art(SCREEN_W, SCREEN_H, top_trim=6, fade=(92, 124, 0.45)).save(
+    # The menu draws four option lines at rows 107, 123, 139 and 155, each nine
+    # rows tall: the labels from x 60 and the values from x 144 (engine/menu.asm
+    # draws them at 30 and 32+10*4 bytes), with the longest value reaching about
+    # x 248.  Then a prompt down at row 184.  The options get a flat black box
+    # to sit on; the prompt is on its own, which is why the lower half of the
+    # picture is still faded down behind it.
+    #
+    # The box is x 58..255 by rows 105..170, which clears the text on every
+    # side.  The picture is cropped harder at the top to suit.
+    box_art(SCREEN_W, SCREEN_H, top_trim=12, fade=(92, 124, 0.45),
+            black_box=(58, 105, 198, 66)).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 
@@ -1283,6 +1416,9 @@ def write_wav(name, samples):
 # work with; anything shorter comes out of the build as an empty file.  Short
 # effects are therefore given a fast decay rather than a short duration.
 SND_MIN_MS = 220
+
+# A pentatonic scale: C, D, E, G, A, and the octave.
+SND_SCALE = (262, 294, 330, 392, 440, 523)
 
 
 def envelope(t, decay):
@@ -1337,6 +1473,18 @@ def write_sounds():
     write_wav("04-drain.wav", tone(520, 80, 420, "saw", decay=1.2))
     # Launch: the spring lets go.
     write_wav("05-launch.wav", tone(160, 780, 300, "square", decay=1.5, sweep_ms=160))
+    # The lane: one low blip of the ticking the ball makes on its way up.  It
+    # has to carry the resampler's 220ms of material or it comes out empty, so
+    # the shortness is all in the decay.
+    write_wav("06-lane.wav", tone(150, 140, SND_MIN_MS, "square", decay=26.0))
+
+    # Notes for the scoring targets, so a good run sounds like a tune rather
+    # than a series of thumps.  Plain square waves, and a pentatonic scale
+    # because any two of its notes sit together -- the ball chooses the order,
+    # and it has no ear.  All well under the 800Hz the 2kHz DAC can carry.
+    for i, freq in enumerate(SND_SCALE):
+        write_wav(f"{7 + i:02d}-note{i + 1}.wav",
+                  tone(freq, freq, SND_MIN_MS, "square", decay=9.0))
 
 
 def write_descriptors():
@@ -1377,7 +1525,6 @@ def write_descriptors():
     # The ball must come first: the overlays find it with a search that stops
     # at the first object of its group.
     lane_cx = (playfield.LANE_X0 + playfield.LANE_X1) // 2 + playfield.ORIGIN_X
-    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
     obj("launcher", 1, 3, lane_cx, LAUNCHER_REST_Y, [1])
     obj("left flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[0]), [0])
     obj("right flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[1]), [1])
@@ -1397,16 +1544,30 @@ def write_descriptors():
     # One overlay per foot; it places itself from tblFootBox.
     _, feet = playfield.source()
     for i in range(len(playfield.foot_boxes(feet))):
-        obj(f"foot {i}", 4, 3, 0, 0, [i])
+        obj(f"foot {i}", 4, 3, 0, 0, [0, i])
+    for i in range(len(playfield.diamond_boxes())):
+        obj(f"bumper middle {i}", 4, 3, 0, 0, [1, i])
 
-    for i, what in enumerate(("tongue", "game over", "multiplier X")):
-        obj(what, 5, 1, 0, 0, [i])
+    for i, what in enumerate(("tongue", "game over", "multiplier X", "lane gate")):
+        obj(what, 5, 3 if what == "lane gate" else 1, 0, 0, [i])
+
+    # Lava, once the volcano goes off: drops running down both slopes, spread
+    # around the run so they do not fall in step.  They start inactive and the
+    # object switches itself on.
+    # One object for the whole flow: it never moves, and only its frame
+    # changes.
+    obj("lava", 6, 3, 0, 0, [0])
+
+    # The ball goes last, so it is drawn over everything else.  It matters most
+    # around the feet: those save no background, so when one changes colour it
+    # repaints itself, and anything drawn before it would be painted over.
+    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
 
     level = {
         "Level": {
             "Name": "Lost World Pinball",
             "Description": "Three balls. Hit anything red.",
-            "ObjectGroups": [1, 2, 3, 4, 5],
+            "ObjectGroups": [1, 2, 3, 4, 5, 6],
             "MaxObjectTableSize": len(objects) + 2,
             "Tileset": 1,
             "TilemapImage": "../tiles/01-table.png",

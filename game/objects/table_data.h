@@ -45,11 +45,22 @@
 #define PLAYFIELD_RIGHT  194
 #define LANE_X0          185
 #define LANE_X1          192
-#define LANE_TOP         42
+#define LANE_TOP         46
 #define DRAIN_Y          206
 #define BALL_R           3
 
 #define NUM_FEET         9
+/* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
+ * says feed Vally's tongue.  foot_boxes() returns them top row first. */
+#define NUM_TOP_FEET     4
+#define NUM_DIAMONDS     3
+#define DIAMOND_MID_OFF  5
+
+/* The three big bumpers, as x0, y0, x1, y1.  Striking one flashes its middle;
+ * the strips and the small wall diamonds score but do not flash. */
+const unsigned char tblDiamondBox[] = {
+    103, 85, 118, 100, 87, 100, 102, 115, 119, 100, 134, 115,
+};
 
 /* The panel read-outs, placed from the boards drawn in the artwork. */
 #define SCORE_DIGITS      7
@@ -65,6 +76,22 @@
 #define BALLS_PITCH       10
 #define PANEL_TONGUE_X    274
 #define PANEL_TONGUE_Y    80
+
+/* The volcano, and the two slopes the lava runs down. */
+#define VOLCANO_X         228
+#define VOLCANO_Y         64
+/* Distances from the apex to the foot of each slope, as magnitudes: the left
+ * one runs left, the right one right, and both run down.  Keeping them
+ * positive keeps the shifts in 06-lava.c off negative numbers. */
+#define LAVA_L_DX         15
+#define LAVA_L_DY         15
+#define LAVA_R_DX         11
+#define LAVA_R_DY         11
+#define LAVA_FRAMES       8
+#define GATE_X0           177
+#define GATE_Y0           25
+#define GATE_X1           184
+#define GATE_Y1           53
 
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
@@ -88,27 +115,27 @@ const signed char tblDirY[] = {
 /* Flippers.  Entries 0..5 are the left flipper from rest to fully
  * raised; the next 6 are the right. */
 #define FLIPPER_FRAMES   6
-#define FLIPPER_LEN      20
+#define FLIPPER_LEN      19
 #define FLIPPER_HALF_THICK 4
-#define FLIP_L_X         92
-#define FLIP_L_Y         183
-#define FLIP_R_X         129
-#define FLIP_R_Y         183
+#define FLIP_L_X         86
+#define FLIP_L_Y         181
+#define FLIP_R_X         134
+#define FLIP_R_Y         181
 
 const signed char tblFlipDirX[] = {
-    -30, -28, -26, -24, -21, -18, 30, 28, 26, 24, 21, 18,
+    23, 29, 32, 32, 29, 23, -23, -29, -32, -32, -29, -23,
 };
 
 const signed char tblFlipDirY[] = {
-    -11, -15, -18, -21, -24, -26, -11, -15, -18, -21, -24, -26,
+    23, 15, 5, -5, -15, -23, 23, 15, 5, -5, -15, -23,
 };
 
 const signed char tblFlipNrmX[] = {
-    11, 15, 18, 21, 24, 26, -11, -15, -18, -21, -24, -26,
+    23, 15, 5, -5, -15, -23, -23, -15, -5, 5, 15, 23,
 };
 
 const signed char tblFlipNrmY[] = {
-    -30, -28, -26, -24, -21, -18, -30, -28, -26, -24, -21, -18,
+    -23, -29, -32, -32, -29, -23, -23, -29, -32, -32, -29, -23,
 };
 
 /* The grid itself is 1950 bytes, which is a large slice of an 8K object code
@@ -176,16 +203,16 @@ const unsigned char tblGrid[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 80, 49, 32, 32, 0, 0, 48, 62, 62, 62, 62, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 48, 32, 32,
-    0, 0, 48, 33, 33, 32, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 48, 33, 33, 32, 32, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 47, 45, 34, 33, 0, 0, 48, 35, 34, 34, 34, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 45, 44, 36, 33, 0, 0, 48, 35, 35, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 39, 34, 0, 0, 48,
-    34, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43, 34, 0, 0, 48, 32, 32, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 47, 33, 0, 0, 48, 63, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 62, 0, 0, 48, 62, 62, 0,
+    0, 0, 45, 44, 36, 33, 0, 0, 48, 35, 35, 35, 0, 0, 0, 148, 88, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 89, 92, 0, 0, 0, 0, 44, 39, 34, 0, 0, 48,
+    34, 34, 0, 0, 0, 0, 142, 144, 88, 91, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 84, 87, 157, 129, 0, 0, 0, 0, 0, 43, 34, 0, 0, 48, 32, 32, 0, 0, 0, 0, 0, 0, 141,
+    128, 158, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 145, 144, 134, 131, 0, 0, 0, 0, 0,
+    0, 47, 33, 0, 0, 48, 63, 63, 0, 0, 0, 0, 0, 0, 139, 135, 132, 130, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 141, 138, 135, 0, 0, 0, 0, 0, 0, 0, 52, 62, 0, 0, 48, 62, 62, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 55, 62, 0, 0, 48, 61, 60, 59, 59, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 54, 55, 59, 62,

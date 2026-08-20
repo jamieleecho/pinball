@@ -13,7 +13,7 @@
     {
       "Name": "LeftFlip0",
       "Location": [
-        34,
+        6,
         20
       ],
       "SinglePixelPosition": false,
@@ -22,7 +22,7 @@
     {
       "Name": "LeftFlip1",
       "Location": [
-        74,
+        46,
         20
       ],
       "SinglePixelPosition": false,
@@ -31,7 +31,7 @@
     {
       "Name": "LeftFlip2",
       "Location": [
-        114,
+        86,
         20
       ],
       "SinglePixelPosition": false,
@@ -40,7 +40,7 @@
     {
       "Name": "LeftFlip3",
       "Location": [
-        154,
+        126,
         20
       ],
       "SinglePixelPosition": false,
@@ -49,7 +49,7 @@
     {
       "Name": "LeftFlip4",
       "Location": [
-        194,
+        166,
         20
       ],
       "SinglePixelPosition": false,
@@ -58,7 +58,7 @@
     {
       "Name": "LeftFlip5",
       "Location": [
-        234,
+        206,
         20
       ],
       "SinglePixelPosition": false,
@@ -67,7 +67,7 @@
     {
       "Name": "RightFlip0",
       "Location": [
-        6,
+        33,
         60
       ],
       "SinglePixelPosition": false,
@@ -76,7 +76,7 @@
     {
       "Name": "RightFlip1",
       "Location": [
-        46,
+        73,
         60
       ],
       "SinglePixelPosition": false,
@@ -85,7 +85,7 @@
     {
       "Name": "RightFlip2",
       "Location": [
-        86,
+        113,
         60
       ],
       "SinglePixelPosition": false,
@@ -94,7 +94,7 @@
     {
       "Name": "RightFlip3",
       "Location": [
-        126,
+        153,
         60
       ],
       "SinglePixelPosition": false,
@@ -103,7 +103,7 @@
     {
       "Name": "RightFlip4",
       "Location": [
-        166,
+        193,
         60
       ],
       "SinglePixelPosition": false,
@@ -112,7 +112,7 @@
     {
       "Name": "RightFlip5",
       "Location": [
-        206,
+        233,
         60
       ],
       "SinglePixelPosition": false,

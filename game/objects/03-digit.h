@@ -24,6 +24,7 @@ typedef struct DigitObjectState {
     byte spriteIdx; /* must be first */
     byte board;
     byte column; /* 0 is the most significant of the seven shown */
+    byte redraw;  /* buffers still to be painted with the current sprite */
 } DigitObjectState;
 
 #endif /* _03_digit_h */
