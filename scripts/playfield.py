@@ -132,7 +132,7 @@ LAVA_BULGES = 4   # gobbets riding each stream
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.
-TONGUE_XY = (260, 77)  # Vally's mouth, down at the pond she is drinking from
+TONGUE_XY = (262, 79)  # Vally's mouth, down at the pond she is drinking from
 
 CELL = 4  # collision cells, as before: 4x4 pixels, one byte each
 
