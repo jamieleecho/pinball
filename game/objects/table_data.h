@@ -133,7 +133,7 @@ const unsigned char tblFootBox[] = {
 /* How many ticks the tongue takes to reach full stretch, and so how far ahead
  * of the catch it has to start. */
 #define TONGUE_REACH_STAGES 6
-const unsigned char tblFlyX[] = {
+const unsigned int tblFlyX[] = {
     275, 273, 272, 270, 268, 266, 264, 263, 261, 259, 258, 256, 254, 252, 250, 249,
     247, 245, 244, 242, 240, 238, 236, 235, 233, 231, 230, 228, 226, 224, 222, 221,
     219, 221, 222, 224, 226, 228, 230, 231, 233, 235, 236, 238, 240, 242, 244, 245,

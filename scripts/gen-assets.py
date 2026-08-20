@@ -420,6 +420,21 @@ def count_tiles(img):
 
 
 def c_table(name, values, per_line=16, typ="const unsigned char"):
+    """A C table, with a check that the values actually fit the type.
+
+    Worth the four lines: the fly's path runs off the right of the panel to
+    world x 275, and as bytes those entries wrapped to 0..19 -- the far left of
+    the world.  Nothing warned; the fly simply vanished off the left of the
+    screen for a third of its flight.
+    """
+    if "char" in typ:
+        lo, hi = (0, 255) if "unsigned" in typ else (-128, 127)
+        bad = [v for v in values if not lo <= v <= hi]
+        if bad:
+            raise ValueError(
+                f"{name}: {len(bad)} value(s) outside {lo}..{hi} for {typ}, "
+                f"first {bad[0]} -- widen the type"
+            )
     out = [f"{typ} {name}[] = {{"]
     for i in range(0, len(values), per_line):
         out.append("    " + ", ".join(str(v) for v in values[i : i + per_line]) + ",")
@@ -622,7 +637,7 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* How many ticks the tongue takes to reach full stretch, and so how far ahead
  * of the catch it has to start. */
 #define TONGUE_REACH_STAGES {playfield.TONGUE_REACH_STAGES}
-{c_table("tblFlyX", fly_x, per_line=16)}
+{c_table("tblFlyX", fly_x, per_line=16, typ="const unsigned int")}
 
 {c_table("tblFlyY", fly_y, per_line=16)}
 
