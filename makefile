@@ -161,8 +161,14 @@ endif
 ifneq ($(VERBOSE_ERRORS), 0)
   ASMFLAGS += --define=VERBOSE_ERRORS
 endif
+# Three 8k pages for level and object code rather than the engine's usual two.
+# The ball alone compiles to over 7k and has to sit in a page by itself, which
+# left the other seven objects and the level sharing the second page; adding
+# the plunger lines tipped it over and the loader trapped at loader.asm:910,
+# "out of memory for level / object code".  Each page here costs one page of
+# sprite code, of which we use about four of the twenty-four available.
 ifeq ($(OBJPAGES),)
-  ASMFLAGS += --define=OBJPAGES=2
+  ASMFLAGS += --define=OBJPAGES=3
 else
   ASMFLAGS += --define=OBJPAGES=$(OBJPAGES)
 endif

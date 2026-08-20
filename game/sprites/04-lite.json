@@ -69,6 +69,26 @@
       "SinglePixelPosition": true,
       "ChunkHint": 8,
       "SaveBackground": false
+    },
+    {
+      "Name": "PlungerOn",
+      "Location": [
+        62,
+        2
+      ],
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
+    },
+    {
+      "Name": "PlungerOff",
+      "Location": [
+        72,
+        2
+      ],
+      "SinglePixelPosition": true,
+      "ChunkHint": 8,
+      "SaveBackground": false
     }
   ]
 }

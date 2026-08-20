@@ -11,7 +11,7 @@
       6,
       7
     ],
-    "MaxObjectTableSize": 45,
+    "MaxObjectTableSize": 49,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -297,6 +297,54 @@
       "InitData": [
         4,
         0
+      ]
+    },
+    {
+      "_comment": "plunger 0",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        0
+      ]
+    },
+    {
+      "_comment": "plunger 1",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        1
+      ]
+    },
+    {
+      "_comment": "plunger 2",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        2
+      ]
+    },
+    {
+      "_comment": "plunger 3",
+      "GroupID": 4,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 0,
+      "globalY": 0,
+      "InitData": [
+        2,
+        3
       ]
     },
     {

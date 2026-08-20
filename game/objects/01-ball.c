@@ -179,17 +179,13 @@ static void spendFoot(byte idx) {
     /* Each foot has its own note, so working round them plays a phrase. */
     PlaySound(SOUND_NOTE + (idx % NUM_NOTES));
 
-    /* Only the feet under the top pods feed Vally's tongue, as the manual has
-     * it.  Twelve of them and she catches the fly: the volcano erupts, lava
-     * runs down it, and the rest of the ball is worth ten times as much.
-     * Tongue length carries across the whole game, not just this ball. */
-    if (idx < NUM_TOP_FEET && globals->tongue < TONGUE_TARGET) {
-        globals->tongue++;
-        if (globals->tongue == TONGUE_TARGET && !globals->volcano) {
-            globals->volcano = 1;
-            globals->multiplier = 10;
-            PlaySound(SOUND_DRAIN);
-        }
+    /* A foot under one of the top pods sets up its plunger line -- leftmost
+     * foot to leftmost line -- and that is all it does.  It is running a ball
+     * through the line, not hitting the foot, that feeds Vally's tongue.  The
+     * lines go out when the ball drains, so every ball has to set its own up
+     * again before it can make any progress towards the volcano. */
+    if (idx < NUM_TOP_FEET) {
+        globals->plunger |= (byte)(1 << idx);
     }
     /* All nine: they come back and scoring steps up, which is what the manual
      * described for the plungers on the original table. */
@@ -268,6 +264,46 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
  * Moves the ball one sub-step and deals with whatever it touches.  Returns
  * non-zero if it hit something, in which case the step has been rolled back.
  */
+/**
+ * Ball through one of the plunger lines along the top.
+ *
+ * A plunger is not a wall and does not turn the ball round: the manual has the
+ * ball carry on the way it was going, faster, and Vally's tongue reach a
+ * little further.  Twelve of those and she can take the fly.  The tongue is
+ * the one thing that carries across a whole game rather than resetting with
+ * the ball.
+ */
+static void hitPlunger(BallObjectState *s, int ix, int iy) {
+    byte i;
+
+    if (s->cooldown || !globals->plunger) {
+        return;
+    }
+    for (i = 0; i < NUM_PLUNGERS; i++) {
+        const unsigned char *b;
+        if (!(globals->plunger & (byte)(1 << i))) {
+            continue;
+        }
+        b = tblPlungerBox + ((unsigned)i << 2);
+        if (ix < (int)b[0] - BALL_R || ix > (int)b[2] + BALL_R ||
+            iy < (int)b[1] - BALL_R || iy > (int)b[3] + BALL_R) {
+            continue;
+        }
+        /* Sped on its way rather than turned back: half again as fast, up to
+         * whatever the table's ceiling is. */
+        s->vx += s->vx >> 1;
+        s->vy += s->vy >> 1;
+        clampSpeed(s);
+        scoreTens(5);
+        if (globals->tongue < TONGUE_TARGET) {
+            globals->tongue++;
+        }
+        PlaySound(SOUND_NOTE + (i % NUM_NOTES));
+        s->cooldown = TARGET_COOLDOWN;
+        return;
+    }
+}
+
 /**
  * Ball against a dinosaur's tongue.
  *
@@ -364,6 +400,9 @@ static byte stepBall(DynospriteCOB *cob, BallObjectState *s, int dx, int dy) {
             reflect(s, ix < GATE_X0 ? -32 : 32, 0, GAIN_WALL);
             return 1;
         }
+        /* The plunger lines sit in open air and are passed through rather
+         * than bounced off, so they are tested here and do not stop the step. */
+        hitPlunger(s, ix, iy);
         /* A tongue that is out bridges the outlane beside it, and the ball
          * comes back into the table rather than running down the side. */
         if (tongueNormal(ix, iy, &bnx, &bny)) {
@@ -470,6 +509,8 @@ static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     globals->feetHit[1] = 0;
     globals->gate = 0;
     globals->volcano = 0;
+    /* The lines go out with the ball that set them up. */
+    globals->plunger = 0;
     s->pull = 0;
     s->cooldown = 0;
     s->clank = 0;

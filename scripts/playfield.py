@@ -243,6 +243,45 @@ def tongue_lengths():
     return out
 
 
+# The four plunger lines along the top of the table.  The manual calls them
+# plungers and the marks they set up red; they appear when the foot below the
+# pod they belong to is hit, and a ball through one grows Vally's tongue.
+PLUNGER_W, PLUNGER_H = 6, 2
+PLUNGER_Y = 31
+
+
+def plunger_boxes():
+    """The four lines, one to a gap along the top row.
+
+    They are found rather than written down.  The two pods and the three
+    targets between them leave exactly four gaps, and a line sits in the middle
+    of each -- which is where the original put the one it shows.  Ordering
+    across the table is what makes the mapping to the feet work: the leftmost
+    foot lights the leftmost line.
+    """
+    src, _ = source()
+    sp = src.load()
+    cols = {
+        x
+        for x in range(TABLE_X0, TABLE_X1 + 1)
+        for y in range(20, 55)
+        if sp[x, y] == SRC_CYAN
+    }
+    runs, start = [], None
+    for x in range(TABLE_X0, TABLE_X1 + 2):
+        if x in cols and start is None:
+            start = x
+        elif x not in cols and start is not None:
+            runs.append((start, x - 1))
+            start = None
+    boxes = []
+    for a, b in zip(runs, runs[1:]):
+        mid = (a[1] + 1 + b[0] - 1) // 2
+        x0 = mid - PLUNGER_W // 2 + 1
+        boxes.append((x0, PLUNGER_Y, x0 + PLUNGER_W - 1, PLUNGER_Y + PLUNGER_H - 1))
+    return boxes
+
+
 def in_sweep(x, y):
     """Inside the quarter-disc one of the tails sweeps through."""
     reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2

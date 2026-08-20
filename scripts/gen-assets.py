@@ -449,9 +449,21 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     for x0, y0, x1, y1 in feet_world:
         foot_vals += [x0, y0, x1, y1]
 
-    # Each tongue's root block, in world pixels.
+    plunger_vals = []
+    for x0, y0, x1, y1 in playfield.plunger_boxes():
+        plunger_vals += list(playfield.world(x0, y0)) + list(playfield.world(x1, y1))
+
+    # Each tongue's root block, in world pixels, and the box the sprites are
+    # drawn into -- the one the longest tongue needs.
     tongue_l = playfield.world(*playfield.DINO_TONGUE_ROOTS[0])
     tongue_r = playfield.world(*playfield.DINO_TONGUE_ROOTS[1])
+    tongue_box_l, tongue_box_r = (
+        playfield.world(
+            min(q[0] for q in playfield.tongue_pixels(i, playfield.DINO_TONGUE_BLOCKS)),
+            min(q[1] for q in playfield.tongue_pixels(i, playfield.DINO_TONGUE_BLOCKS)),
+        )
+        for i in range(2)
+    )
 
     # Flipper geometry, one entry per side per animation frame.  "dir" runs
     # from the pivot to the tip; "nrm" is the outward normal of the face the
@@ -582,6 +594,9 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define TONGUE_L_X        {tongue_l[0]}
 #define TONGUE_R_X        {tongue_r[0]}
 #define TONGUE_Y          {tongue_l[1]}
+#define TONGUE_BOX_L_X    {tongue_box_l[0]}
+#define TONGUE_BOX_R_X    {tongue_box_r[0]}
+#define TONGUE_BOX_Y      {tongue_box_l[1]}
 #define TONGUE_MAX        {playfield.DINO_TONGUE_BLOCKS}
 #define TONGUE_PERIOD     {playfield.DINO_TONGUE_PERIOD}
 
@@ -592,6 +607,12 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
 {c_table("tblFootBox", foot_vals, per_line=16)}
+
+/* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
+ * as the four top feet: the leftmost foot lights the leftmost line.  A ball
+ * through a lit line is sped on its way and grows Vally's tongue. */
+#define NUM_PLUNGERS      {len(plunger_vals) // 4}
+{c_table("tblPlungerBox", plunger_vals, per_line=16)}
 
 /* Unit normals, scaled by 32. */
 {c_table("tblDirX", dirs_x, typ="const signed char")}
@@ -893,6 +914,15 @@ def draw_lite_sheet(d, img):
             sprites.append((
                 f'Foot{"Wide" if w > h else "Tall"}{tag}', x, 2, True, False))
             x += w + 4
+
+    # The plunger lines, lit and unlit.  Both are opaque over the same box and
+    # always drawn in the same place, so neither needs to save the background;
+    # the unlit one is plain playfield, which is all that is behind them.
+    pw, ph = playfield.PLUNGER_W, playfield.PLUNGER_H
+    for ink, tag in ((ORANGE, "On"), (WHITE, "Off")):
+        d.rectangle((x, 2, x + pw - 1, 2 + ph - 1), fill=ink)
+        sprites.append((f"Plunger{tag}", x, 2, True, False))
+        x += pw + 4
     return sprites
 
 
@@ -1012,25 +1042,38 @@ def draw_lava_sheet(d, img):
 def draw_tongue_sheet(d, img):
     """Each tongue at each extension, both sides.
 
-    The anchor is the block at the head, which is drawn at every length, so the
-    object stands still and only the sprite changes.  That also keeps the drawn
-    edge on an even column whichever length is showing -- the left tongue grows
-    two pixels left at a time from an even root -- so neither side has to pay
-    for SinglePixelPosition.
+    Every length is drawn into the same box -- the one the longest of them
+    needs -- filled with the playfield that lies under it and the tongue laid
+    over the top.  That costs eight times the opaque pixels of a bare chain of
+    blocks, but it buys the two things that make these cheap to run: the box is
+    the same size and in the same place whichever length is showing, so the
+    sprites need not save the background, and a shorter tongue paints the
+    playfield back over the longer one it replaces.  Drawn every tick they were
+    costing more than they were worth; drawn twice per change they cost almost
+    nothing.
+
+    The box starts on an even column on both sides, so neither pays for
+    SinglePixelPosition either.
     """
+    world = playfield.world_image().load()
+    size = playfield.DINO_TONGUE_BLOCKS * 2
     sprites = []
     for side in range(2):
+        full = playfield.tongue_pixels(side, playfield.DINO_TONGUE_BLOCKS)
+        bx0 = min(q[0] for q in full)
+        by0 = min(q[1] for q in full)
         for n in range(1, playfield.DINO_TONGUE_BLOCKS + 1):
-            px = playfield.tongue_pixels(side, n)
-            x0 = min(q[0] for q in px)
-            y0 = min(q[1] for q in px)
-            cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * 12
-            for qx, qy in px:
-                d.point((cx + qx - x0, 2 + qy - y0), fill=TEAL)
-            rx, ry = playfield.DINO_TONGUE_ROOTS[side]
+            cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * (size + 4)
+            for j in range(size):
+                for i in range(size):
+                    wx, wy = playfield.world(bx0 + i, by0 + j)
+                    ink = world[wx, wy]
+                    assert ink != TRANSPARENT, "playfield under a tongue is keyed"
+                    d.point((cx + i, 2 + j), fill=ink)
+            for qx, qy in playfield.tongue_pixels(side, n):
+                d.point((cx + qx - bx0, 2 + qy - by0), fill=TEAL)
             sprites.append((
-                f'Tongue{"R" if side else "L"}{n}',
-                cx + rx - x0, 2 + ry - y0, False))
+                f'Tongue{"R" if side else "L"}{n}', cx, 2, False, False))
     return sprites
 
 
@@ -1586,6 +1629,10 @@ def write_descriptors():
         obj(f"ball indicator {i}", 3, 3, 0, 0, [2, i])
     obj("multiplier tens", 3, 1, 0, 0, [3, 0])
     obj("multiplier units", 3, 1, 0, 0, [4, 0])
+
+    # One overlay per plunger line; it places itself from tblPlungerBox.
+    for i in range(len(playfield.plunger_boxes())):
+        obj(f"plunger {i}", 4, 3, 0, 0, [2, i])
 
     # One overlay per foot; it places itself from tblFootBox.
     _, feet = playfield.source()

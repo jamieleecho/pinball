@@ -1,7 +1,7 @@
 #ifdef DynospriteObject_DataDefinition
 
 /** sizeof(TongueObjectState) */
-#define DynospriteObject_DataSize 3
+#define DynospriteObject_DataSize 4
 
 /** One byte of init data: which side this tongue is on. */
 #define DynospriteObject_InitSize 1
@@ -35,6 +35,10 @@ typedef struct TongueObjectState {
      * free-running counter: this one stops with the ball, and picking up
      * where it left off is the point of keeping it here. */
     byte phase;
+    /* Ticks of drawing still owed.  These sprites save no background, so they
+     * only need painting into each of the two buffers when what they show
+     * changes; drawing them every tick was costing more than they are worth. */
+    byte redraw;
 } TongueObjectState;
 
 #endif /* _07_tongue_h */

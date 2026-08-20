@@ -101,6 +101,9 @@ const unsigned char tblDiamondBox[] = {
 #define TONGUE_L_X        64
 #define TONGUE_R_X        156
 #define TONGUE_Y          169
+#define TONGUE_BOX_L_X    58
+#define TONGUE_BOX_R_X    156
+#define TONGUE_BOX_Y      163
 #define TONGUE_MAX        4
 #define TONGUE_PERIOD     64
 
@@ -119,6 +122,14 @@ const unsigned char tblFootBox[] = {
     59, 61, 64, 64, 69, 61, 74, 64, 143, 61, 148, 64, 153, 61, 158, 64,
     100, 131, 105, 134, 108, 131, 113, 134, 116, 131, 121, 134, 153, 137, 156, 142,
     153, 145, 156, 150,
+};
+
+/* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
+ * as the four top feet: the leftmost foot lights the leftmost line.  A ball
+ * through a lit line is sped on its way and grows Vally's tongue. */
+#define NUM_PLUNGERS      4
+const unsigned char tblPlungerBox[] = {
+    78, 43, 83, 44, 98, 43, 103, 44, 116, 43, 121, 44, 135, 43, 140, 44,
 };
 
 /* Unit normals, scaled by 32. */
