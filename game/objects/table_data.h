@@ -124,6 +124,29 @@ const unsigned char tblFootBox[] = {
     153, 145, 156, 150,
 };
 
+/* Where the fly is on each tick of its cycle.  It is a table because the 6809
+ * has no sine and no multiply worth the name, and 128 bytes is cheaper than
+ * either; the loop is closed, so an index that wraps is the whole of it. */
+#define FLY_PERIOD        64
+/* The tick at which it is furthest left, which is where it can be caught. */
+#define FLY_CATCH_TICK    32
+/* How many ticks the tongue takes to reach full stretch, and so how far ahead
+ * of the catch it has to start. */
+#define TONGUE_REACH_STAGES 6
+const unsigned char tblFlyX[] = {
+    275, 273, 272, 270, 268, 266, 264, 263, 261, 259, 258, 256, 254, 252, 250, 249,
+    247, 245, 244, 242, 240, 238, 236, 235, 233, 231, 230, 228, 226, 224, 222, 221,
+    219, 221, 222, 224, 226, 228, 230, 231, 233, 235, 236, 238, 240, 242, 244, 245,
+    247, 249, 250, 252, 254, 256, 258, 259, 261, 263, 264, 266, 268, 270, 272, 273,
+};
+
+const unsigned char tblFlyY[] = {
+    109, 112, 114, 114, 113, 110, 107, 105, 104, 105, 107, 110, 113, 114, 114, 112,
+    109, 106, 104, 104, 105, 108, 111, 113, 114, 113, 111, 108, 105, 104, 104, 106,
+    109, 106, 104, 104, 105, 108, 111, 113, 114, 113, 111, 108, 105, 104, 104, 106,
+    109, 112, 114, 114, 113, 110, 107, 105, 104, 105, 107, 110, 113, 114, 114, 112,
+};
+
 /* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
  * as the four top feet: the leftmost foot lights the leftmost line.  A ball
  * through a lit line is sped on its way and grows Vally's tongue. */

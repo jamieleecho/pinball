@@ -282,6 +282,79 @@ def plunger_boxes():
     return boxes
 
 
+# The prehistoric fly, which Vally has to catch for the volcano to erupt.  It
+# beats back and forth across the desert on the panel in a sinusoid, three
+# peaks to a crossing, between the rightmost bush and the leftmost cactus --
+# which is what sets both the length of its flight and how high it flies.
+FLY_W, FLY_H = 12, 6
+FLY_LEFT_X, FLY_RIGHT_X = 211, 267
+FLY_MID_Y, FLY_AMP = 97, 5
+FLY_PEAKS = 3
+FLY_PERIOD = 64  # ticks for a there-and-back, so a crossing is about a second
+
+
+def fly_path():
+    """Where the fly's top-left corner is on each tick of its cycle.
+
+    A table rather than arithmetic: the 6809 has no multiply worth the name and
+    certainly no sine, and 128 bytes is cheaper than either.  The path is a
+    closed loop, so the object needs nothing but an index that wraps.
+    """
+    import math
+
+    half = FLY_PERIOD // 2
+    out = []
+    for t in range(FLY_PERIOD):
+        # Out on the first half, back on the second.
+        u = t / half if t < half else (FLY_PERIOD - t) / half
+        x = FLY_RIGHT_X + (FLY_LEFT_X - FLY_RIGHT_X) * u
+        y = FLY_MID_Y + FLY_AMP * math.sin(2 * math.pi * FLY_PEAKS * u)
+        out.append((int(round(x)), int(round(y))))
+    return out
+
+
+# Vally's tongue goes for the fly at the far left of its beat, and the manual
+# has it get there by going down, then left, then down again rather than
+# straight across.  The corners are what make it read as a tongue flicking out
+# rather than a ruler being extended.
+TONGUE_REACH_STAGES = 6
+
+
+def vally_tongue_path():
+    """The corners of the tongue's reach, in source coordinates.
+
+    It starts at Vally's mouth and finishes on the fly's body at the far left
+    of the flight, so the last stage is exactly long enough to catch it.
+    """
+    mx, my = TONGUE_XY
+    fx, fy = fly_path()[FLY_PERIOD // 2]
+    tip_x = fx + FLY_W // 2 - 2
+    tip_y = fy + FLY_H // 2
+    corner_y = my + 10
+    return [(mx, my), (mx, corner_y), (tip_x, corner_y), (tip_x, tip_y)]
+
+
+def vally_tongue_pixels(stage):
+    """The tongue drawn out to one of its stages, in source coordinates."""
+    pts = vally_tongue_path()
+    legs = [
+        (a, b, abs(b[0] - a[0]) + abs(b[1] - a[1]))
+        for a, b in zip(pts, pts[1:])
+    ]
+    total = sum(leg[2] for leg in legs)
+    want = total * stage // TONGUE_REACH_STAGES
+    out, done = [], 0
+    for (ax, ay), (bx, by), n in legs:
+        sx = (bx > ax) - (bx < ax)
+        sy = (by > ay) - (by < ay)
+        for i in range(n + 1):
+            if done + i > want:
+                return out
+            out.append((ax + sx * i, ay + sy * i))
+        done += n
+    return out
+
+
 def in_sweep(x, y):
     """Inside the quarter-disc one of the tails sweeps through."""
     reach = FLIPPER_LEN + FLIPPER_HALF_THICK + 2

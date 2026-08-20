@@ -16,6 +16,7 @@
 #define DIGIT_GROUP_IDX 3
 #define LITE_GROUP_IDX 4
 #define TONGUE_GROUP_IDX 7
+#define FLY_GROUP_IDX 8
 
 /* Sounds, numbered to match game/sounds/XX-*.wav */
 #define SOUND_BUMPER 1
@@ -139,6 +140,9 @@ typedef struct GameGlobals {
     /* Bit per plunger line currently showing.  A line is set up by hitting the
      * foot below its pod and goes out when the ball drains. */
     byte plunger;
+    /* Where the fly is in its flight, so Vally's tongue can strike in time
+     * with it rather than keeping a second clock of its own. */
+    byte flyTick;
 } GameGlobals;
 
 MAYBE_UNUSED

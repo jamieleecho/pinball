@@ -449,6 +449,11 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     for x0, y0, x1, y1 in feet_world:
         foot_vals += [x0, y0, x1, y1]
 
+    fly = [playfield.world(x, y) for x, y in playfield.fly_path()]
+    fly_x = [p[0] for p in fly]
+    fly_y = [p[1] for p in fly]
+    fly_catch = min(range(len(fly)), key=lambda i: fly[i][0])
+
     plunger_vals = []
     for x0, y0, x1, y1 in playfield.plunger_boxes():
         plunger_vals += list(playfield.world(x0, y0)) + list(playfield.world(x1, y1))
@@ -607,6 +612,19 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
 {c_table("tblFootBox", foot_vals, per_line=16)}
+
+/* Where the fly is on each tick of its cycle.  It is a table because the 6809
+ * has no sine and no multiply worth the name, and 128 bytes is cheaper than
+ * either; the loop is closed, so an index that wraps is the whole of it. */
+#define FLY_PERIOD        {playfield.FLY_PERIOD}
+/* The tick at which it is furthest left, which is where it can be caught. */
+#define FLY_CATCH_TICK    {fly_catch}
+/* How many ticks the tongue takes to reach full stretch, and so how far ahead
+ * of the catch it has to start. */
+#define TONGUE_REACH_STAGES {playfield.TONGUE_REACH_STAGES}
+{c_table("tblFlyX", fly_x, per_line=16)}
+
+{c_table("tblFlyY", fly_y, per_line=16)}
 
 /* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
  * as the four top feet: the leftmost foot lights the leftmost line.  A ball
@@ -932,26 +950,32 @@ def draw_lite_sheet(d, img):
 # digits cannot express -- Vally's tongue and the end-of-game plate -- are
 # sprites here.
 TONGUE_STAGES = 6
-TONGUE_STEP = 4  # pixels of tongue per stage
+TONGUE_REACH_STAGES = 6
+TONGUE_ROW_Y = 62  # the tongue stages sit below the rest of the panel sheet
 GAMEOVER_W, GAMEOVER_H = 66, 18
 
 
 def draw_panel_sheet(d, img):
     sprites = []
 
-    # Vally's tongue, reaching further with every pair of top marks hit.
-    for stage in range(1, TONGUE_STAGES + 1):
-        x0 = 2 + (stage - 1) * 34
-        y0 = 2 + TONGUE_STAGES * TONGUE_STEP
-        length = stage * TONGUE_STEP
-        d.line([(x0, y0), (x0 + length, y0 - length)], fill=ORANGE)
-        if stage == TONGUE_STAGES:
-            # The prehistoric fly, finally within reach.
-            d.rectangle(
-                (x0 + length, y0 - length - 2, x0 + length + 2, y0 - length),
-                fill=DGREY,
-            )
-        sprites.append((f"Tongue{stage}", x0, y0, False))
+    # Vally's tongue, reaching further with every pair of top marks hit.  It
+    # goes down, then left, then down again rather than straight at the fly,
+    # and the last stage finishes on the fly's body at the far left of the
+    # flight -- so a tongue that has not been fed twelve times cannot reach it,
+    # and one that has cannot miss.  Laid out in two rows because a full reach
+    # is over fifty pixels wide.
+    pts = playfield.vally_tongue_pixels(playfield.TONGUE_REACH_STAGES)
+    tw = max(q[0] for q in pts) - min(q[0] for q in pts) + 1
+    th = max(q[1] for q in pts) - min(q[1] for q in pts) + 1
+    mx, my = playfield.TONGUE_XY
+    for stage in range(1, TONGUE_REACH_STAGES + 1):
+        cx = 2 + ((stage - 1) % 3) * (tw + 4)
+        cy = TONGUE_ROW_Y + ((stage - 1) // 3) * (th + 4)
+        px = playfield.vally_tongue_pixels(stage)
+        x0 = min(q[0] for q in px)
+        for qx, qy in px:
+            d.point((cx + qx - x0, cy + qy - my), fill=ORANGE)
+        sprites.append((f"Tongue{stage}", cx + mx - x0, cy, False))
 
     # The end-of-game message, shown across the middle of the table.  It is
     # bare lettering rather than a filled plate: the sprite compiler unrolls
@@ -1077,6 +1101,21 @@ def draw_tongue_sheet(d, img):
     return sprites
 
 
+def draw_fly_sheet(d, img):
+    """The prehistoric fly: an orange body between two teal wings.
+
+    Lifted from the original's shape rather than invented.  The wings meet the
+    body along a full edge on each side, which matters: a sprite is found by
+    flood fill, and wings that only cornered onto the body would be left behind
+    without a word.
+    """
+    w, h = playfield.FLY_W, playfield.FLY_H
+    d.rectangle((2, 2, 2 + 3, 2 + 3), fill=TEAL)
+    d.rectangle((2 + w - 4, 2, 2 + w - 1, 2 + 3), fill=TEAL)
+    d.rectangle((2 + 4, 2 + 2, 2 + 7, 2 + h - 1), fill=ORANGE)
+    return [("Fly", 2, 2, True)]
+
+
 def write_sprites():
     os.makedirs(SPRITE_DIR, exist_ok=True)
     total = 0
@@ -1084,10 +1123,11 @@ def write_sprites():
     total += write_sprite_group(2, "flipper", (240, 80), draw_flipper_sheet, chunk=8)
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
-    total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
+    total += write_sprite_group(5, "panel", (216, 140), draw_panel_sheet, chunk=8)
     total += write_sprite_group(6, "lava", (192, 72), draw_lava_sheet, chunk=8)
     total += write_sprite_group(7, "tongue", (112, 16), draw_tongue_sheet,
                                 chunk=8)
+    total += write_sprite_group(8, "fly", (24, 16), draw_fly_sheet, chunk=8)
     return total
 
 
@@ -1629,6 +1669,8 @@ def write_descriptors():
         obj(f"ball indicator {i}", 3, 3, 0, 0, [2, i])
     obj("multiplier tens", 3, 1, 0, 0, [3, 0])
     obj("multiplier units", 3, 1, 0, 0, [4, 0])
+
+    obj("fly", 8, 3, 0, 0, [0])
 
     # One overlay per plunger line; it places itself from tblPlungerBox.
     for i in range(len(playfield.plunger_boxes())):

@@ -82,14 +82,27 @@ byte PanelUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     } else if (s->role == PANEL_ROLE_MULTX) {
         show = (globals->multiplier > 1);
     } else {
-        /* The tongue grows one stage for every two top marks hit, and its
-         * length carries over from ball to ball for the whole game. */
+        /* The tongue grows one stage for every two plunger hits, and its
+         * length carries over from ball to ball for the whole game.  It is not
+         * held out, though: it strikes once per pass of the fly, timed so that
+         * full stretch falls on the tick the fly is furthest left, which is
+         * the only place it can be caught.  Out of that window the tongue is
+         * not drawn at all, which is most of the time and most of the saving.
+         */
         byte stage = globals->tongue >> 1;
-        if (stage) {
-            if (stage > PANEL_TONGUE_STAGES) {
-                stage = PANEL_TONGUE_STAGES;
+        byte rel = (byte)(globals->flyTick + FLY_PERIOD - FLY_CATCH_TICK +
+                          TONGUE_REACH_STAGES) & (byte)(FLY_PERIOD - 1);
+        if (stage > PANEL_TONGUE_STAGES) {
+            stage = PANEL_TONGUE_STAGES;
+        }
+        if (stage && rel < 2 * TONGUE_REACH_STAGES) {
+            byte reach = rel < TONGUE_REACH_STAGES
+                             ? (byte)(rel + 1)
+                             : (byte)(2 * TONGUE_REACH_STAGES - rel);
+            if (reach > stage) {
+                reach = stage;
             }
-            s->spriteIdx = PANEL_SPRITE_TONGUE1 + stage - 1;
+            s->spriteIdx = PANEL_SPRITE_TONGUE1 + reach - 1;
             show = 1;
         }
     }
