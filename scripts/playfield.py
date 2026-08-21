@@ -132,7 +132,7 @@ LAVA_BULGES = 4   # gobbets riding each stream
 
 # Vally lies on the pond in the panel (cyan, x 221..266, y 63..78); her head is
 # at the right-hand end, which is where the tongue reaches from.
-TONGUE_XY = (266, 68)
+TONGUE_XY = (262, 79)  # Vally's mouth, down at the pond she is drinking from
 
 CELL = 4  # collision cells, as before: 4x4 pixels, one byte each
 
@@ -240,6 +240,134 @@ def tongue_lengths():
     for i in range(DINO_TONGUE_PERIOD):
         q = i if i < half else DINO_TONGUE_PERIOD - 1 - i
         out.append(1 + (q * DINO_TONGUE_BLOCKS) // half)
+    return out
+
+
+# The four plunger lines along the top of the table.  The manual calls them
+# plungers and the marks they set up red; they appear when the foot below the
+# pod they belong to is hit, and a ball through one grows Vally's tongue.
+PLUNGER_W, PLUNGER_H = 6, 2
+PLUNGER_Y = 31
+
+
+def plunger_boxes():
+    """The four lines, one to a gap along the top row.
+
+    They are found rather than written down.  The two pods and the three
+    targets between them leave exactly four gaps, and a line sits in the middle
+    of each -- which is where the original put the one it shows.  Ordering
+    across the table is what makes the mapping to the feet work: the leftmost
+    foot lights the leftmost line.
+    """
+    src, _ = source()
+    sp = src.load()
+    cols = {
+        x
+        for x in range(TABLE_X0, TABLE_X1 + 1)
+        for y in range(20, 55)
+        if sp[x, y] == SRC_CYAN
+    }
+    runs, start = [], None
+    for x in range(TABLE_X0, TABLE_X1 + 2):
+        if x in cols and start is None:
+            start = x
+        elif x not in cols and start is not None:
+            runs.append((start, x - 1))
+            start = None
+    boxes = []
+    for a, b in zip(runs, runs[1:]):
+        mid = (a[1] + 1 + b[0] - 1) // 2
+        x0 = mid - PLUNGER_W // 2 + 1
+        boxes.append((x0, PLUNGER_Y, x0 + PLUNGER_W - 1, PLUNGER_Y + PLUNGER_H - 1))
+    return boxes
+
+
+# The prehistoric fly, which Vally has to catch for the volcano to erupt.  It
+# beats back and forth across the desert on the panel in a sinusoid, three
+# peaks to a crossing, between the rightmost bush and the leftmost cactus --
+# which is what sets both the length of its flight and how high it flies.
+FLY_W, FLY_H = 12, 6
+FLY_LEFT_X, FLY_RIGHT_X = 211, 267
+FLY_MID_Y, FLY_AMP = 97, 5
+FLY_PEAKS = 3
+FLY_PERIOD = 128  # ticks for a there-and-back: a crossing takes about two seconds
+
+
+def fly_path():
+    """Where the fly's top-left corner is on each tick of its cycle.
+
+    A table rather than arithmetic: the 6809 has no multiply worth the name and
+    certainly no sine, and 128 bytes is cheaper than either.  The path is a
+    closed loop, so the object needs nothing but an index that wraps.
+    """
+    import math
+
+    half = FLY_PERIOD // 2
+    out = []
+    for t in range(FLY_PERIOD):
+        # Out on the first half, back on the second.
+        u = t / half if t < half else (FLY_PERIOD - t) / half
+        x = FLY_RIGHT_X + (FLY_LEFT_X - FLY_RIGHT_X) * u
+        y = FLY_MID_Y + FLY_AMP * math.sin(2 * math.pi * FLY_PEAKS * u)
+        out.append((int(round(x)), int(round(y))))
+    return out
+
+
+# Vally's tongue goes for the fly at the far left of its beat, and the manual
+# has it get there by going down, then left, then down again rather than
+# straight across.  The corners are what make it read as a tongue flicking out
+# rather than a ruler being extended.
+TONGUE_REACH_STAGES = 6
+
+
+def vally_tongue_path():
+    """The corners of the tongue's reach, in source coordinates.
+
+    It starts at Vally's mouth and finishes on the fly's body at the far left
+    of the flight, so the last stage is exactly long enough to catch it.
+    """
+    mx, my = TONGUE_XY
+    fx, fy = fly_path()[FLY_PERIOD // 2]
+    # Land on the fly's body, on an even column: the sprite is drawn
+    # byte-aligned, and at four bits a pixel a byte is two pixels, so an odd
+    # left edge would put the whole tongue a pixel off its mouth.
+    tip_x = (fx + FLY_W // 2) & ~1
+    tip_y = fy + FLY_H // 2
+    corner_y = my + 10
+    return [(mx, my), (mx, corner_y), (tip_x, corner_y), (tip_x, tip_y)]
+
+
+VALLY_TONGUE_THICK = 2
+
+
+def vally_tongue_pixels(stage):
+    """The tongue drawn out to one of its stages, in source coordinates.
+
+    Two pixels across rather than one.  A single-pixel line at this size reads
+    as a scratch on the panel rather than as a tongue, and Vally is the one
+    dinosaur whose tongue the player is meant to be watching.
+    """
+    pts = vally_tongue_path()
+    legs = [
+        (a, b, abs(b[0] - a[0]) + abs(b[1] - a[1]))
+        for a, b in zip(pts, pts[1:])
+    ]
+    total = sum(leg[2] for leg in legs)
+    want = total * stage // TONGUE_REACH_STAGES
+    out, done = [], 0
+    for (ax, ay), (bx, by), n in legs:
+        sx = (bx > ax) - (bx < ax)
+        sy = (by > ay) - (by < ay)
+        for i in range(n + 1):
+            if done + i > want:
+                return out
+            x, y = ax + sx * i, ay + sy * i
+            # Thickened towards the bottom right, which leaves the left edge --
+            # the one the sprite is byte-aligned on -- where it was.
+            for tx in range(VALLY_TONGUE_THICK):
+                for ty in range(VALLY_TONGUE_THICK):
+                    out.append((x + tx, y + ty))
+        done += n
     return out
 
 

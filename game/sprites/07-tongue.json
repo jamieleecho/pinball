@@ -17,34 +17,38 @@
         2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueL2",
       "Location": [
-        16,
-        4
+        14,
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueL3",
       "Location": [
-        30,
-        6
+        26,
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueL4",
       "Location": [
-        44,
-        8
+        38,
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueR1",
@@ -53,34 +57,38 @@
         2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueR2",
       "Location": [
         62,
-        4
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueR3",
       "Location": [
         74,
-        6
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     },
     {
       "Name": "TongueR4",
       "Location": [
         86,
-        8
+        2
       ],
       "SinglePixelPosition": false,
-      "ChunkHint": 8
+      "ChunkHint": 8,
+      "SaveBackground": false
     }
   ]
 }

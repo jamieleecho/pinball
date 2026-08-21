@@ -1,0 +1,23 @@
+{
+  "Main": {
+    "Group": 8,
+    "Image": "08-fly.png",
+    "Transparent": [
+      255,
+      0,
+      255
+    ],
+    "Palette": 1
+  },
+  "Sprites": [
+    {
+      "Name": "Fly",
+      "Location": [
+        2,
+        2
+      ],
+      "SinglePixelPosition": true,
+      "ChunkHint": 8
+    }
+  ]
+}

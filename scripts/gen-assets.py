@@ -420,6 +420,21 @@ def count_tiles(img):
 
 
 def c_table(name, values, per_line=16, typ="const unsigned char"):
+    """A C table, with a check that the values actually fit the type.
+
+    Worth the four lines: the fly's path runs off the right of the panel to
+    world x 275, and as bytes those entries wrapped to 0..19 -- the far left of
+    the world.  Nothing warned; the fly simply vanished off the left of the
+    screen for a third of its flight.
+    """
+    if "char" in typ:
+        lo, hi = (0, 255) if "unsigned" in typ else (-128, 127)
+        bad = [v for v in values if not lo <= v <= hi]
+        if bad:
+            raise ValueError(
+                f"{name}: {len(bad)} value(s) outside {lo}..{hi} for {typ}, "
+                f"first {bad[0]} -- widen the type"
+            )
     out = [f"{typ} {name}[] = {{"]
     for i in range(0, len(values), per_line):
         out.append("    " + ", ".join(str(v) for v in values[i : i + per_line]) + ",")
@@ -449,9 +464,30 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     for x0, y0, x1, y1 in feet_world:
         foot_vals += [x0, y0, x1, y1]
 
-    # Each tongue's root block, in world pixels.
+    lava_box_world = playfield.world(
+        *lava_box([lava_frame_pixels(i) for i in range(playfield.LAVA_FRAMES)])[:2]
+    )
+
+    fly = [playfield.world(x, y) for x, y in playfield.fly_path()]
+    fly_x = [p[0] for p in fly]
+    fly_y = [p[1] for p in fly]
+    fly_catch = min(range(len(fly)), key=lambda i: fly[i][0])
+
+    plunger_vals = []
+    for x0, y0, x1, y1 in playfield.plunger_boxes():
+        plunger_vals += list(playfield.world(x0, y0)) + list(playfield.world(x1, y1))
+
+    # Each tongue's root block, in world pixels, and the box the sprites are
+    # drawn into -- the one the longest tongue needs.
     tongue_l = playfield.world(*playfield.DINO_TONGUE_ROOTS[0])
     tongue_r = playfield.world(*playfield.DINO_TONGUE_ROOTS[1])
+    tongue_box_l, tongue_box_r = (
+        playfield.world(
+            min(q[0] for q in playfield.tongue_pixels(i, playfield.DINO_TONGUE_BLOCKS)),
+            min(q[1] for q in playfield.tongue_pixels(i, playfield.DINO_TONGUE_BLOCKS)),
+        )
+        for i in range(2)
+    )
 
     # Flipper geometry, one entry per side per animation frame.  "dir" runs
     # from the pivot to the tip; "nrm" is the outward normal of the face the
@@ -561,6 +597,11 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         {playfield.VOLCANO_APEX[0] + playfield.ORIGIN_X}
 #define VOLCANO_Y         {playfield.VOLCANO_APEX[1] + playfield.ORIGIN_Y}
+/* The box every frame of the flow is drawn into.  The flow is opaque across
+ * it and always in the same place, so it saves no background and is painted
+ * only when the frame changes. */
+#define LAVA_BOX_X        {lava_box_world[0]}
+#define LAVA_BOX_Y        {lava_box_world[1]}
 /* Distances from the apex to the foot of each slope, as magnitudes: the left
  * one runs left, the right one right, and both run down.  Keeping them
  * positive keeps the shifts in 06-lava.c off negative numbers. */
@@ -582,6 +623,9 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define TONGUE_L_X        {tongue_l[0]}
 #define TONGUE_R_X        {tongue_r[0]}
 #define TONGUE_Y          {tongue_l[1]}
+#define TONGUE_BOX_L_X    {tongue_box_l[0]}
+#define TONGUE_BOX_R_X    {tongue_box_r[0]}
+#define TONGUE_BOX_Y      {tongue_box_l[1]}
 #define TONGUE_MAX        {playfield.DINO_TONGUE_BLOCKS}
 #define TONGUE_PERIOD     {playfield.DINO_TONGUE_PERIOD}
 
@@ -592,6 +636,25 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 /* The nine feet, as x0, y0, x1, y1.  Hitting one turns it cyan and takes it
  * out of play until the ball drains. */
 {c_table("tblFootBox", foot_vals, per_line=16)}
+
+/* Where the fly is on each tick of its cycle.  It is a table because the 6809
+ * has no sine and no multiply worth the name, and 128 bytes is cheaper than
+ * either; the loop is closed, so an index that wraps is the whole of it.  The
+ * table itself lives in fly_data.h, which only 08-fly.c includes: every object
+ * carries its own copy of whatever this header declares, so a table eight
+ * objects do not use is eight copies of dead weight -- and the ball has to fit
+ * a single 8k page on its own. */
+#define FLY_PERIOD        {playfield.FLY_PERIOD}
+/* The tick at which it is furthest left, which is where it can be caught. */
+#define FLY_CATCH_TICK    {fly_catch}
+/* How many ticks the tongue takes to reach full stretch, and so how far ahead
+ * of the catch it has to start. */
+#define TONGUE_REACH_STAGES {playfield.TONGUE_REACH_STAGES}
+/* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
+ * as the four top feet: the leftmost foot lights the leftmost line.  A ball
+ * through a lit line is sped on its way and grows Vally's tongue. */
+#define NUM_PLUNGERS      {len(plunger_vals) // 4}
+{c_table("tblPlungerBox", plunger_vals, per_line=16)}
 
 /* Unit normals, scaled by 32. */
 {c_table("tblDirX", dirs_x, typ="const signed char")}
@@ -625,6 +688,26 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 
 #endif /* _table_data_h */
 """
+    fly_body = f"""#ifndef _fly_data_h
+#define _fly_data_h
+
+/* Where the fly is on each tick of its cycle, generated by gen-assets.py.
+ *
+ * This is a header of its own rather than part of table_data.h because every
+ * object module carries a private copy of every table it can see, and only
+ * 08-fly.c needs this one.  Six hundred bytes across eight objects is most of
+ * a page, and the ball is already within a hundred bytes of filling one by
+ * itself. */
+
+{c_table("tblFlyX", fly_x, per_line=16, typ="const unsigned int")}
+
+{c_table("tblFlyY", fly_y, per_line=16)}
+
+#endif /* _fly_data_h */
+"""
+    with open(os.path.join(OBJ_DIR, "fly_data.h"), "w") as f:
+        f.write(fly_body)
+
     with open(os.path.join(OBJ_DIR, "table_data.h"), "w") as f:
         f.write(body)
 
@@ -763,32 +846,68 @@ def draw_flipper_sheet(d, img):
     """
     cell = 40
     pivot_x, pivot_y = 6, 20
-    left, right = [], []
+    world = playfield.world_image().load()
+    pivots = [playfield.world(*p) for p in playfield.FLIPPER_PIVOTS]
 
+    # Every frame of the sweep, as pixel sets in cell coordinates.
+    shapes = []
     for f in range(playfield.FLIPPER_FRAMES):
         deg = playfield.FLIPPER_REST_DEG + (
             playfield.FLIPPER_UP_DEG - playfield.FLIPPER_REST_DEG
         ) * f / (playfield.FLIPPER_FRAMES - 1)
-
         one = Image.new("P", (cell, cell), TRANSPARENT)
         one.putpalette(sprite_palette())
         od = ImageDraw.Draw(one)
         od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=DTEAL)
-        # Hub, drawn last so the anchor pixel is always opaque.
-        od.ellipse(
-            (pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
+        # Hub, drawn last so the pivot pixel is always opaque.
+        od.ellipse((pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
         od.point((pivot_x, pivot_y), fill=RED)
+        sp = one.load()
+        shapes.append({
+            (x, y): sp[x, y]
+            for y in range(cell)
+            for x in range(cell)
+            if sp[x, y] != TRANSPARENT
+        })
 
-        img.paste(one, (f * cell, 0))
-        left.append((f"LeftFlip{f}", f * cell + pivot_x, pivot_y, False))
+    # One box big enough for the whole sweep, filled with the playfield under
+    # it, so a frame paints out the one before it and none of them needs to
+    # save a background.  The left edge of each side is nudged to land on an
+    # even column: these are drawn byte-aligned, and at four bits a pixel a
+    # byte is two pixels.  BOX_L/BOX_R are in each side's own cell
+    # coordinates, the right side's being mirrored.
+    allpx = set().union(*(set(sh) for sh in shapes))
+    y0 = min(p[1] for p in allpx)
+    y1 = max(p[1] for p in allpx)
+    x0 = min(p[0] for p in allpx)
+    x1 = max(p[0] for p in allpx)
+    box = [(x0 - 1, x1), (cell - 1 - x1 - 1, cell - 1 - x0)]
+    mirror_pivot = cell - 1 - pivot_x
 
-        img.paste(one.transpose(Image.FLIP_LEFT_RIGHT), (f * cell, cell))
-        right.append(
-            (f"RightFlip{f}", f * cell + cell - 1 - pivot_x, cell + pivot_y, False))
-
-    # Both pivots sit on even pixel columns, so these never need the
-    # single-pixel-position variant -- which would double the code.
-    return left + right
+    out = []
+    for side in range(2):
+        px0, px1 = box[side]
+        piv = pivot_x if side == 0 else mirror_pivot
+        wx0 = pivots[side][0] - (piv - px0)
+        wy0 = pivots[side][1] - (pivot_y - y0)
+        assert wx0 % 2 == 0, f"flipper box {side} starts on an odd column"
+        w, h = px1 - px0 + 1, y1 - y0 + 1
+        for f, shape in enumerate(shapes):
+            cx = 2 + f * (w + 4)
+            cy = 2 + side * (h + 4)
+            for j in range(h):
+                for k in range(w):
+                    img.putpixel((cx + k, cy + j), world[wx0 + k, wy0 + j])
+            for (sx, sy), ink in shape.items():
+                mx = sx if side == 0 else cell - 1 - sx
+                img.putpixel((cx + mx - px0, cy + sy - y0), ink)
+            # The anchor sits on the pivot, so the object can go on standing
+            # where the collision tables expect it while the sprite is drawn
+            # from the corner of the box.
+            out.append((
+                f'{"Left" if side == 0 else "Right"}Flip{f}',
+                cx + piv - px0, cy + pivot_y - y0, False, False))
+    return out
 
 
 # A compact 5x7 digit font: one string of five characters per row.
@@ -893,6 +1012,15 @@ def draw_lite_sheet(d, img):
             sprites.append((
                 f'Foot{"Wide" if w > h else "Tall"}{tag}', x, 2, True, False))
             x += w + 4
+
+    # The plunger lines, lit and unlit.  Both are opaque over the same box and
+    # always drawn in the same place, so neither needs to save the background;
+    # the unlit one is plain playfield, which is all that is behind them.
+    pw, ph = playfield.PLUNGER_W, playfield.PLUNGER_H
+    for ink, tag in ((ORANGE, "On"), (WHITE, "Off")):
+        d.rectangle((x, 2, x + pw - 1, 2 + ph - 1), fill=ink)
+        sprites.append((f"Plunger{tag}", x, 2, True, False))
+        x += pw + 4
     return sprites
 
 
@@ -902,26 +1030,32 @@ def draw_lite_sheet(d, img):
 # digits cannot express -- Vally's tongue and the end-of-game plate -- are
 # sprites here.
 TONGUE_STAGES = 6
-TONGUE_STEP = 4  # pixels of tongue per stage
+TONGUE_REACH_STAGES = 6
+TONGUE_ROW_Y = 62  # the tongue stages sit below the rest of the panel sheet
 GAMEOVER_W, GAMEOVER_H = 66, 18
 
 
 def draw_panel_sheet(d, img):
     sprites = []
 
-    # Vally's tongue, reaching further with every pair of top marks hit.
-    for stage in range(1, TONGUE_STAGES + 1):
-        x0 = 2 + (stage - 1) * 34
-        y0 = 2 + TONGUE_STAGES * TONGUE_STEP
-        length = stage * TONGUE_STEP
-        d.line([(x0, y0), (x0 + length, y0 - length)], fill=ORANGE)
-        if stage == TONGUE_STAGES:
-            # The prehistoric fly, finally within reach.
-            d.rectangle(
-                (x0 + length, y0 - length - 2, x0 + length + 2, y0 - length),
-                fill=DGREY,
-            )
-        sprites.append((f"Tongue{stage}", x0, y0, False))
+    # Vally's tongue, reaching further with every pair of top marks hit.  It
+    # goes down, then left, then down again rather than straight at the fly,
+    # and the last stage finishes on the fly's body at the far left of the
+    # flight -- so a tongue that has not been fed twelve times cannot reach it,
+    # and one that has cannot miss.  Laid out in two rows because a full reach
+    # is over fifty pixels wide.
+    pts = playfield.vally_tongue_pixels(playfield.TONGUE_REACH_STAGES)
+    tw = max(q[0] for q in pts) - min(q[0] for q in pts) + 1
+    th = max(q[1] for q in pts) - min(q[1] for q in pts) + 1
+    mx, my = playfield.TONGUE_XY
+    for stage in range(1, TONGUE_REACH_STAGES + 1):
+        cx = 2 + ((stage - 1) % 3) * (tw + 4)
+        cy = TONGUE_ROW_Y + ((stage - 1) // 3) * (th + 4)
+        px = playfield.vally_tongue_pixels(stage)
+        x0 = min(q[0] for q in px)
+        for qx, qy in px:
+            d.point((cx + qx - x0, cy + qy - my), fill=ORANGE)
+        sprites.append((f"Tongue{stage}", cx + mx - x0, cy, False))
 
     # The end-of-game message, shown across the middle of the table.  It is
     # bare lettering rather than a filled plate: the sprite compiler unrolls
@@ -968,6 +1102,59 @@ def draw_panel_sheet(d, img):
     return sprites
 
 
+LAVA_PAD = 4  # room round the flow for the gobbets to bulge into
+
+
+def lava_frame_pixels(frame):
+    """One frame of the flow, as {(source x, source y): ink}.
+
+    Drawn into a scratch image and read back rather than drawn straight into
+    the sheet, because the sprites now need a box big enough for every frame
+    and there is no way to know how big that is without drawing them all
+    first.
+    """
+    ax, ay = playfield.VOLCANO_APEX
+    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
+    x0 = min(ax, *(f[0] for f in slopes)) - LAVA_PAD
+    y0 = ay - LAVA_PAD
+    w = max(ax, *(f[0] for f in slopes)) - x0 + LAVA_PAD
+    h = max(f[1] for f in slopes) - y0 + LAVA_PAD
+
+    scratch = new_sheet(w, h)
+    sd = ImageDraw.Draw(scratch)
+    apex = (ax - x0, ay - y0)
+    for foot in slopes:
+        fx, fy = foot[0] - x0, foot[1] - y0
+        sd.line([apex, (fx, fy)], fill=ORANGE, width=2)
+        for k in range(playfield.LAVA_BULGES):
+            t = (k + frame / playfield.LAVA_FRAMES) / playfield.LAVA_BULGES
+            bx = apex[0] + (fx - apex[0]) * t
+            by = apex[1] + (fy - apex[1]) * t
+            sd.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
+            sd.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
+    sp = scratch.load()
+    return {
+        (x + x0, y + y0): sp[x, y]
+        for y in range(h)
+        for x in range(w)
+        if sp[x, y] != TRANSPARENT
+    }
+
+
+def lava_box(frames):
+    """The one box every frame of the flow is drawn into, in source pixels.
+
+    Left edge pulled to an even world column: these are drawn byte-aligned and
+    a byte is two pixels at four bits each.
+    """
+    allpx = set().union(*(set(f) for f in frames))
+    x0 = min(p[0] for p in allpx)
+    if (x0 + playfield.ORIGIN_X) % 2:
+        x0 -= 1
+    return (x0, min(p[1] for p in allpx),
+            max(p[0] for p in allpx), max(p[1] for p in allpx))
+
+
 def draw_lava_sheet(d, img):
     """The lava, as frames of one flow rather than a swarm of moving drops.
 
@@ -982,56 +1169,79 @@ def draw_lava_sheet(d, img):
     come back as whichever blob the anchor landed on and the rest would
     silently vanish.
     """
-    frames = playfield.LAVA_FRAMES
-    ax, ay = playfield.VOLCANO_APEX
-    slopes = (playfield.VOLCANO_LEFT_FOOT, playfield.VOLCANO_RIGHT_FOOT)
-
-    x0 = min(f[0] for f in slopes)
-    cell_w = max(f[0] for f in slopes) - x0 + 6
-    cell_h = max(f[1] for f in slopes) - ay + 6
+    frames = [lava_frame_pixels(f) for f in range(playfield.LAVA_FRAMES)]
+    box = lava_box(frames)
+    bx0, by0, bx1, by1 = box
+    w, h = bx1 - bx0 + 1, by1 - by0 + 1
+    world = playfield.world_image().load()
 
     sprites = []
-    for f in range(frames):
-        ox = (f % 4) * cell_w + 2
-        oy = (f // 4) * cell_h + 2
-        apex = (ox + ax - x0, oy + 2)
-
-        for foot in slopes:
-            fx, fy = ox + foot[0] - x0, oy + 2 + foot[1] - ay
-            d.line([apex, (fx, fy)], fill=ORANGE, width=2)
-            for k in range(playfield.LAVA_BULGES):
-                t = (k + f / frames) / playfield.LAVA_BULGES
-                bx = apex[0] + (fx - apex[0]) * t
-                by = apex[1] + (fy - apex[1]) * t
-                d.ellipse((bx - 2, by - 2, bx + 2, by + 2), fill=ORANGE)
-                d.ellipse((bx - 1, by - 1, bx + 1, by + 1), fill=YELLOW)
-        sprites.append((f"LavaFlow{f}", apex[0], apex[1], False))
+    for i, flow in enumerate(frames):
+        cx = 2 + (i % 4) * (w + 4)
+        cy = 2 + (i // 4) * (h + 4)
+        for j in range(h):
+            for k in range(w):
+                wx, wy = playfield.world(bx0 + k, by0 + j)
+                d.point((cx + k, cy + j), fill=world[wx, wy])
+        for (sx, sy), ink in flow.items():
+            d.point((cx + sx - bx0, cy + sy - by0), fill=ink)
+        sprites.append((f"LavaFlow{i}", cx, cy, False, False))
     return sprites
 
 
 def draw_tongue_sheet(d, img):
     """Each tongue at each extension, both sides.
 
-    The anchor is the block at the head, which is drawn at every length, so the
-    object stands still and only the sprite changes.  That also keeps the drawn
-    edge on an even column whichever length is showing -- the left tongue grows
-    two pixels left at a time from an even root -- so neither side has to pay
-    for SinglePixelPosition.
+    Every length is drawn into the same box -- the one the longest of them
+    needs -- filled with the playfield that lies under it and the tongue laid
+    over the top.  That costs eight times the opaque pixels of a bare chain of
+    blocks, but it buys the two things that make these cheap to run: the box is
+    the same size and in the same place whichever length is showing, so the
+    sprites need not save the background, and a shorter tongue paints the
+    playfield back over the longer one it replaces.  Drawn every tick they were
+    costing more than they were worth; drawn twice per change they cost almost
+    nothing.
+
+    The box starts on an even column on both sides, so neither pays for
+    SinglePixelPosition either.
     """
+    world = playfield.world_image().load()
     sprites = []
     for side in range(2):
+        full = playfield.tongue_pixels(side, playfield.DINO_TONGUE_BLOCKS)
+        bx0 = min(q[0] for q in full)
+        by0 = min(q[1] for q in full)
+        # The box has to come from the pixels, not from the block count: the
+        # blocks overlap, so a four-block tongue is nine across and not eight.
+        size = max(max(q[0] for q in full) - bx0, max(q[1] for q in full) - by0) + 1
         for n in range(1, playfield.DINO_TONGUE_BLOCKS + 1):
-            px = playfield.tongue_pixels(side, n)
-            x0 = min(q[0] for q in px)
-            y0 = min(q[1] for q in px)
-            cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * 12
-            for qx, qy in px:
-                d.point((cx + qx - x0, 2 + qy - y0), fill=TEAL)
-            rx, ry = playfield.DINO_TONGUE_ROOTS[side]
+            cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * (size + 4)
+            for j in range(size):
+                for i in range(size):
+                    wx, wy = playfield.world(bx0 + i, by0 + j)
+                    ink = world[wx, wy]
+                    assert ink != TRANSPARENT, "playfield under a tongue is keyed"
+                    d.point((cx + i, 2 + j), fill=ink)
+            for qx, qy in playfield.tongue_pixels(side, n):
+                d.point((cx + qx - bx0, 2 + qy - by0), fill=TEAL)
             sprites.append((
-                f'Tongue{"R" if side else "L"}{n}',
-                cx + rx - x0, 2 + ry - y0, False))
+                f'Tongue{"R" if side else "L"}{n}', cx, 2, False, False))
     return sprites
+
+
+def draw_fly_sheet(d, img):
+    """The prehistoric fly: an orange body between two teal wings.
+
+    Lifted from the original's shape rather than invented.  The wings meet the
+    body along a full edge on each side, which matters: a sprite is found by
+    flood fill, and wings that only cornered onto the body would be left behind
+    without a word.
+    """
+    w, h = playfield.FLY_W, playfield.FLY_H
+    d.rectangle((2, 2, 2 + 3, 2 + 3), fill=TEAL)
+    d.rectangle((2 + w - 4, 2, 2 + w - 1, 2 + 3), fill=TEAL)
+    d.rectangle((2 + 4, 2 + 2, 2 + 7, 2 + h - 1), fill=ORANGE)
+    return [("Fly", 2, 2, True)]
 
 
 def write_sprites():
@@ -1041,10 +1251,11 @@ def write_sprites():
     total += write_sprite_group(2, "flipper", (240, 80), draw_flipper_sheet, chunk=8)
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
-    total += write_sprite_group(5, "panel", (216, 60), draw_panel_sheet, chunk=8)
+    total += write_sprite_group(5, "panel", (216, 140), draw_panel_sheet, chunk=8)
     total += write_sprite_group(6, "lava", (192, 72), draw_lava_sheet, chunk=8)
     total += write_sprite_group(7, "tongue", (112, 16), draw_tongue_sheet,
                                 chunk=8)
+    total += write_sprite_group(8, "fly", (24, 16), draw_fly_sheet, chunk=8)
     return total
 
 
@@ -1586,6 +1797,12 @@ def write_descriptors():
         obj(f"ball indicator {i}", 3, 3, 0, 0, [2, i])
     obj("multiplier tens", 3, 1, 0, 0, [3, 0])
     obj("multiplier units", 3, 1, 0, 0, [4, 0])
+
+    obj("fly", 8, 3, 0, 0, [0])
+
+    # One overlay per plunger line; it places itself from tblPlungerBox.
+    for i in range(len(playfield.plunger_boxes())):
+        obj(f"plunger {i}", 4, 3, 0, 0, [2, i])
 
     # One overlay per foot; it places itself from tblFootBox.
     _, feet = playfield.source()

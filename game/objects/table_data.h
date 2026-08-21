@@ -74,12 +74,17 @@ const unsigned char tblDiamondBox[] = {
 #define BALLS_DIGIT_X     196
 #define BALLS_DIGIT_Y     198
 #define BALLS_PITCH       10
-#define PANEL_TONGUE_X    274
-#define PANEL_TONGUE_Y    80
+#define PANEL_TONGUE_X    270
+#define PANEL_TONGUE_Y    91
 
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         228
 #define VOLCANO_Y         64
+/* The box every frame of the flow is drawn into.  The flow is opaque across
+ * it and always in the same place, so it saves no background and is painted
+ * only when the frame changes. */
+#define LAVA_BOX_X        210
+#define LAVA_BOX_Y        62
 /* Distances from the apex to the foot of each slope, as magnitudes: the left
  * one runs left, the right one right, and both run down.  Keeping them
  * positive keeps the shifts in 06-lava.c off negative numbers. */
@@ -101,6 +106,9 @@ const unsigned char tblDiamondBox[] = {
 #define TONGUE_L_X        64
 #define TONGUE_R_X        156
 #define TONGUE_Y          169
+#define TONGUE_BOX_L_X    58
+#define TONGUE_BOX_R_X    156
+#define TONGUE_BOX_Y      163
 #define TONGUE_MAX        4
 #define TONGUE_PERIOD     64
 
@@ -119,6 +127,27 @@ const unsigned char tblFootBox[] = {
     59, 61, 64, 64, 69, 61, 74, 64, 143, 61, 148, 64, 153, 61, 158, 64,
     100, 131, 105, 134, 108, 131, 113, 134, 116, 131, 121, 134, 153, 137, 156, 142,
     153, 145, 156, 150,
+};
+
+/* Where the fly is on each tick of its cycle.  It is a table because the 6809
+ * has no sine and no multiply worth the name, and 128 bytes is cheaper than
+ * either; the loop is closed, so an index that wraps is the whole of it.  The
+ * table itself lives in fly_data.h, which only 08-fly.c includes: every object
+ * carries its own copy of whatever this header declares, so a table eight
+ * objects do not use is eight copies of dead weight -- and the ball has to fit
+ * a single 8k page on its own. */
+#define FLY_PERIOD        128
+/* The tick at which it is furthest left, which is where it can be caught. */
+#define FLY_CATCH_TICK    64
+/* How many ticks the tongue takes to reach full stretch, and so how far ahead
+ * of the catch it has to start. */
+#define TONGUE_REACH_STAGES 6
+/* The four plunger lines along the top, as x0, y0, x1, y1, in the same order
+ * as the four top feet: the leftmost foot lights the leftmost line.  A ball
+ * through a lit line is sped on its way and grows Vally's tongue. */
+#define NUM_PLUNGERS      4
+const unsigned char tblPlungerBox[] = {
+    78, 43, 83, 44, 98, 43, 103, 44, 116, 43, 121, 44, 135, 43, 140, 44,
 };
 
 /* Unit normals, scaled by 32. */

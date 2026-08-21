@@ -16,6 +16,7 @@
 #define DIGIT_GROUP_IDX 3
 #define LITE_GROUP_IDX 4
 #define TONGUE_GROUP_IDX 7
+#define FLY_GROUP_IDX 8
 
 /* Sounds, numbered to match game/sounds/XX-*.wav */
 #define SOUND_BUMPER 1
@@ -50,10 +51,20 @@
 #define LITE_SPRITE_TALL_SPENT 3
 #define LITE_SPRITE_WIDE_LIVE 4
 #define LITE_SPRITE_WIDE_SPENT 5
+#define LITE_SPRITE_PLUNGER_ON 6
+#define LITE_SPRITE_PLUNGER_OFF 7
 
 /* Which sort of overlay an instance is, passed as its first init byte */
 #define LITE_KIND_FOOT 0
 #define LITE_KIND_DIAMOND 1
+#define LITE_KIND_PLUNGER 2
+
+/* How long the volcano throws the table about, and how far.  The horizontal
+ * offset has to stay even: the background scrolls in whole bytes, which at
+ * four bits a pixel is two pixels at a time. */
+#define QUAKE_TICKS 64
+#define QUAKE_X 4
+#define QUAKE_Y 3
 
 /* Ticks a struck bumper's middle stays magenta -- about half a second */
 #define DIAMOND_FLASH 20
@@ -133,6 +144,15 @@ typedef struct GameGlobals {
      * publish it so the ball bounces off the shape actually on the screen.
      * Kept at the end of the struct: the playtest driver reads by offset. */
     byte tongueOut[2];
+    /* Bit per plunger line currently showing.  A line is set up by hitting the
+     * foot below its pod and goes out when the ball drains. */
+    byte plunger;
+    /* Where the fly is in its flight, so Vally's tongue can strike in time
+     * with it rather than keeping a second clock of its own. */
+    byte flyTick;
+    /* Ticks of eruption still to run.  The volcano going up is the one time
+     * the camera moves, which is why the world is bigger than the screen. */
+    byte quake;
 } GameGlobals;
 
 MAYBE_UNUSED

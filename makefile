@@ -123,6 +123,11 @@ SYMBOLASM = $(GENASMDIR)/dynosprite-symbols.asm
 AUDIORATE = $(shell grep -E "AudioSamplingRate\s+EQU\s+[0-9]+" $(SRCDIR)/globals.asm | grep -oE "[0-9]+")
 
 # options
+# Passed straight through to cmoc.  Functions that call nothing can keep their
+# locals off a frame pointer, which saves the prologue, the epilogue and a
+# register throughout -- and this game's object code is up against the page
+# limit that made it take a third page.
+CMOCFLAGS = --cmoc-flag=-fomit-frame-pointer
 ASMFLAGS = -I $(GENASMDIR)
 ifneq ($(RELEASE), 1)
   ASMFLAGS += --define=DEBUG
@@ -161,8 +166,14 @@ endif
 ifneq ($(VERBOSE_ERRORS), 0)
   ASMFLAGS += --define=VERBOSE_ERRORS
 endif
+# Three 8k pages for level and object code rather than the engine's usual two.
+# The ball alone compiles to over 7k and has to sit in a page by itself, which
+# left the other seven objects and the level sharing the second page; adding
+# the plunger lines tipped it over and the loader trapped at loader.asm:910,
+# "out of memory for level / object code".  Each page here costs one page of
+# sprite code, of which we use about four of the twenty-four available.
 ifeq ($(OBJPAGES),)
-  ASMFLAGS += --define=OBJPAGES=2
+  ASMFLAGS += --define=OBJPAGES=3
 else
   ASMFLAGS += --define=OBJPAGES=$(OBJPAGES)
 endif
@@ -254,7 +265,7 @@ $(SYMBOLASM): $(SCRIPTDIR)/symbol-extract.py $(PASS1LIST)
 
 # 6a. Compile C Object handling routines to raw
 $(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
-	cd $(OBJECTDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=object $(notdir $<)
+	cd $(OBJECTDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) $(CMOCFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=object $(notdir $<)
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(OBJECTDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 
@@ -266,7 +277,7 @@ $(GENOBJDIR)/object%.raw: $(OBJECTDIR)/%.asm $(GAMEHDR) $(SRCDIR)/datastruct.asm
 # 6a. Compile C Level handling routines to raw
 # 7a. Compile C Level handling routines to raw
 $(GENOBJDIR)/level%.raw: $(LEVELDIR)/%.c $(GAMEHDR) $(SRCDIR)/datastruct.asm $(SYMBOLASM)
-	cd $(LEVELDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=level $(notdir $<)
+	cd $(LEVELDIR) ; ../../scripts/cmoc-wrapper.py $(ASMFLAGS) $(CFLAGS) $(CMOCFLAGS) -I../../$(SRCDIR) -I$(GENASMDIR)/ --output-dir=../../$(GENTMPDIR) --file-type=level $(notdir $<)
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.bin,$(notdir $<)) ../../$@
 	cd $(LEVELDIR) ; mv ../../$(GENTMPDIR)/$(patsubst %.c,%.map,$(notdir $<)) ../../$(GENLISTDIR)/$(patsubst %.raw,%.lst,$(notdir $@))
 

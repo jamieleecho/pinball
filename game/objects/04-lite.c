@@ -38,6 +38,11 @@ void LiteInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
         cob->globalX = box[0] + DIAMOND_MID_OFF;
         cob->globalY = box[1] + DIAMOND_MID_OFF;
         s->spriteIdx = LITE_SPRITE_DIAMOND_COOL;
+    } else if (s->kind == LITE_KIND_PLUNGER) {
+        box = tblPlungerBox + ((unsigned)s->index << 2);
+        cob->globalX = box[0];
+        cob->globalY = box[1];
+        s->spriteIdx = LITE_SPRITE_PLUNGER_OFF;
     } else {
         box = tblFootBox + ((unsigned)s->index << 2);
         cob->globalX = box[0];
@@ -68,6 +73,10 @@ byte LiteUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
             s->timer--;
         }
         idx = s->timer ? LITE_SPRITE_DIAMOND_HOT : LITE_SPRITE_DIAMOND_COOL;
+    } else if (s->kind == LITE_KIND_PLUNGER) {
+        idx = (globals->plunger & (byte)(1 << s->index))
+                  ? LITE_SPRITE_PLUNGER_ON
+                  : LITE_SPRITE_PLUNGER_OFF;
     } else {
         byte spent = globals->feetHit[s->index >> 3] &
                      (byte)(1 << (s->index & 7));

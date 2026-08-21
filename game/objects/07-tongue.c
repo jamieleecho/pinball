@@ -5,6 +5,10 @@ extern "C" {
 #include "07-tongue.h"
 #include "object_info.h"
 
+/* Two frame buffers, so a sprite that saves no background has to be painted
+ * into each of them and then not again until what it shows changes. */
+#define BUFFERS 2
+
 static byte didNotInit = TRUE;
 static GameGlobals *globals;
 
@@ -33,11 +37,12 @@ void TongueInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
      * simply never draws -- no warning, no trap, just a tongue that is
      * never there. */
     if (s->side) {
-        cob->globalX = TONGUE_R_X;
+        cob->globalX = TONGUE_BOX_R_X;
     } else {
-        cob->globalX = TONGUE_L_X;
+        cob->globalX = TONGUE_BOX_L_X;
     }
-    cob->globalY = TONGUE_Y;
+    cob->globalY = TONGUE_BOX_Y;
+    s->redraw = BUFFERS;
     cob->active = OBJECT_ACTIVE;
 }
 
@@ -47,7 +52,7 @@ byte TongueReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
 
 byte TongueUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     TongueObjectState *s = (TongueObjectState *)(cob->statePtr);
-    byte out;
+    byte out, idx;
 
     /* Tongues flick only while a ball is in play.  A table sitting on its
      * launcher, or waiting out a drain, holds still. */
@@ -57,11 +62,17 @@ byte TongueUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     out = tblTongueLen[s->phase];
 
     globals->tongueOut[s->side] = out;
-    s->spriteIdx = (byte)((s->side ? TONGUE_MAX : 0) + out - 1);
-
-    /* This one saves its background, so it has to be drawn every tick: stop
-     * and the engine puts the playfield back over it. */
-    cob->active = OBJECT_ACTIVE;
+    idx = (byte)((s->side ? TONGUE_MAX : 0) + out - 1);
+    if (s->spriteIdx != idx) {
+        s->spriteIdx = idx;
+        s->redraw = BUFFERS;
+    }
+    if (s->redraw) {
+        s->redraw--;
+        cob->active = OBJECT_ACTIVE;
+    } else {
+        cob->active = OBJECT_UPDATE_ACTIVE;
+    }
     return 0;
 }
 

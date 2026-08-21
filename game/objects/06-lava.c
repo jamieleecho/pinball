@@ -11,6 +11,10 @@ extern "C" {
  * is about a minute from apex to foot. */
 #define LAVA_FRAME_TICKS 56
 
+/* Two frame buffers, so a sprite that saves no background has to be painted
+ * into each of them and then not again until what it shows changes. */
+#define BUFFERS 2
+
 static byte didNotInit = TRUE;
 static GameGlobals *globals;
 
@@ -34,8 +38,9 @@ void LavaInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     s->frame = 0;
     s->timer = LAVA_FRAME_TICKS;
     s->spriteIdx = 0;
-    cob->globalX = VOLCANO_X;
-    cob->globalY = VOLCANO_Y;
+    s->redraw = BUFFERS;
+    cob->globalX = LAVA_BOX_X;
+    cob->globalY = LAVA_BOX_Y;
     cob->active = OBJECT_ACTIVE;
 }
 
@@ -52,11 +57,19 @@ byte LavaUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
             s->frame = 0;
         }
         s->spriteIdx = s->frame;
+        s->redraw = BUFFERS;
     }
 
-    /* This one saves its background, so it has to be drawn every tick: stop
-     * and the engine puts the mountain back over it. */
-    cob->active = OBJECT_ACTIVE;
+    /* Every frame is opaque across the same box, so a new one paints the old
+     * one out and the mountain never needs putting back.  Fifty-five ticks in
+     * fifty-six there is nothing to do at all: this was the largest sprite on
+     * the screen and it was being redrawn identically every tick. */
+    if (s->redraw) {
+        s->redraw--;
+        cob->active = OBJECT_ACTIVE;
+    } else {
+        cob->active = OBJECT_UPDATE_ACTIVE;
+    }
     return 0;
 }
 
