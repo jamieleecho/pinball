@@ -2,10 +2,7 @@
   "scheme": "custom",
   "schemeDefinition": "major.minor[.build][->patch]",
   "versionFile": "./package.json",
-  "files": [{
-    "path": "mac/Pinball/Info.plist",
-    "line": 22
-  }],
+  "files": [],
   "rules": [{
       "trigger": "manual",
       "bump": "minor",
