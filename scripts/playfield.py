@@ -54,24 +54,30 @@ TABLE_X0, TABLE_X1 = 35, 186
 DRAIN_BOX = (93, 185, 112, 194)
 FLIPPER_BOXES = ((55, 157, 84, 172), (121, 157, 150, 172))
 
-# The launch lane: an 8-pixel white channel running the full height of the
+# The launch lane: a 9-pixel white channel running the full height of the
 # table down its right-hand side, walled off from the playfield by the divider.
-LANE_X0, LANE_X1 = 177, 184
+LANE_X0, LANE_X1 = 176, 184
 LANE_TOP = 34  # above this the lane opens into the table
 
-# The stopper.  The lane and the table are joined by one gap: the columns of
-# the divider, x 169..176, between the bottom of the curved top border (y 13-16
-# depending on the column) and the top of the divider itself (y 35-41).  A shot
+# The stopper.  The lane and the table are joined by one gap, between the
+# bottom of the curved top border and the top of the divider below it.  A shot
 # on its way up goes through that gap into the table; the stopper then fills it
 # so the ball cannot come back.  It is a sprite rather than artwork because it
 # is only there once the ball is in play.
 #
-# Measured off the artwork column by column, then squared off, and then given a
-# row at each end on top of that.  The border above and the divider below both
-# start lower on some columns than others, so a bar that stops exactly where
-# the measurement says leaves what look like missing pixels at its ends; the
-# extra row buries them.
-GATE_BOX = (169, 13, 176, 41)  # source x0, y0, x1, y1, inclusive
+# The ball is stopped by a horizontal normal, so the bar only has to be a bar:
+# two columns are as good a wall as seven, and thin is what the original looks
+# like.  It sits on the divider's own tip, x 169..170, carrying that line
+# straight up to the border.
+#
+# The open stopper saves no background -- it is what rubs the shut one out --
+# so it is drawn from the artwork rather than filled with white.  That is what
+# lets the bar run right into the border above and the divider below instead of
+# stopping a row short of whichever column reaches further: white would take a
+# bite out of the wall the first time the gate opened, and nothing puts it
+# back.  So the height is the whole gap, y 13..34, and _check_gate() checks the
+# one thing that still matters -- that both ends are sealed.
+GATE_BOX = (169, 13, 170, 34)  # source x0, y0, x1, y1, inclusive
 GATE_W = GATE_BOX[2] - GATE_BOX[0] + 1
 GATE_H = GATE_BOX[3] - GATE_BOX[1] + 1
 
@@ -94,6 +100,28 @@ FLIPPER_UP_DEG = -45    # above horizontal, fully raised
 FLIPPER_FRAMES = 6
 
 BALL_R = 3
+
+# The launcher, and the spring beneath it.
+#
+# The head is a small block that rides down the lane as the plunger is drawn
+# back.  On its own that reads as a block sliding about; what makes it read as
+# a plunger is the spring below, which fills whatever room is left between the
+# head and the floor of the lane and so squashes as the head comes down.
+#
+# The head's travel therefore has to stop short of the floor, or at full pull
+# there is no spring left to see.  Two rows is enough to read as a coil, and
+# the spring gets one frame per two rows of travel, so the pull is even.
+LAUNCHER_REST_Y = 168   # the head's centre, at rest
+LAUNCHER_HALF_W = 4
+LAUNCHER_HALF_H = 3
+SPRING_FLOOR = 189      # the last lane row the spring stands on
+SPRING_W = 5
+SPRING_COILS = 4
+SPRING_MIN_H = 2
+SPRING_TOP = LAUNCHER_REST_Y + LAUNCHER_HALF_H + 1
+SPRING_H = SPRING_FLOOR - SPRING_TOP + 1
+LAUNCHER_MAX_PULL = SPRING_H - SPRING_MIN_H
+SPRING_FRAMES = LAUNCHER_MAX_PULL // 2 + 1
 
 # The two score boards in the panel, measured off the artwork.  Seven digits
 # each, grouped "0 000 000" as the original showed them: at pitch 8 with a
@@ -382,9 +410,52 @@ def in_sweep(x, y):
     return False
 
 
+def _check_lane(src):
+    """The lane and the stopper are the two things still measured by hand.
+
+    Everything else the ball touches comes out of the pixels, but these two are
+    written down, so a redrawn table can move the artwork out from under them
+    without anything complaining -- which is exactly what a one-pixel tidy-up
+    of the divider did.  Read them back and insist they still agree.
+    """
+    p = src.load()
+    mid = (LANE_X0 + LANE_X1) // 2
+    # Below the divider's taper (5 rows) and above the bottom corner, where the
+    # lane is a plain vertical channel.
+    for y in range(LANE_TOP + 6, 190):
+        assert p[mid, y] == SRC_WHITE, f"the launch lane is blocked at row {y}"
+        x0 = x1 = mid
+        while p[x0 - 1, y] == SRC_WHITE:
+            x0 -= 1
+        while p[x1 + 1, y] == SRC_WHITE:
+            x1 += 1
+        assert (x0, x1) == (LANE_X0, LANE_X1), (
+            f"the lane is x {x0}..{x1} at row {y}, "
+            f"not LANE_X0..LANE_X1 = {LANE_X0}..{LANE_X1}")
+
+
+def _check_gate(src):
+    """The stopper has to seal its gap at both ends.
+
+    Anything left over is a hole the ball can drop through, and a hole one
+    pixel wide still looks like a mistake even when it is too narrow to fall
+    into.  The open stopper is a copy of the artwork, so overlapping the walls
+    costs nothing and there is no reason to stop short of them.
+    """
+    p = src.load()
+    x0, y0, x1, y1 = GATE_BOX
+    for x in range(x0, x1 + 1):
+        assert p[x, y0 - 1] != SRC_WHITE, (
+            f"the stopper leaves column {x} open above it, at row {y0 - 1}")
+        assert p[x, y1 + 1] != SRC_WHITE, (
+            f"the stopper leaves column {x} open below it, at row {y1 + 1}")
+
+
 def source():
     """The table artwork and the set of pixels belonging to the nine feet."""
     src = _load("pinball.png").convert("RGB")
+    _check_lane(src)
+    _check_gate(src)
     marks = _load("pinball2.png").convert("RGBA")
     mp = marks.load()
     feet = {
@@ -427,9 +498,19 @@ def kind_at(src_px, feet, x, y):
         # ball ran straight out of.
         return K_WALL
     if in_box(x, y, DRAIN_BOX):
-        # The drain is a hole cut clean through the bottom of the table, not a
-        # surface.  Leaving it solid means the ball rattles about on top of it
-        # and is never lost; the ball object counts it out by crossing DRAIN_Y.
+        # The drain.  This box is the orange pyramid at the bottom of the
+        # table, and it used to be cut out of the grid entirely -- a hole, so
+        # that a ball reaching it fell through and out of the world, where the
+        # ball object noticed it by its crossing DRAIN_Y.  That worked, but the
+        # ball visibly sank through the one solid-looking thing down there.
+        #
+        # The pyramid is solid now, and it is its own kind rather than a wall:
+        # touching it is what loses the ball, so the ball settles on top of it
+        # instead of falling off the bottom of the table.  DRAIN_Y stays as a
+        # backstop for anything that gets past it.  The white either side of
+        # the pyramid inside the box is only table.
+        if src_px[x, y] == SRC_ORANGE:
+            return K_DRAIN
         return K_EMPTY
     if in_sweep(x, y):
         # The arc the tails sweep through cannot live in a grid that never

@@ -66,12 +66,27 @@ worth keeping in mind:
   table's sixteen. `build-images.py` also picks the loader's text and progress
   bar colours out of that palette, which is why black and two bright inks are
   reserved before the picture gets a say.
-- **A dithered photograph is expensive to load.** It barely compresses: the
-  320x200 backdrop is about 16KB and comes off the emulated floppy at roughly a
-  kilobyte a second, so the screen is black for some thirteen seconds before
-  the menu appears. Ordered dithering compresses about a third better and looks
-  markedly worse; fading more of the picture to true black is the cheaper
-  lever, since flat black costs almost nothing.
+- **A dithered photograph is expensive to load.** It barely compresses, and it
+  comes off the emulated floppy at roughly a kilobyte a second, so every
+  kilobyte is another second of black screen before the menu appears.
+
+  The lever that pays is `BLACK_FLOOR`: everything darker than it becomes true
+  black *before* the dither. Dithering near-black into near-black buys no
+  detail the eye can find, it makes text drawn over it unreadable, and noise is
+  the one thing that will not compress. The two pictures together come to
+  19.4KB with no floor, 16.8KB at 32, and 14.2KB at 64.
+
+  32 is where it sits, and it is nearly free: the night sky behind the logo was
+  already darker than that, so the grain goes and the ridge, the ferns and the
+  grass all stay. Past that the floor starts eating the picture rather than the
+  noise -- 64 costs the ridge and most of the foreground, and by 112 there is
+  little left but the logo.
+
+  Dropping the dither altogether roughly halves the file again, but only if the
+  palette is chosen to suit: maximum coverage picks colours for error diffusion
+  to blend, and used flat it drops the dinosaurs into a black blob. Median cut
+  picks colours the picture actually contains and comes out looking like a
+  poster rather than a photograph. It was tried and not taken.
 
 ### The collision grid
 
@@ -144,12 +159,22 @@ and only the fraction is kept in object state — see `addPos()` in
 ## The engine is no longer pristine
 
 `engine/` came across from space-bandits untouched, and everything else here
-still is, but `engine/menu.asm` now differs: the four option rows moved from
-99/115/131/147 down to 107/123/139/155, and the Sound and Music values moved
-right to line up with the other two.  The menu is drawn entirely by the engine
-and offers no hook, so there was nowhere else to put those changes.  Each row
-appears four times -- label, value, erase and redraw -- so all sixteen have to
-move together.
+still is, but `engine/menu.asm` now differs.  The menu is drawn entirely by the
+engine and offers no hook, so there was nowhere else to put the changes.
+
+The rows moved down off the box art and the values moved right to line up.
+Each row's position appeared four times -- label, value, erase and redraw --
+so a nudge meant editing sixteen numbers and getting all of them right; they
+are now equates at the top of the file (`MenuRowMonitorY` and friends) and the
+literals are gone.
+
+Two rows are also assembled out, by `MenuShowControl` and `MenuShowMusic` at
+the top of the same file.  Set either to 1 to get its row back.  The joystick
+cannot report two keys at once and this game needs both flippers, and there is
+no music to turn on, so both of those rows could only ever be left at the one
+setting that works.  Hiding a row closes its gap: `MenuRowY` is derived from
+how many rows survive, so the block stays centred on the same part of the
+splash, and the start message loses its mention of the joystick button.
 
 ## When something goes wrong
 
@@ -198,6 +223,25 @@ waiting on stdin, which never closes under `docker run -i`. The makefile passes
 
 **An object drawing itself as something else** is almost always a state-size
 overrun — see `DynospriteObject_DataSize` above.
+
+**The engine cannot read a DEFLATE stream of more than one block.** It has
+code to start a second one and that code does not work: the symptom is an
+`swi` in `Decomp_Init_Deflate_Block`, reported as a compression type that is
+neither Dynamic nor Fixed Huffman, before anything is on the screen. Nothing is
+wrong with the asset -- the same bytes in one block load perfectly. `gzip -9`
+used to make that decision for us and had always happened to choose one block;
+a black floor of 32 on the menu backdrop was the first asset it split. The
+build no longer asks gzip: `Compressor.DeflateWithGzip()` uses zlib and rejects
+anything that comes back as more than one block, which is exactly the low bit
+of the first byte.
+
+**A ball that is stuck can be going flat out.** The shove that unsticks a
+wedged ball used to watch its speed, which misses the case where it has pinned
+itself in a corner and is sliding along one surface into another: full speed,
+no movement, for ever. It cost a 420-second playtest to find, and the trace
+gave it away by showing the same two pixels and `vx=-2000 vy=2000` for six
+minutes. The test is now whether the ball ended the tick on the pixel it
+started on.
 
 **An object that updates but never appears** may be sitting off the side of the
 world. CMOC types a conditional expression by its arms, so
@@ -259,6 +303,14 @@ there, and they fail very differently:
   game as a stray letter; it is held together by a rule under each line for
   exactly that reason.
 
+`check_connected()` in `gen-assets.py` now flood fills from every anchor at
+generation time and fails the build if anything opaque inside the shape's own
+box is not joined to it, so this class of bug says so instead of shipping.
+Blowing text up to double size is a good way to trip it: two font pixels that
+touch at a corner become two blocks that touch at a corner, and the letters
+come apart. Growing the letters by a pixel -- an outline -- closes those
+corners and looks better anyway.
+
 The anchor point is also the hotspot: it is the pixel that lands on the
 object's `globalX`/`globalY`. It does not have to be opaque — the search
 spirals outward to find the shape — but it does have to sit at the top-left of
@@ -280,6 +332,13 @@ bounding-box minimum.
   into the table.
 - A shot too weak to round the top returns to the launcher without costing a
   ball. The shooter lane is not a drain.
+- **The drain is the orange pyramid** at the bottom of the table, and it is
+  solid: the ball comes to rest on it, and touching it is what loses the ball.
+  It used to be cut out of the collision grid altogether -- a hole, so the ball
+  fell off the bottom of the world and was counted out by crossing `DRAIN_Y`.
+  That worked and it was visible: the ball sank through the one solid-looking
+  thing down there and came to rest below the table's own border. `DRAIN_Y` is
+  still checked, now only as a backstop.
 
 ## The Mac build
 

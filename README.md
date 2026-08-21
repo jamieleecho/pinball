@@ -4,6 +4,8 @@ A remake of Tandy's 1983 TRS-80 MC-10 game *Lost World Pinball* (cat. no.
 26-3363) for the Tandy Color Computer 3, built on the
 [DynoSprite](https://github.com/richard42/dynosprite) engine.
 
+![Lost World Pinball on the CoCo 3: the ball in play beside a target, both flippers raised, and Vally on the panel with her tongue out after the fly](doc/screenshot.png)
+
 The original squeezed a whole pinball table into the MC-10's 32x16 block
 graphics. This version keeps that table's layout and its rules, and gives it a
 320x200 16-colour playfield, a ball with real velocity and reflection physics,

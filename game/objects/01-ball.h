@@ -8,7 +8,7 @@
  * object's state -- which shows up as the launcher suddenly drawing itself as
  * a ball, because its sprite index is the first byte of its block.
  */
-#define DynospriteObject_DataSize 16
+#define DynospriteObject_DataSize 17
 
 /** One byte of init data: the role this instance plays. */
 #define DynospriteObject_InitSize 1
@@ -22,6 +22,7 @@
 
 #define BALL_ROLE_BALL 0
 #define BALL_ROLE_LAUNCHER 1
+#define BALL_ROLE_SPRING 2
 
 /**
  * State of a ball (or of the launcher that fires it).
@@ -47,6 +48,11 @@ typedef struct BallObjectState {
     byte laneTick; /* frames until the next blip on the way up the lane */
     byte clank;    /* frames before the next clank; kept apart from cooldown
                     * so that scraping along a wall cannot mute a bumper */
+    /* Spring only, and last on purpose: the playtest driver reads this struct
+     * by offset, so anything new goes on the end.  The spring saves no
+     * background, which means it has to be painted into both buffers when its
+     * length changes and into neither when it has not. */
+    byte redraw;
 } BallObjectState;
 
 #endif /* _01_ball_h */

@@ -516,6 +516,7 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
     lane1, _ = playfield.world(playfield.LANE_X1, 0)
     _, lane_top = playfield.world(0, playfield.LANE_TOP)
     _, drain_y = playfield.world(0, playfield.DRAIN_BOX[3])
+    lane_cx = (lane0 + lane1) // 2
 
     body = f"""#ifndef _table_data_h
 #define _table_data_h
@@ -568,6 +569,15 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define DRAIN_Y          {drain_y}
 #define BALL_R           {playfield.BALL_R}
 
+/* The launcher.  The head rides down the lane as the plunger is drawn back and
+ * the spring underneath it takes up the difference, one frame per two rows, so
+ * the pull is even and stops SPRING_MIN_H rows short of the floor. */
+#define LAUNCHER_REST_Y   {playfield.LAUNCHER_REST_Y + playfield.ORIGIN_Y}
+#define LAUNCHER_MAX_PULL {playfield.LAUNCHER_MAX_PULL}
+#define SPRING_X          {lane_cx - playfield.SPRING_W // 2}
+#define SPRING_Y          {playfield.SPRING_TOP + playfield.ORIGIN_Y}
+#define SPRING_FRAMES     {playfield.SPRING_FRAMES}
+
 #define NUM_FEET         {len(feet_world)}
 /* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
  * says feed Vally's tongue.  foot_boxes() returns them top row first. */
@@ -593,6 +603,12 @@ def write_collision_header(grid, gx0, gy0, gw, gh):
 #define BALLS_PITCH       {playfield.BALLS_PITCH}
 #define PANEL_TONGUE_X    {playfield.TONGUE_XY[0] + playfield.ORIGIN_X}
 #define PANEL_TONGUE_Y    {playfield.TONGUE_XY[1] + playfield.ORIGIN_Y}
+
+/* The end-of-game banner is the one thing placed on the screen rather than on
+ * the table, so it is centred on the world -- which is the same thing, the
+ * camera sitting in the middle of it except while the volcano is going off. */
+#define PANEL_OVER_X      {(playfield.WORLD_W - GAMEOVER_W) // 2}
+#define PANEL_OVER_Y      {(playfield.WORLD_H - GAMEOVER_H) // 2}
 
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         {playfield.VOLCANO_APEX[0] + playfield.ORIGIN_X}
@@ -737,6 +753,58 @@ def new_sheet(w, h):
     return img
 
 
+def check_connected(name, img, sprites):
+    """Every sprite has to be one 4-connected shape, and this is the only
+    place that will say so.
+
+    The build finds a sprite by flood filling from its anchor, and it takes
+    whatever is joined to it and leaves the rest behind without a word.  A
+    letter that touches its neighbour only at a corner is not joined, so what
+    arrives in the game is a fragment: the end-of-game banner lost most of a
+    word this way and looked like a font bug.  Fill from each anchor here and
+    insist that nothing opaque is left over inside the shape's own box.
+    """
+    p = img.load()
+    for item in sprites:
+        sname, ax, ay = item[0], item[1], item[2]
+        # The anchor is a hotspot, not necessarily a pixel; the build spirals
+        # outwards to find the shape, so do the same.
+        start = None
+        for r in range(21):
+            for y in range(ay - r, ay + r + 1):
+                for x in range(ax - r, ax + r + 1):
+                    if (0 <= x < img.width and 0 <= y < img.height
+                            and p[x, y] != TRANSPARENT):
+                        start = (x, y)
+                        break
+                if start:
+                    break
+            if start:
+                break
+        assert start, f"{name}: no pixels within 20 of {sname} at {ax},{ay}"
+        seen, stack = {start}, [start]
+        while stack:
+            x, y = stack.pop()
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (x + dx, y + dy)
+                if (0 <= n[0] < img.width and 0 <= n[1] < img.height
+                        and n not in seen and p[n] != TRANSPARENT):
+                    seen.add(n)
+                    stack.append(n)
+        xs = [q[0] for q in seen]
+        ys = [q[1] for q in seen]
+        stray = [
+            (x, y)
+            for y in range(min(ys), max(ys) + 1)
+            for x in range(min(xs), max(xs) + 1)
+            if p[x, y] != TRANSPARENT and (x, y) not in seen
+        ]
+        assert not stray, (
+            f"{name}: {sname} is in more than one piece -- "
+            f"{len(stray)} pixels inside its box are not joined to it, "
+            f"first at {stray[0]}")
+
+
 def write_sprite_group(idx, name, size, draw_fn, chunk=None):
     """Draw a sheet and emit its JSON descriptor.
 
@@ -756,6 +824,7 @@ def write_sprite_group(idx, name, size, draw_fn, chunk=None):
     img = new_sheet(*size)
     d = ImageDraw.Draw(img)
     sprites = draw_fn(d, img)
+    check_connected(name, img, sprites)
     img.save(os.path.join(SPRITE_DIR, f"{idx:02d}-{name}.png"))
 
     desc = {
@@ -805,11 +874,34 @@ def draw_ball_sheet(d, img):
     d.rectangle((lx - 4, ly - 3, lx + 4, ly - 2), fill=YELLOW)
     d.rectangle((lx - 4, ly + 2, lx + 4, ly + 3), fill=BROWN)
 
+    # The spring under the head, one frame per two rows of pull.  It never
+    # moves and every frame fills the same box, so it saves no background: the
+    # room the spring is not filling is painted lane-white rather than left
+    # clear, and drawing one frame is what rubs out the last.
+    #
+    # Four coils, spread over whatever height is left and pinned to the floor,
+    # so squashing the spring bunches them up instead of trimming them off.
+    # The shaft down the middle is what holds the sprite together -- a stack of
+    # separate bars is not 4-connected, and the flood fill would take the top
+    # one and quietly leave the rest behind.
+    out = [("Ball", cx, cy, True), ("Launcher", lx, ly, False)]
+    w, full = playfield.SPRING_W, playfield.SPRING_H
+    for f in range(playfield.SPRING_FRAMES):
+        sx, sy = 2 + f * (w + 3), 24
+        h = full - 2 * f
+        top = sy + full - h
+        d.rectangle((sx, sy, sx + w - 1, sy + full - 1), fill=WHITE)
+        d.line([(sx + w // 2, top), (sx + w // 2, top + h - 1)], fill=GREY)
+        for i in range(playfield.SPRING_COILS):
+            y = top + (i * (h - 1)) // (playfield.SPRING_COILS - 1)
+            d.line([(sx, y), (sx + w - 1, y)], fill=DGREY)
+        out.append((f"Spring{f}", sx, sy, False, False))
+
     # The ball goes anywhere, so it needs both the byte-aligned draw and the
     # shifted one.  The launcher only ever sits at LANE_CX, which is even, so
     # it gets the aligned half alone -- SinglePixelPosition emits two draw
     # routines instead of one, and the second is dead weight here.
-    return [("Ball", cx, cy, True), ("Launcher", lx, ly, False)]
+    return out
 
 
 def flipper_points(pivot, deg):
@@ -1032,7 +1124,23 @@ def draw_lite_sheet(d, img):
 TONGUE_STAGES = 6
 TONGUE_REACH_STAGES = 6
 TONGUE_ROW_Y = 62  # the tongue stages sit below the rest of the panel sheet
-GAMEOVER_W, GAMEOVER_H = 66, 18
+# The end-of-game plate: a framed banner across the middle of the screen.  Two
+# rules and a border box, "GAME OVER" at double size between them.  The width
+# is the nine characters plus a three-pixel margin either side, and the height
+# is border, gap, rule, letters, rule, gap, border.
+GAMEOVER_PAD = 3
+GAMEOVER_SCALE = 2
+GAMEOVER_GAP = 2  # blank font cells between letters; one is not enough once
+                  # they are outlined, and neighbours run into each other
+GAMEOVER_TEXT = "GAME OVER"
+GAMEOVER_CELL = 5 + GAMEOVER_GAP
+GAMEOVER_W = ((GAMEOVER_CELL * len(GAMEOVER_TEXT) - GAMEOVER_GAP)
+              * GAMEOVER_SCALE + 2 * GAMEOVER_PAD)
+GAMEOVER_H = 7 * GAMEOVER_SCALE + 6
+# One colour per row of the font, so the letters run from hot at the top to
+# red at the bottom.  Pixels are pixels: a gradient costs exactly what a flat
+# colour costs.
+GAMEOVER_BANDS = (YELLOW, YELLOW, ORANGE, ORANGE, ORANGE, RED, RED)
 
 
 def draw_panel_sheet(d, img):
@@ -1057,21 +1165,48 @@ def draw_panel_sheet(d, img):
             d.point((cx + qx - x0, cy + qy - my), fill=ORANGE)
         sprites.append((f"Tongue{stage}", cx + mx - x0, cy, False))
 
-    # The end-of-game message, shown across the middle of the table.  It is
-    # bare lettering rather than a filled plate: the sprite compiler unrolls
+    # The end-of-game banner, across the middle of the screen.  It is a frame
+    # and lettering rather than a filled plate: the sprite compiler unrolls
     # every opaque pixel into store instructions, and a solid block of a
     # thousand of them takes the optimiser into the weeds for tens of minutes.
     #
-    # A sprite is found by flood filling from its anchor, so the two lines are
-    # tied together by a rule underneath and the anchor sits on that rule --
-    # otherwise the "sprite" would be whatever single pixel the anchor landed
-    # on.
+    # A sprite is found by flood filling from its anchor, and separate letters
+    # are not joined to anything.  The rule under them is what ties them to
+    # each other, the rule above ties in the ones whose bottom row is empty,
+    # and the two rules run into the side of the frame -- so the whole banner
+    # comes back as one shape.
     x0, y0 = 2, 34
-    draw_text(d, x0, y0, "GAME OVER", RED, scale=1)
-    draw_text(d, x0, y0 + 9, "PUSH SPACE", DGREY, scale=1)
-    d.line([(x0, y0 + 7), (x0 + GAMEOVER_W - 1, y0 + 7)], fill=RED)
-    d.line([(x0, y0 + 16), (x0 + GAMEOVER_W - 1, y0 + 16)], fill=RED)
-    d.line([(x0, y0 + 7), (x0, y0 + 16)], fill=RED)
+    sc, pad = GAMEOVER_SCALE, GAMEOVER_PAD
+    x1, y1 = x0 + GAMEOVER_W - 1, y0 + GAMEOVER_H - 1
+    #
+    # The outline is not only decoration.  Blown up to double size, two font
+    # pixels that touch only at a corner become two blocks that touch only at
+    # a corner, and the fill walks past them: the letters come apart into
+    # pieces, some of which never reach a rule.  Growing every letter by a
+    # pixel closes those corners, and carries the letters into the rules at
+    # the same time.  It is drawn first so the frame stays its own colour.
+    body = set()
+    tx = x0 + pad
+    for ch in GAMEOVER_TEXT:
+        for ry, row in enumerate(glyph(ch)):
+            for rx, c in enumerate(row):
+                if c == "#":
+                    px, py = tx + rx * sc, y0 + 3 + ry * sc
+                    for j in range(sc):
+                        for i in range(sc):
+                            body.add((px + i, py + j, GAMEOVER_BANDS[ry]))
+        tx += GAMEOVER_CELL * sc
+    lit = {(bx, by) for bx, by, _ in body}
+    for bx, by in lit:
+        for j in (-1, 0, 1):
+            for i in (-1, 0, 1):
+                if (bx + i, by + j) not in lit:
+                    d.point((bx + i, by + j), fill=DGREY)
+    d.rectangle((x0, y0, x1, y1), outline=MAGENTA)
+    d.line([(x0, y0 + 2), (x1, y0 + 2)], fill=MAGENTA)
+    d.line([(x0, y1 - 2), (x1, y1 - 2)], fill=MAGENTA)
+    for bx, by, ink in body:
+        d.point((bx, by), fill=ink)
     sprites.append(("GameOver", x0, y0, False))
 
     # The "X" of the score multiplier.  It is a sprite rather than part of the
@@ -1080,23 +1215,35 @@ def draw_panel_sheet(d, img):
     draw_text(d, x0, y0, "X", MAGENTA, scale=1)
     sprites.append(("MultX", x0, y0, False))
 
-    # The gate across the mouth of the launch lane, shut and open.  Both are
-    # opaque over the same footprint and save no background, so the open one is
-    # what takes the bar away again -- there is no erase code to do it.
     # The stopper across the gap between the table and the launch lane, shut
     # and open.  Both are opaque over the same footprint and save no
-    # background, so the open one is what takes the bar away again.
+    # background, so the open one is what takes the bar away again -- there is
+    # no erase code to do it.
+    #
+    # Which is why the open one is a copy of the artwork rather than a white
+    # rectangle.  The gap it fills is bounded by the curved border above and
+    # the divider below, and those start on different rows in its two columns;
+    # a white bar could only be as tall as the shorter of them, and left a
+    # pixel of white showing at the top of the other.  Painting back what was
+    # underneath lets the bar cover the whole gap and overlap both walls.
     #
     # It sits on an odd column, so this is the one sprite in the game that pays
     # for SinglePixelPosition.  Nudging it a pixel to suit the compiler would
     # leave a slot down one side of the gap and eat a pixel of the table on the
     # other.
-    for i, (name, ink) in enumerate((("GateShut", MAGENTA), ("GateOpen", WHITE))):
-        # Clear of the GameOver plate (x 2..67) and the tongue frames (y 2..26).
-        x0 = 100 + i * (playfield.GATE_W + 8)
+    src, _ = playfield.source()
+    sp = src.load()
+    gx0, gy0 = playfield.GATE_BOX[0], playfield.GATE_BOX[1]
+    for i, name in enumerate(("GateShut", "GateOpen")):
+        # Clear of the GameOver banner on its left and the multiplier X on its
+        # right, and of the tongue frames below.
+        x0 = 136 + i * (playfield.GATE_W + 8)
         y0 = 30
-        d.rectangle((x0, y0, x0 + playfield.GATE_W - 1, y0 + playfield.GATE_H - 1),
-                    fill=ink)
+        for j in range(playfield.GATE_H):
+            for k in range(playfield.GATE_W):
+                ink = (MAGENTA if name == "GateShut"
+                       else playfield.PALETTE[sp[gx0 + k, gy0 + j]])
+                d.point((x0 + k, y0 + j), fill=ink)
         sprites.append((name, x0, y0, True, False))
 
     return sprites
@@ -1247,7 +1394,7 @@ def draw_fly_sheet(d, img):
 def write_sprites():
     os.makedirs(SPRITE_DIR, exist_ok=True)
     total = 0
-    total += write_sprite_group(1, "ball", (48, 20), draw_ball_sheet)
+    total += write_sprite_group(1, "ball", (96, 48), draw_ball_sheet)
     total += write_sprite_group(2, "flipper", (240, 80), draw_flipper_sheet, chunk=8)
     total += write_sprite_group(3, "digit", (176, 16), draw_digit_sheet)
     total += write_sprite_group(4, "lite", (160, 40), draw_lite_sheet, chunk=8)
@@ -1569,20 +1716,42 @@ def coco_reduce(rgb, n=16):
     )
 
 
-def fade_below(img, start, end, floor, black=40):
-    """Fade the picture down from row start to row end, and flatten what is
-    left very dark to true black.
-
-    Dithering near-black into near-black is just speckle, and speckle is what
-    makes text drawn on top of it unreadable.
-    """
+def fade_below(img, start, end, floor):
+    """Fade the picture down from row start to row end."""
     px = img.load()
     w, h = img.size
     for y in range(start, h):
         f = floor if y >= end else 1.0 + (floor - 1.0) * (y - start) / (end - start)
         for x in range(w):
-            r, g, b = (int(v * f) for v in px[x, y])
-            px[x, y] = (0, 0, 0) if max(r, g, b) < black else (r, g, b)
+            px[x, y] = tuple(int(v * f) for v in px[x, y])
+
+
+# Anything darker than this becomes true black before the picture is dithered.
+#
+# Dithering near-black into near-black is just speckle: it buys no detail the
+# eye can find, it makes text drawn over it unreadable, and it is expensive
+# twice over -- noise barely compresses, and this artwork comes off the
+# emulated floppy at about a kilobyte a second, so every kilobyte is another
+# second of black screen before the menu appears.
+#
+# The two pictures come to 19.4KB with no floor, 16.8KB at 32 and 14.2KB at 64.
+# 32 is nearly free, because the night sky behind the logo was already darker
+# than that: the grain goes and the ridge, the ferns and the grass all stay.
+# Past that it starts eating the picture instead of the noise -- 64 costs the
+# ridge and most of the foreground, and by 112 there is little left but the
+# logo.
+BLACK_FLOOR = 32
+
+
+def flatten_black(img, level=BLACK_FLOOR):
+    """Anything below level becomes true black, so the dither leaves it alone."""
+    px = img.load()
+    w, h = img.size
+    for y in range(h):
+        for x in range(w):
+            r, g, b = px[x, y]
+            if max(r, g, b) < level:
+                px[x, y] = (0, 0, 0)
 
 
 def box_art(w, h, top_trim=0, fade=None, black_box=None):
@@ -1605,6 +1774,7 @@ def box_art(w, h, top_trim=0, fade=None, black_box=None):
     ).resize((w, h), Image.LANCZOS)
     if fade:
         fade_below(img, *fade)
+    flatten_black(img)
     if black_box:
         bx, by, bw, bh = black_box
         ImageDraw.Draw(img).rectangle((bx, by, bx + bw - 1, by + bh - 1),
@@ -1612,20 +1782,40 @@ def box_art(w, h, top_trim=0, fade=None, black_box=None):
     return coco_reduce(img)
 
 
+# The menu's option rows, mirroring the equates at the top of engine/menu.asm.
+#
+# Rows are 16 apart and the engine clears 16 rows for each, though the glyphs
+# themselves are shorter.  Two of the four rows are assembled out there, and
+# what is left is centred on the same span, so the row the first one lands on
+# depends on how many there are.
+#
+# The labels start at x 60 and the values at x 144 -- menu.asm draws them at 30
+# and 72 bytes, two pixels to a byte -- and the longest value runs to about
+# x 248, so the box spans x 58..255.
+MENU_ROWS = 2  # Monitor and Sound; Control and Music are assembled out
+MENU_ROW_DY = 16
+MENU_ROW_H = 16
+MENU_ROW0 = 107 + (4 - MENU_ROWS) * MENU_ROW_DY // 2
+MENU_BOX_PAD = 2
+MENU_BOX_X, MENU_BOX_W = 58, 198
+
+
 def write_images():
     os.makedirs(IMAGE_DIR, exist_ok=True)
 
-    # The menu draws four option lines at rows 107, 123, 139 and 155, each nine
-    # rows tall: the labels from x 60 and the values from x 144 (engine/menu.asm
-    # draws them at 30 and 32+10*4 bytes), with the longest value reaching about
-    # x 248.  Then a prompt down at row 184.  The options get a flat black box
-    # to sit on; the prompt is on its own, which is why the lower half of the
-    # picture is still faded down behind it.
+    # The menu's option rows get a flat black box to sit on, worked out from the
+    # same arithmetic engine/menu.asm uses.  The prompt at row 184 is on its
+    # own, which is why the lower half of the picture is still faded down
+    # behind it rather than boxed as well.
     #
-    # The box is x 58..255 by rows 105..170, which clears the text on every
-    # side.  The picture is cropped harder at the top to suit.
+    # This has to be told how many rows the engine will actually draw, because
+    # nothing here can read an assembler equate: MENU_ROWS must match how many
+    # of MenuShowControl and MenuShowMusic are set.  Get it wrong and the box
+    # is either short of a row or a band of black under nothing.
+    box_y0 = MENU_ROW0 - MENU_BOX_PAD
+    box_h = (MENU_ROWS - 1) * MENU_ROW_DY + MENU_ROW_H + MENU_BOX_PAD
     box_art(SCREEN_W, SCREEN_H, top_trim=12, fade=(92, 124, 0.45),
-            black_box=(58, 105, 198, 66)).save(
+            black_box=(MENU_BOX_X, box_y0, MENU_BOX_W, box_h)).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 
@@ -1747,7 +1937,6 @@ def write_sounds():
 def write_descriptors():
     import json
 
-    LAUNCHER_REST_Y = 180  # near the bottom of the lane; matches object_info.h
     BALL_INDICATORS = 4
 
     with open(os.path.join(TILE_DIR, "01-table.json"), "w") as f:
@@ -1782,7 +1971,15 @@ def write_descriptors():
     # The ball must come first: the overlays find it with a search that stops
     # at the first object of its group.
     lane_cx = (playfield.LANE_X0 + playfield.LANE_X1) // 2 + playfield.ORIGIN_X
-    obj("launcher", 1, 3, lane_cx, LAUNCHER_REST_Y, [1])
+    rest_y = playfield.LAUNCHER_REST_Y + playfield.ORIGIN_Y
+    # The spring is listed before the head that sits on it.  Every object is
+    # erased before any is drawn, so the head simply saves and restores the
+    # spring pixels it covers; drawn the other way round the head's restore
+    # would land on top of a spring that had just repainted itself.
+    obj("launcher spring", 1, 3,
+        lane_cx - playfield.SPRING_W // 2,
+        playfield.SPRING_TOP + playfield.ORIGIN_Y, [2])
+    obj("launcher", 1, 3, lane_cx, rest_y, [1])
     obj("left flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[0]), [0])
     obj("right flipper", 2, 3, *playfield.world(*playfield.FLIPPER_PIVOTS[1]), [1])
 
@@ -1830,12 +2027,12 @@ def write_descriptors():
     # The ball goes last, so it is drawn over everything else.  It matters most
     # around the feet: those save no background, so when one changes colour it
     # repaints itself, and anything drawn before it would be painted over.
-    obj("ball", 1, 3, lane_cx, LAUNCHER_REST_Y - 2, [0])
+    obj("ball", 1, 3, lane_cx, rest_y - 2, [0])
 
     level = {
         "Level": {
             "Name": "Lost World Pinball",
-            "Description": "Three balls. Hit anything red.",
+            "Description": "Prehistoric Fun",
             # Every group an object in the list belongs to has to appear
             # here, or the loader searches the sprite group table, falls
             # off the end of it and traps.

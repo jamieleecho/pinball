@@ -28,6 +28,7 @@
 
 import subprocess
 import sys
+import zlib
 
 
 class HuffNode:
@@ -371,12 +372,34 @@ class Compressor:
         return histRLE
 
     def DeflateWithGzip(self, bPrintInfo):
-        # call 'gzip' to compress the input data
-        args = [b"gzip", b"-9", b"-"]
-        p = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        (compData, errData) = p.communicate(self.inputdata)
-        # strip the gzip headers/footer
-        rawData = Decompressor.StripGZ(compData, bPrintInfo)
+        """Compress to a raw DEFLATE stream of exactly one block.
+
+        This used to shell out to `gzip -9`, and mostly that was fine: gzip
+        emits one block for anything it can fit in its symbol buffer, and every
+        asset in the game had fitted.  Then one did not, and the game stopped
+        booting -- an `swi` inside the engine's block-header routine, which is
+        where it lands when it starts a *second* block and reads a compression
+        type that is neither Dynamic nor Fixed Huffman.  The engine has code to
+        continue into another block and that code does not work.
+
+        Nothing about the asset was wrong: the same pixels compressed into one
+        block load perfectly.  gzip had simply decided to split them, which is
+        its business and not something the caller can ask it not to do.  So the
+        gzip call is gone, and what is left is checked -- the first bit of a
+        DEFLATE stream is the first block's BFINAL flag, so one block is
+        exactly `raw[0] & 1`.
+        """
+        deflater = zlib.compressobj(9, zlib.DEFLATED, -15, 9)
+        rawData = deflater.compress(self.inputdata) + deflater.flush()
+        if not rawData[0] & 1:
+            raise Exception(
+                f"{len(self.inputdata)} bytes compressed into more than one "
+                "DEFLATE block, which the engine's decompressor cannot read: "
+                "it will swi in Decomp_Init_Deflate_Block on the second one. "
+                "Make the asset smaller."
+            )
+        if bPrintInfo:
+            print(f"{len(self.inputdata)} bytes deflated to {len(rawData)}")
         return rawData
 
     def Deflate(self, bPrintInfo, bUseGzip):

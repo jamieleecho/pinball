@@ -25,6 +25,87 @@
         8
       ],
       "SinglePixelPosition": false
+    },
+    {
+      "Name": "Spring0",
+      "Location": [
+        2,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring1",
+      "Location": [
+        10,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring2",
+      "Location": [
+        18,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring3",
+      "Location": [
+        26,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring4",
+      "Location": [
+        34,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring5",
+      "Location": [
+        42,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring6",
+      "Location": [
+        50,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring7",
+      "Location": [
+        58,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "Spring8",
+      "Location": [
+        66,
+        24
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
     }
   ]
 }
