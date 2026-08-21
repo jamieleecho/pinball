@@ -19,7 +19,22 @@ import sys
 LINE = re.compile(
     r"f=(?P<frame>\d+) state=(?P<state>\d+) balls=(?P<balls>\d+) "
     r"score=(?P<score>[0-9a-f]{8})"
+    r"(?:.*?\| ball (?P<x>\d+),(?P<y>\d+))?"
 )
+
+# A ball that has not left a few pixels of table for this many samples is not
+# playing, it is wedged.  Samples come every quarter second and the game gives
+# a stuck ball a shove after two, so four seconds means the shove is not
+# firing -- which it was not, for a long time: the test asked whether the ball
+# had moved since last tick, and a ball rattling between two adjacent pixels
+# moves every tick and goes nowhere.
+#
+# The margin is deliberately generous.  A healthy run has been measured at two
+# seconds, and a real wedge runs to hundreds of samples -- the one this was
+# written for sat still for two hundred and twenty-eight seconds -- so there is
+# nothing to gain by trimming this and a flaky build to lose.
+STUCK_SAMPLES = 16
+STUCK_BOX = 4
 
 # The driver announces each launch and how far back the plunger was.
 LAUNCH = re.compile(
@@ -34,6 +49,30 @@ LAUNCH = re.compile(
 FULL_PULL = 16
 
 STATE_NAMES = {1: "ready", 2: "playing", 3: "drained", 4: "game over"}
+
+
+def longest_pin(samples):
+    """The longest run of samples with the ball inside one small box.
+
+    Only while the ball is in play: it is meant to sit still on the launcher
+    and after a drain, and neither of those is stuck.
+    """
+    best = None
+    run_start = None
+    n = 0
+    for s in samples:
+        if int(s["state"]) != 2 or s.get("x") is None:
+            run_start, n = None, 0
+            continue
+        x, y = int(s["x"]), int(s["y"])
+        if run_start is not None and (abs(x - run_start[0]) <= STUCK_BOX
+                                      and abs(y - run_start[1]) <= STUCK_BOX):
+            n += 1
+        else:
+            run_start, n = (x, y), 1
+        if best is None or n > best[0]:
+            best = (n, run_start[0], run_start[1])
+    return best
 
 
 def main():
@@ -67,6 +106,17 @@ def main():
         failures.append("no ball ever drained")
     if 4 not in states:
         failures.append("the game never ended (run it for longer?)")
+
+    pinned = longest_pin(samples)
+    if pinned:
+        n, x, y = pinned
+        print(f"longest the ball held still: {n} samples "
+              f"({n / 4.0:.1f}s) at world ({x},{y})")
+        if n >= STUCK_SAMPLES:
+            failures.append(
+                f"the ball sat within {STUCK_BOX} pixels of ({x},{y}) for "
+                f"{n / 4.0:.1f} seconds -- it is wedged and the shove is not "
+                f"getting it out")
 
     launches = [m.groupdict() for m in LAUNCH.finditer(text)]
     if not launches:

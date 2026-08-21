@@ -664,6 +664,15 @@ def widen_under_flippers(grid, gw, gh, x0, y0):
     """
     want = 2 * BALL_R + 2  # the ball, and a pixel of daylight either side
     rest = math.radians(FLIPPER_REST_DEG)
+
+    # Every column that had something solid under the table must still have
+    # it afterwards.  Shaving a column bare is the one way this can go wrong
+    # and the one way that does not show up in the picture.
+    had_floor = {
+        gx for gx in range(gw)
+        if any(grid[gy][gx] != K_EMPTY for gy in range(gh)
+               if y0 + gy * CELL - ORIGIN_Y >= 176)
+    }
     for (px, py), outward in zip(FLIPPER_PIVOTS, (1, -1)):
         for step in range(FLIPPER_LEN + 6):
             sx = px + outward * step
@@ -705,6 +714,47 @@ def widen_under_flippers(grid, gw, gh, x0, y0):
                     grid[gy + 1][gx] = K_WALL
                 else:
                     break
+
+    _check_flipper_channel(grid, gw, gh, x0, y0, had_floor, want, rest)
+
+
+def _check_flipper_channel(grid, gw, gh, x0, y0, had_floor, want, rest):
+    """Say so at build time if widening left the table worse than it found it.
+
+    There is no test suite for this file, so the checks live where the work
+    does -- the same bargain check_connected() makes in gen-assets.py.  Both
+    of these have been wrong once: the first attempt shaved a column bare and
+    opened a hole for the ball to fall through, and it took a playtest rather
+    than the picture to notice.
+    """
+    for gx in sorted(had_floor):
+        assert any(grid[gy][gx] != K_EMPTY for gy in range(gh)
+                   if y0 + gy * CELL - ORIGIN_Y >= 176), (
+            f"widening left column {x0 + gx * CELL - ORIGIN_X} with no floor "
+            f"at all; the ball will fall out of the table there")
+
+    for (px, py), outward in zip(FLIPPER_PIVOTS, (1, -1)):
+        for step in range(int(FLIPPER_LEN * math.cos(rest)) + 1):
+            sx = px + outward * step
+            under = (py + (step / math.cos(rest)) * math.sin(rest)
+                     + FLIPPER_HALF_THICK / math.cos(rest))
+            gx = (sx + ORIGIN_X - x0) // CELL
+            if not 0 <= gx < gw:
+                continue
+            for gy in range(gh):
+                sy = y0 + gy * CELL - ORIGIN_Y
+                if sy <= under:
+                    continue
+                if grid[gy][gx] == K_EMPTY:
+                    continue
+                # Only wall can trap the ball.  Touching the drain loses it,
+                # which is the right end for a ball that came down here.
+                if grid[gy][gx] == K_WALL:
+                    assert sy - under >= 2 * BALL_R + 1, (
+                        f"the channel under the flipper is {sy - under:.1f} "
+                        f"pixels at x={sx}, and the ball is {2 * BALL_R + 1}; "
+                        f"it will wedge there")
+                break
 
 
 def seal(grid, gw, gh, x0, y0):
