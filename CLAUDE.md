@@ -376,6 +376,12 @@ bounding-box minimum.
   the bottom edge of the table, so that cell is lowered a row rather than
   removed. Shaving it opens a hole and the ball falls out of the world, which
   is the behaviour the solid drain exists to prevent.
+- **A stuck ball may be moving.** The shove used to ask whether the tick ended
+  on the pixel it started on. A ball wedged in a corner rattles between two
+  adjacent pixels -- it moves every tick, so that test reset its own counter
+  every tick and the shove never came. One sat at world (158,166)/(159,165)
+  with `vx=-2000 vy=2000` for the remaining ten minutes of a run. The test is
+  now distance from where the counter started, not from last tick.
 - **The drain is the orange pyramid** at the bottom of the table, and it is
   solid: the ball comes to rest on it, and touching it is what loses the ball.
   It used to be cut out of the collision grid altogether -- a hole, so the ball
