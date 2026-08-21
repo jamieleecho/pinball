@@ -379,12 +379,31 @@ Things that bite:
   between the two builds. It ignores keys it does not know, so `ChunkHint` is
   harmless there.
 - The macOS key matrix in `DSScene.m` mirrors the CoCo layout exactly, which is
-  why `keyDown()` works unchanged. CONTROL and SHIFT arrive as F3 and F4.
+  why `keyDown()` works unchanged. The awkward part is the keys that are not
+  characters. UIKit gives a modifier press an empty
+  `charactersIgnoringModifiers`, so CONTROL, SHIFT and ALT are recognised by
+  their HID key codes in `keyPressToString()` and handed on as the F3, F4 and
+  F5 placeholders the matrix is keyed by; RETURN arrives as `\r`, not `\n`.
+  Both flippers and the plunger are those keys, so getting this wrong leaves
+  the Mac build looking fine and completely unplayable.
+- **A duplicate key in an `NSDictionary` literal is silent, and the first one
+  wins.** The matrix had `UIKeyInputF3` twice -- ALT and CONTROL -- so the
+  CONTROL row was dropped on the floor at build time. Clang says nothing about
+  it even at `-Wall`. If a key does nothing, check it is in the dictionary
+  once before looking anywhere else.
 - `images/images.json` must hold exactly one entry per level plus one for the
   title screen, or an assertion fires at launch.
-
-The engine's own unit tests were not brought across; they live in
-space-bandits and test the engine, not this game.
+- **The menu is a second implementation of the same layout.** `DSInitScene.m`
+  draws it here, `engine/menu.asm` draws it on the CoCo, and both take their
+  row positions from a `MenuShowControl`/`MenuShowMusic` pair that has to be
+  set the same way in both. The black box the rows sit on is neither one's
+  doing: `gen-assets.py` paints it into the splash from `MENU_ROWS`, so a row
+  hidden on one side and shown on the other hangs off the bottom of the box.
+  The Mac copy had been left at four rows for exactly that reason -- nothing
+  in either build checks it, and only the picture shows it.
+- **Every other file under `mac/dynosprite/` is byte-identical to
+  space-bandits'.** Worth checking with `cmp` before assuming a Mac-only bug
+  is in the engine; it is the one part of this tree nobody has touched.
 
 ## CI
 

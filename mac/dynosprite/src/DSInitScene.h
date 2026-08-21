@@ -11,6 +11,36 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/* Which rows the menu offers.  Set either to 1 to put its row back.
+ *
+ * These mirror MenuShowControl and MenuShowMusic in engine/menu.asm, and must
+ * be kept in step with them: the black box the rows sit on is painted into
+ * art/boxart.jpg by scripts/gen-assets.py, which sizes it from the same row
+ * count, so a row hidden on one side and shown on the other lands off the box.
+ *
+ * A row that can only be left at the one setting that works is worse than no
+ * row at all, and this game has two of those.  It reads the key matrix itself
+ * because the joystick cannot report two keys at once and a pinball table
+ * needs both flippers; and it ships no music.
+ */
+#define MenuShowControl 0
+#define MenuShowMusic   0
+
+/* Laid out from the row count rather than written down, so a hidden row
+ * closes its gap and what is left stays centred on the same part of the
+ * splash.  The scene is 320x200 and the font advances 8 points a character.
+ */
+#define MenuRowDY       16
+#define MenuNumRows     (2 + MenuShowControl + MenuShowMusic)
+#define MenuRowDisplayY (107 + (4 - MenuNumRows) * MenuRowDY / 2)
+#define MenuRowControlY (MenuRowDisplayY + MenuRowDY)
+#define MenuRowSoundY   (MenuRowControlY + MenuShowControl * MenuRowDY)
+#define MenuRowMusicY   (MenuRowSoundY + MenuRowDY)
+#define MenuLabelX      46
+#define MenuValueX      136
+#define MenuStartY      184
+#define MenuStartX(n)   ((320 - (n) * 8) / 2)
+
 typedef enum DSInitSceneDisplay {
     DSInitSceneDisplayLow,
     DSInitSceneDisplayHigh
