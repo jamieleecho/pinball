@@ -61,8 +61,27 @@ end
 
 -- The launcher springs back if it is held too long, so rather than guess a
 -- hold length the driver watches the game's own "pull" counter and lets go the
--- moment it reaches full stretch.
-local MAX_PULL = 10
+-- moment it has drawn back as far as this shot wants.
+--
+-- The strengths are worked through in order, one per launch.  The first is
+-- deliberately too weak to leave the lane: the ball should climb part way,
+-- slide back to the launcher and cost nothing, and the next entry should then
+-- get its turn.  A run that never gets past the first entry is the weak-shot
+-- return failing, which is the sort of thing that otherwise only shows up
+-- when somebody plays by hand.
+--
+-- These are aim points, not exact notches.  The driver reads the pull counter
+-- every video frame but the game only samples the key on its own 30Hz tick,
+-- so by the time a release is noticed the plunger has wound on -- measured at
+-- one or two notches.  Asking for 3 launched at 5, which cleared the lane and
+-- quietly turned the dud shot into an ordinary one.  Every entry here is
+-- therefore chosen to still mean what it says two notches later.
+local PULLS = { 1, 9, 14, 6, 11 }
+local launches = 0
+
+local function want_pull()
+  return PULLS[math.min(launches + 1, #PULLS)]
+end
 
 -- Flap both flippers regularly once the ball is loose, so a run exercises
 -- them even with nobody watching where the ball went.
@@ -126,8 +145,9 @@ local function tick()
   if cob == nil then return end
   local pull = mem:read_u8(st + 9)
   if frames >= release_until then
-    if state == 1 and pull >= MAX_PULL then
+    if state == 1 and pull >= want_pull() then
       release_until = frames + 12
+      launches = launches + 1
     end
   end
   hold(":row6", "ENTER", state == 1 and frames >= release_until)
@@ -153,12 +173,13 @@ local function tick()
     local by = mem:read_u16(cob + 6)
     print(string.format(
       "f=%d state=%d balls=%d score=%02x%02x%02x%02x mult=%d feet=%02x%02x tongue=%d gate=%d " ..
-      "| ball %d,%d act=%d vx=%d vy=%d pull=%d tick=%d",
+      "| ball %d,%d act=%d vx=%d vy=%d pull=%d/%d shots=%d tick=%d",
       frames, u8(G_STATE), u8(G_BALLS), u8(G_SCORE), u8(G_SCORE + 1),
       u8(G_SCORE + 2), u8(G_SCORE + 3), u8(G_MULT), u8(G_FEET + 1), u8(G_FEET),
       u8(G_TONGUE), u8(G_GATE),
       bx, by, mem:read_u8(cob + 2),
       s16(mem:read_u16(st + 4)), s16(mem:read_u16(st + 6)), mem:read_u8(st + 9),
+      want_pull(), launches,
       u8(G_TICK)))
   end
 end

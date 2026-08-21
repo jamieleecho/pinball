@@ -336,15 +336,21 @@ bounding-box minimum.
 - The launch lane has a one-way gate at its mouth, implemented in code rather
   than in the grid: a rising ball passes through, a falling one is turned back
   into the table.
+- **The plunger's range straddles the lane.** A ball has to rise 125 pixels to
+  get its centre past the mouth at `LANE_TOP`, which under `GRAVITY` costs a
+  launch speed of about 947 -- `v = sqrt(512 * GRAVITY * h)`. The first three
+  notches of pull are worth less than that and die in the lane; the fourth
+  crawls out at under a pixel a frame; a full pull leaves at 11.7. Setting the
+  floor above the threshold is what makes a plunger feel like a button, and it
+  is easy to do by accident: a floor of 1300 clears the lane twice over, so
+  every shot arrives at the top at much the same speed. Lowering the floor
+  without steepening `LAUNCH_STEP` is the other half of the trap -- it buys a
+  weak end by giving up the strong one, and the plunger just feels feeble
+  instead of uniform.
 - A shot too weak to round the top returns to the launcher without costing a
-  ball. The shooter lane is not a drain.
-- **The drain is the orange pyramid** at the bottom of the table, and it is
-  solid: the ball comes to rest on it, and touching it is what loses the ball.
-  It used to be cut out of the collision grid altogether -- a hole, so the ball
-  fell off the bottom of the world and was counted out by crossing `DRAIN_Y`.
-  That worked and it was visible: the ball sank through the one solid-looking
-  thing down there and came to rest below the table's own border. `DRAIN_Y` is
-  still checked, now only as a backstop.
+  ball. The shooter lane is not a drain. That path used to be unreachable and
+  is now on the common route, so `playtest.lua` works through a list of pull
+  strengths with a deliberately weak one first.
 
 ## The Mac build
 
