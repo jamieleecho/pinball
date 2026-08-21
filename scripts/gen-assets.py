@@ -950,7 +950,11 @@ def draw_flipper_sheet(d, img):
         one = Image.new("P", (cell, cell), TRANSPARENT)
         one.putpalette(sprite_palette())
         od = ImageDraw.Draw(one)
-        od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=DTEAL)
+        # Flat teal, no outline.  Nothing else on the table is outlined, and
+        # a dark edge on a sprite this small reads as a black border rather
+        # than as shading.  The outline colour is kept as the fill so the
+        # silhouette rasterises identically.
+        od.polygon(flipper_points((pivot_x, pivot_y), deg), fill=TEAL, outline=TEAL)
         # Hub, drawn last so the pivot pixel is always opaque.
         od.ellipse((pivot_x - 3, pivot_y - 3, pivot_x + 3, pivot_y + 3), fill=ORANGE)
         od.point((pivot_x, pivot_y), fill=RED)

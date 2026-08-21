@@ -67,22 +67,28 @@ const float DefaultFontSize = 12.0f;
     [self removeObserver:self forKeyPath:@"foregroundColor"];
 }
 
-- (SKLabelNode *)addLabelWithText:(NSString *)labelText atPosition:(CGPoint)position {
+- (SKLabelNode *)addLabelWithText:(NSString *)labelText atPosition:(CGPoint)position withBackground:(BOOL)withBackground {
     SKLabelNode *label = [SKLabelNode labelNodeWithFontNamed:_resourceController.fontForDisplay];
     label.text = labelText;
     label.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
     label.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
-    label.position = CGPointMake(0, 0);
     label.fontSize = DefaultFontSize;
     label.fontColor = self.foregroundColor;
     
-    SKSpriteNode *background = [SKSpriteNode spriteNodeWithColor:self.backgroundColor size:label.frame.size];
-    [background addChild:label];
-    position.y = -position.y - (label.fontSize / 10.0f);
-    background.position = position;
-    background.anchorPoint = CGPointMake(0, 1);
-
-    [self addChild:background];
+    if (withBackground) {
+        label.position = CGPointMake(0, 0);
+        SKSpriteNode *background = [SKSpriteNode spriteNodeWithColor:self.backgroundColor size:label.frame.size];
+        [background addChild:label];
+        position.y = -position.y - (label.fontSize / 10.0f);
+        background.position = position;
+        background.anchorPoint = CGPointMake(0, 1);
+        [self addChild:background];
+    } else {
+        position.y = -position.y;
+        label.position = position;
+        [self addChild:label];
+    }
+    
     [_labelToPoint setObject:[NSValue valueWithCGPoint:position] forKey:label];
     [_labels addObject:label];
     [DSTransitionScene adjustLabel:label forPosition:position];
@@ -91,7 +97,12 @@ const float DefaultFontSize = 12.0f;
 
 - (void)configureLabel:(SKLabelNode *)label {
     label.fontColor = self.foregroundColor;
-    ((SKSpriteNode *)label.parent).color = self.backgroundColor;
+    /* A label drawn straight onto the artwork has no plate behind it, so its
+     * parent is the scene -- and SKScene has a backgroundColor but no color at
+     * all, so this would be an unrecognised selector rather than a no-op. */
+    if ([label.parent isKindOfClass:SKSpriteNode.class]) {
+        ((SKSpriteNode *)label.parent).color = self.backgroundColor;
+    }
 }
 
 - (void)configureBackgroundImage:(SKSpriteNode *)image {

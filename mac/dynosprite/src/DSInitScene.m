@@ -47,22 +47,22 @@ static NSString *MenuSoundHigh = @"HiFi";
     _isTransitioning = NO;
     self.isDone = NO;
     if (self.labels.count < 1) {
-        [self addLabelWithText:@"[D]isplay:" atPosition:CGPointMake(MenuLabelX, MenuRowDisplayY)];
-        _resolutionLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowDisplayY)];
+        [self addLabelWithText:@"[D]isplay:" atPosition:CGPointMake(MenuLabelX, MenuRowDisplayY) withBackground:NO];
+        _resolutionLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowDisplayY) withBackground:NO];
 #if MenuShowControl
-        [self addLabelWithText:@"[C]ontrol:" atPosition:CGPointMake(MenuLabelX, MenuRowControlY)];
-        _controlLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowControlY)];
+        [self addLabelWithText:@"[C]ontrol:" atPosition:CGPointMake(MenuLabelX, MenuRowControlY) withBackground:NO];
+        _controlLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowControlY) withBackground:NO];
 #endif
-        [self addLabelWithText:@"[S]ound:" atPosition:CGPointMake(MenuLabelX, MenuRowSoundY)];
-        _soundLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowSoundY)];
+        [self addLabelWithText:@"[S]ound:" atPosition:CGPointMake(MenuLabelX, MenuRowSoundY) withBackground:NO];
+        _soundLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowSoundY) withBackground:NO];
 #if MenuShowMusic
-        [self addLabelWithText:@"M[u]sic:" atPosition:CGPointMake(MenuLabelX, MenuRowMusicY)];
-        _musicLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowMusicY)];
+        [self addLabelWithText:@"M[u]sic:" atPosition:CGPointMake(MenuLabelX, MenuRowMusicY) withBackground:NO];
+        _musicLabelNode = [self addLabelWithText:@"" atPosition:CGPointMake(MenuValueX, MenuRowMusicY) withBackground:NO];
 #endif
 #if MenuShowControl
-        [self addLabelWithText:@"[Space] or joystick button to start" atPosition:CGPointMake(MenuStartX(35), MenuStartY)];
+        [self addLabelWithText:@"[Space] or joystick button to start" atPosition:CGPointMake(MenuStartX(35), MenuStartY) withBackground:NO];
 #else
-        [self addLabelWithText:@"[Space] to start" atPosition:CGPointMake(MenuStartX(16), MenuStartY)];
+        [self addLabelWithText:@"[Space] to start" atPosition:CGPointMake(MenuStartX(16), MenuStartY) withBackground:NO];
 #endif
 
         _resolution = self.resourceController.hiresMode ? DSInitSceneDisplayHigh : DSInitSceneDisplayLow;

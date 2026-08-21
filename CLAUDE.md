@@ -365,6 +365,23 @@ bounding-box minimum.
   and prints how far back the plunger got, and `check-playtest.py` fails if
   that shot is not at full stretch. Verified in both directions: it passes on
   the fix and fails on the old code with `left it at 0 of 16`.
+- **The ball can roll under a flipper, and that used to trap it.** The outlane
+  feeds it into the channel between the flipper's underside and the floor, and
+  that channel converges: measured at rest it was twelve pixels near the pivot
+  and five at the tip, against a ball seven across. A converging channel is a
+  wedge, and the shove cannot help because there is nowhere to shove it to.
+  `widen_under_flippers()` shaves the floor there until the ball fits along
+  the whole length. Two things it must not do: touch the drain, and take the
+  last cell of floor -- near the tip the floor is one cell thick and sits on
+  the bottom edge of the table, so that cell is lowered a row rather than
+  removed. Shaving it opens a hole and the ball falls out of the world, which
+  is the behaviour the solid drain exists to prevent.
+- **A stuck ball may be moving.** The shove used to ask whether the tick ended
+  on the pixel it started on. A ball wedged in a corner rattles between two
+  adjacent pixels -- it moves every tick, so that test reset its own counter
+  every tick and the shove never came. One sat at world (158,166)/(159,165)
+  with `vx=-2000 vy=2000` for the remaining ten minutes of a run. The test is
+  now distance from where the counter started, not from last tick.
 - **The drain is the orange pyramid** at the bottom of the table, and it is
   solid: the ball comes to rest on it, and touching it is what loses the ball.
   It used to be cut out of the collision grid altogether -- a hole, so the ball
@@ -493,6 +510,17 @@ xcodebuild -project mac/Pinball.xcodeproj -scheme "Lost World Pinball" \
   scheme, not in the workflow. The plan pins its target by object id;
   `gen-xcode.py` checks that id still matches and stops if it does not, since
   a plan aimed at a target that moved fails as though the tests had vanished.
+- **A label can be drawn with a plate behind it or straight onto the artwork,**
+  and the two put it in different places in the node tree.
+  `addLabelWithText:atPosition:withBackground:` with a plate leaves the label
+  at the origin of a sprite that carries the position; without one the label
+  is a child of the scene and carries the position itself, and misses the
+  tenth-of-a-font-size nudge the plate gets. Anything reading `label.parent`
+  has to know which it asked for -- and `SKScene` has a `backgroundColor` but
+  no `color` at all, so treating the scene as a plate is an unrecognised
+  selector rather than a quiet no-op. The menu draws onto the black box the
+  splash already carries; the loading screen keeps its plates, because it
+  centres each line from its parent's width.
 - **OCMock is embedded, so it is signed on the way in.** It lives beside the
   project in `mac/Frameworks/`, and its Copy Frameworks entry carries
   `CodeSignOnCopy`; without that the bundle builds and then will not load.

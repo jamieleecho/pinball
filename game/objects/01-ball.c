@@ -41,6 +41,8 @@ extern "C" {
 #define PLUNGER_MIN_SPEED 800
 #define STUCK_FRAMES 60
 #define STUCK_SPEED 120
+/* How far the ball may wander, in half pixels, and still count as stuck. */
+#define STUCK_SLACK 6
 
 #define DRAIN_PAUSE 60
 
@@ -545,6 +547,8 @@ static void startBall(DynospriteCOB *cob, BallObjectState *s) {
     s->cooldown = 0;
     s->clank = 0;
     s->stillFor = 0;
+    s->anchorX = 0;
+    s->anchorY = 0;
     placeOnLauncher(cob, s, 0);
 }
 
@@ -608,6 +612,8 @@ void BallInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     s->clank = 0;
     s->lastEnter = 0;
     s->stillFor = 0;
+    s->anchorX = 0;
+    s->anchorY = 0;
     s->nudge = 0;
     s->rnd = 0x5a;
 
@@ -722,8 +728,6 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
     case GameStatePlaying: {
         int ax, ay, amax, dx, dy;
-        unsigned wasX = cob->globalX;
-        unsigned wasY = cob->globalY;
         byte steps, i;
 
         s->vy += GRAVITY;
@@ -759,20 +763,40 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
          * playtest to find out: a ball can pin itself in a corner at full
          * speed, sliding along one surface into another, and then it is going
          * flat out and going nowhere.  Watching the speed alone never fires.
-         * So the real question is whether the ball has moved -- a tick that
-         * ends on the pixel it started on counts as stuck however fast the
-         * arithmetic says it is travelling. */
-        if (ax < STUCK_SPEED ||
-            (cob->globalX == wasX && cob->globalY == wasY)) {
-            s->stillFor++;
-            if (s->stillFor > STUCK_FRAMES) {
+         *
+         * Nor does asking whether this tick ended on the pixel it started on,
+         * which is what used to be here.  A ball wedged in a corner rattles
+         * between two adjacent pixels: it moves every tick, so that test
+         * resets the counter every tick and the shove never comes.  One sat
+         * at world (158,166) and (159,165) with vx=-2000 vy=2000 for the rest
+         * of a run.
+         *
+         * So compare against where the ball was when the counter started
+         * rather than against last tick.  Anything that has not left a few
+         * pixels of its own starting point in two seconds is stuck, however
+         * busy it looks.  Half resolution, so each anchor fits in a byte. */
+        {
+            byte hx = (byte)(cob->globalX >> 1);
+            byte hy = (byte)(cob->globalY >> 1);
+            byte dx2 = (byte)(hx > s->anchorX ? hx - s->anchorX
+                                              : s->anchorX - hx);
+            byte dy2 = (byte)(hy > s->anchorY ? hy - s->anchorY
+                                              : s->anchorY - hy);
+            if (ax < STUCK_SPEED || (int)dx2 + (int)dy2 <= STUCK_SLACK) {
+                s->stillFor++;
+                if (s->stillFor > STUCK_FRAMES) {
+                    s->stillFor = 0;
+                    s->nudge ^= 1;
+                    s->vx += s->nudge ? 200 : -200;
+                    s->vy -= 120;
+                    s->anchorX = hx;
+                    s->anchorY = hy;
+                }
+            } else {
+                s->anchorX = hx;
+                s->anchorY = hy;
                 s->stillFor = 0;
-                s->nudge ^= 1;
-                s->vx += s->nudge ? 200 : -200;
-                s->vy -= 120;
             }
-        } else {
-            s->stillFor = 0;
         }
 
         /* Once the shot is clear of the gap, the stopper fills it in behind.

@@ -8,7 +8,7 @@
  * object's state -- which shows up as the launcher suddenly drawing itself as
  * a ball, because its sprite index is the first byte of its block.
  */
-#define DynospriteObject_DataSize 17
+#define DynospriteObject_DataSize 19
 
 /** One byte of init data: the role this instance plays. */
 #define DynospriteObject_InitSize 1
@@ -53,6 +53,10 @@ typedef struct BallObjectState {
      * background, which means it has to be painted into both buffers when its
      * length changes and into neither when it has not. */
     byte redraw;
+    /* Where the ball was when stillFor last restarted, at half resolution so
+     * each fits a byte.  Also last on purpose, for the same reason. */
+    byte anchorX;
+    byte anchorY;
 } BallObjectState;
 
 #endif /* _01_ball_h */

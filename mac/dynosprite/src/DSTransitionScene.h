@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) id<DSSceneControllerProtocol> sceneController;
 
 - (id)init;
-- (SKLabelNode *)addLabelWithText:(NSString *)labelText atPosition:(CGPoint)position;
+- (SKLabelNode *)addLabelWithText:(NSString *)labelText atPosition:(CGPoint)position withBackground:(BOOL)withBackground;
 
 @end
 
