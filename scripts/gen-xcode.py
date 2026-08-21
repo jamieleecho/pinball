@@ -474,7 +474,10 @@ def build():
     # Playfield assets, attached whole so the bundle gets levels/, sprites/,
     # tiles/, images/ and sounds/ without an entry per file.
     asset_refs = []
-    for folder in ("levels", "sprites", "tiles", "images", "sounds"):
+    # "hires" carries the Mac-only twins: the engine's resource controller
+    # looks for hires/<whatever> first when the Display or Sound option is
+    # turned up, and quietly uses the ordinary asset when there is no twin.
+    for folder in ("levels", "sprites", "tiles", "images", "sounds", "hires"):
         ref = p.folder_ref(f"../game/{folder}")
         asset_refs.append(ref)
         p.add_resource(ref)

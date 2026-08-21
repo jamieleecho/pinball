@@ -393,6 +393,38 @@ Things that bite:
   once before looking anywhere else.
 - `images/images.json` must hold exactly one entry per level plus one for the
   title screen, or an assertion fires at launch.
+### Hi-res and hi-fi
+
+The Mac engine looks for a twin of any resource under `hires/`, mirroring the
+normal layout, and falls back to the ordinary one when there is no twin. The
+Display and Sound rows in the menu are what turn each on. `game/hires/` holds
+those twins and is attached to the bundle as one more folder reference.
+
+- **The pictures are the only things worth doubling.** The table is pixel art
+  drawn to the CoCo's grid; there is no higher-resolution version of it to
+  have. The cover is a photograph, and the sixteen-colour dither is pure loss,
+  so `box_art(..., reduce=False)` keeps it in full colour at `HIRES_SCALE`
+  times the screen. The scan is only 394x341, so that is not four times the
+  detail -- it is the same picture at a size that does not have to be
+  point-sampled onto a modern display.
+- **The black box has to be scaled with everything else.** The menu is laid out
+  in 320x200 whatever the texture behind it, so the crop, the fade and the box
+  all take the same factor or the rows stop landing on the box.
+- **The loading screen measures the low-res file and draws the hi-res one.**
+  `DSLevelLoadingScene` takes its layout from `pathForResource:` directly --
+  not through the resource controller -- and only the texture comes from
+  `imageWithName:`. That is what lets its twin be bigger without pushing the
+  text off the screen, and it will stop being true the moment someone tidies
+  that line into using the resource controller.
+- **The hi-fi sounds are synthesised again, not resampled up.** Same tones,
+  same envelopes, same fundamentals -- 44.1kHz and sixteen bits instead of
+  8kHz and eight, so a square wave's harmonics are not folding back on
+  themselves. `SOUND_SPECS` names each effect once and both sets are built
+  from it, so they cannot drift. 23KB becomes 252KB, which matters on a floppy
+  and not in an app bundle.
+- The lo-fi set must stay byte-identical when any of this is touched: it is
+  what the CoCo build resamples. `check-assets.py` will say so.
+
 - **The menu is a second implementation of the same layout.** `DSInitScene.m`
   draws it here, `engine/menu.asm` draws it on the CoCo, and both take their
   row positions from a `MenuShowControl`/`MenuShowMusic` pair that has to be

@@ -1718,6 +1718,21 @@ def draw_barren(img, x0, y0, w, h):
 # ---------------------------------------------------------------------------
 
 IMAGE_DIR = os.path.join(ROOT, "game", "images")
+
+# The Mac engine looks for a hi-res twin of any resource under a "hires"
+# directory that mirrors the normal layout, and falls back to the ordinary one
+# when there is not one.  Only the pictures and the sounds have twins here:
+# the table itself is pixel art drawn to the CoCo's grid, and there is no
+# higher-resolution version of it to have.
+HIRES_DIR = os.path.join(ROOT, "game", "hires")
+HIRES_IMAGE_DIR = os.path.join(HIRES_DIR, "images")
+HIRES_SOUND_DIR = os.path.join(HIRES_DIR, "sounds")
+
+# How much bigger the hi-res splash is than the 320x200 screen.  The cover
+# scan is only 394x341, so this is not four times the detail -- it is the same
+# picture carried at a size that does not have to be point-sampled onto a
+# modern display, in full colour rather than sixteen dithered ones.
+HIRES_SCALE = 4
 BOX_ART = os.path.join(ROOT, "art", "boxart.jpg")
 
 # Two bits per channel is the whole of the CoCo 3's gamut.
@@ -1818,8 +1833,13 @@ def flatten_black(img, level=BLACK_FLOOR):
                 px[x, y] = (0, 0, 0)
 
 
-def box_art(w, h, top_trim=0, fade=None, black_box=None):
+def box_art(w, h, top_trim=0, fade=None, black_box=None, reduce=True):
     """The cover, cropped to what will look undistorted at w x h, and reduced.
+
+    reduce=False leaves the picture in full colour and skips the black floor,
+    which is what the Mac's hi-res mode wants: neither the sixteen-colour
+    palette nor the dither nor the floor is buying anything there.  The floor
+    exists to keep the CoCo's floppy load short, and the Mac has no floppy.
 
     top_trim is how much of the source to lose off the top; the rest of the
     crop comes off the bottom, which on this cover is the least interesting
@@ -1838,12 +1858,13 @@ def box_art(w, h, top_trim=0, fade=None, black_box=None):
     ).resize((w, h), Image.LANCZOS)
     if fade:
         fade_below(img, *fade)
-    flatten_black(img)
+    if reduce:
+        flatten_black(img)
     if black_box:
         bx, by, bw, bh = black_box
         ImageDraw.Draw(img).rectangle((bx, by, bx + bw - 1, by + bh - 1),
                                       fill=(0, 0, 0))
-    return coco_reduce(img)
+    return coco_reduce(img) if reduce else img
 
 
 # The menu's option rows, mirroring the equates at the top of engine/menu.asm.
@@ -1878,8 +1899,9 @@ def write_images():
     # is either short of a row or a band of black under nothing.
     box_y0 = MENU_ROW0 - MENU_BOX_PAD
     box_h = (MENU_ROWS - 1) * MENU_ROW_DY + MENU_ROW_H + MENU_BOX_PAD
+    menu_box = (MENU_BOX_X, box_y0, MENU_BOX_W, box_h)
     box_art(SCREEN_W, SCREEN_H, top_trim=12, fade=(92, 124, 0.45),
-            black_box=(MENU_BOX_X, box_y0, MENU_BOX_W, box_h)).save(
+            black_box=menu_box).save(
         os.path.join(IMAGE_DIR, "00-mainmenu.png")
     )
 
@@ -1887,6 +1909,21 @@ def write_images():
     # it, so this one is left alone.  The loader reserves 64 rows for that
     # message, which leaves 136 for the image.
     box_art(160, 116).save(os.path.join(IMAGE_DIR, "01-level1.png"))
+
+    # The same two pictures for the Mac's hi-res mode.  Everything is scaled
+    # by the same factor -- the crop, the fade and the menu's black box -- so
+    # the menu, which is laid out in 320x200 whatever the texture behind it,
+    # still lands on the box.
+    os.makedirs(HIRES_IMAGE_DIR, exist_ok=True)
+    k = HIRES_SCALE
+    box_art(SCREEN_W * k, SCREEN_H * k, top_trim=12,
+            fade=(92 * k, 124 * k, 0.45),
+            black_box=tuple(v * k for v in menu_box), reduce=False).save(
+        os.path.join(HIRES_IMAGE_DIR, "00-mainmenu.png")
+    )
+    box_art(160 * k, 116 * k, reduce=False).save(
+        os.path.join(HIRES_IMAGE_DIR, "01-level1.png")
+    )
 
     import json
 
@@ -1911,16 +1948,38 @@ def write_images():
 SOUND_DIR = os.path.join(ROOT, "game", "sounds")
 SND_RATE = 8000
 
+# The Mac's hi-fi set.  The effects are synthesised again at this rate rather
+# than resampled up from the 8kHz ones -- the same tones and envelopes, but
+# without the aliasing a square wave picks up when its harmonics run past 4kHz,
+# and with sixteen bits instead of eight under them.  The fundamentals are
+# unchanged: this is meant to be the same table, heard clearly, not a different
+# set of noises.
+HIFI_RATE = 44100
 
-def write_wav(name, samples):
+
+def write_wav(name, samples, directory=None, rate=SND_RATE, width=1):
+    """Write mono PCM.
+
+    samples are floats about zero, scaled so that +-128 is full deflection --
+    the shape the 8-bit path wants, since that is where they started.
+    """
     import wave
 
-    path = os.path.join(SOUND_DIR, name)
+    path = os.path.join(directory or SOUND_DIR, name)
+    if width == 1:
+        frames = bytes(max(0, min(255, int(128 + v))) for v in samples)
+    else:
+        frames = b"".join(
+            int(max(-32768, min(32767, int(v * 256)))).to_bytes(
+                2, "little", signed=True
+            )
+            for v in samples
+        )
     with wave.open(path, "wb") as w:
         w.setnchannels(1)
-        w.setsampwidth(1)
-        w.setframerate(SND_RATE)
-        w.writeframes(bytes(samples))
+        w.setsampwidth(width)
+        w.setframerate(rate)
+        w.writeframes(frames)
 
 
 # ffmpeg's resampler needs a couple of hundred milliseconds of material to
@@ -1938,17 +1997,18 @@ def envelope(t, decay):
     return math.exp(-t * decay)
 
 
-def tone(freq0, freq1, ms, shape="square", decay=3.0, sweep_ms=None):
+def tone(freq0, freq1, ms, shape="square", decay=3.0, sweep_ms=None,
+         rate=SND_RATE):
     """A swept tone.  decay is in e-folds over the whole sample."""
-    n = SND_RATE * ms // 1000
-    sweep = n if sweep_ms is None else SND_RATE * sweep_ms // 1000
+    n = rate * ms // 1000
+    sweep = n if sweep_ms is None else rate * sweep_ms // 1000
     out = []
     phase = 0.0
     for i in range(n):
         t = i / n
         st = min(1.0, i / sweep)
         f = freq0 + (freq1 - freq0) * st
-        phase += f / SND_RATE
+        phase += f / rate
         v = phase - math.floor(phase)
         if shape == "square":
             s = 1.0 if v < 0.5 else -1.0
@@ -1956,46 +2016,60 @@ def tone(freq0, freq1, ms, shape="square", decay=3.0, sweep_ms=None):
             s = 2.0 * v - 1.0
         else:
             s = math.sin(2 * math.pi * v)
-        out.append(max(0, min(255, int(128 + s * envelope(t, decay) * 100))))
+        out.append(s * envelope(t, decay) * 100)
     return out
 
 
-def noise(ms, level=90, decay=14.0):
-    n = SND_RATE * ms // 1000
+def noise(ms, level=90, decay=14.0, rate=SND_RATE):
+    n = rate * ms // 1000
     out = []
     seed = 0x1234
     for i in range(n):
         seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF
         s = ((seed >> 16) & 255) - 128
-        v = (s / 128.0) * level * envelope(i / n, decay)
-        out.append(max(0, min(255, int(128 + v))))
+        out.append((s / 128.0) * level * envelope(i / n, decay))
     return out
 
 
-def write_sounds():
-    os.makedirs(SOUND_DIR, exist_ok=True)
+# Every effect, once, so the 8kHz set the CoCo resamples and the 44.1kHz set
+# the Mac plays cannot drift apart.  Each entry is a function of the sample
+# rate; nothing else about them differs.
+SOUND_SPECS = (
     # Bumper: a fat low thump.
-    write_wav("01-bumper.wav", tone(620, 240, SND_MIN_MS, "square", decay=6.0))
+    ("01-bumper.wav", lambda r: tone(620, 240, SND_MIN_MS, "square",
+                                     decay=6.0, rate=r)),
     # Target: a bright ping.
-    write_wav("02-target.wav", tone(880, 700, SND_MIN_MS, "sine", decay=7.0))
+    ("02-target.wav", lambda r: tone(880, 700, SND_MIN_MS, "sine",
+                                     decay=7.0, rate=r)),
     # Flipper: a mechanical clack.
-    write_wav("03-flipper.wav", noise(SND_MIN_MS, 80, decay=22.0))
+    ("03-flipper.wav", lambda r: noise(SND_MIN_MS, 80, decay=22.0, rate=r)),
     # Drain: the ball is gone.
-    write_wav("04-drain.wav", tone(520, 80, 420, "saw", decay=1.2))
+    ("04-drain.wav", lambda r: tone(520, 80, 420, "saw", decay=1.2, rate=r)),
     # Launch: the spring lets go.
-    write_wav("05-launch.wav", tone(160, 780, 300, "square", decay=1.5, sweep_ms=160))
+    ("05-launch.wav", lambda r: tone(160, 780, 300, "square", decay=1.5,
+                                     sweep_ms=160, rate=r)),
     # The lane: one low blip of the ticking the ball makes on its way up.  It
     # has to carry the resampler's 220ms of material or it comes out empty, so
     # the shortness is all in the decay.
-    write_wav("06-lane.wav", tone(150, 140, SND_MIN_MS, "square", decay=26.0))
-
+    ("06-lane.wav", lambda r: tone(150, 140, SND_MIN_MS, "square",
+                                   decay=26.0, rate=r)),
+) + tuple(
     # Notes for the scoring targets, so a good run sounds like a tune rather
     # than a series of thumps.  Plain square waves, and a pentatonic scale
     # because any two of its notes sit together -- the ball chooses the order,
     # and it has no ear.  All well under the 800Hz the 2kHz DAC can carry.
-    for i, freq in enumerate(SND_SCALE):
-        write_wav(f"{7 + i:02d}-note{i + 1}.wav",
-                  tone(freq, freq, SND_MIN_MS, "square", decay=9.0))
+    (f"{7 + i:02d}-note{i + 1}.wav",
+     (lambda f: lambda r: tone(f, f, SND_MIN_MS, "square", decay=9.0, rate=r))(freq))
+    for i, freq in enumerate(SND_SCALE)
+)
+
+
+def write_sounds():
+    os.makedirs(SOUND_DIR, exist_ok=True)
+    os.makedirs(HIRES_SOUND_DIR, exist_ok=True)
+    for name, make in SOUND_SPECS:
+        write_wav(name, make(SND_RATE))
+        write_wav(name, make(HIFI_RATE), HIRES_SOUND_DIR, HIFI_RATE, 2)
 
 
 def write_descriptors():
