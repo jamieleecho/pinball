@@ -4,6 +4,7 @@ extern "C" {
 
 #include "08-fly.h"
 #include "object_info.h"
+#include "fly_data.h"
 
 static byte didNotInit = TRUE;
 static GameGlobals *globals;

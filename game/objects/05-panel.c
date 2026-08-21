@@ -90,8 +90,13 @@ byte PanelUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
          * not drawn at all, which is most of the time and most of the saving.
          */
         byte stage = globals->tongue >> 1;
-        byte rel = (byte)(globals->flyTick + FLY_PERIOD - FLY_CATCH_TICK +
-                          TONGUE_REACH_STAGES) & (byte)(FLY_PERIOD - 1);
+        /* Ticks since the strike should have started.  Wrapped with a
+         * comparison rather than a mask: the flight is no longer a power of
+         * two ticks long, and a mask would silently fold it in half. */
+        int rel = (int)globals->flyTick - FLY_CATCH_TICK + TONGUE_REACH_STAGES;
+        if (rel < 0) {
+            rel += FLY_PERIOD;
+        }
         if (stage > PANEL_TONGUE_STAGES) {
             stage = PANEL_TONGUE_STAGES;
         }
