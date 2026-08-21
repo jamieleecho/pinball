@@ -379,12 +379,106 @@ Things that bite:
   between the two builds. It ignores keys it does not know, so `ChunkHint` is
   harmless there.
 - The macOS key matrix in `DSScene.m` mirrors the CoCo layout exactly, which is
-  why `keyDown()` works unchanged. CONTROL and SHIFT arrive as F3 and F4.
+  why `keyDown()` works unchanged. The awkward part is the keys that are not
+  characters. UIKit gives a modifier press an empty
+  `charactersIgnoringModifiers`, so CONTROL, SHIFT and ALT are recognised by
+  their HID key codes in `keyPressToString()` and handed on as the F3, F4 and
+  F5 placeholders the matrix is keyed by; RETURN arrives as `\r`, not `\n`.
+  Both flippers and the plunger are those keys, so getting this wrong leaves
+  the Mac build looking fine and completely unplayable.
+- **A duplicate key in an `NSDictionary` literal is silent, and the first one
+  wins.** The matrix had `UIKeyInputF3` twice -- ALT and CONTROL -- so the
+  CONTROL row was dropped on the floor at build time. Clang says nothing about
+  it even at `-Wall`. If a key does nothing, check it is in the dictionary
+  once before looking anywhere else.
 - `images/images.json` must hold exactly one entry per level plus one for the
   title screen, or an assertion fires at launch.
+### Hi-res and hi-fi
 
-The engine's own unit tests were not brought across; they live in
-space-bandits and test the engine, not this game.
+The Mac engine looks for a twin of any resource under `hires/`, mirroring the
+normal layout, and falls back to the ordinary one when there is no twin. The
+Display and Sound rows in the menu are what turn each on. `game/hires/` holds
+those twins and is attached to the bundle as one more folder reference.
+
+- **The pictures are the only things worth doubling.** The table is pixel art
+  drawn to the CoCo's grid; there is no higher-resolution version of it to
+  have. The cover is a photograph, and the sixteen-colour dither is pure loss,
+  so `box_art(..., reduce=False)` keeps it in full colour at `HIRES_SCALE`
+  times the screen. The scan is only 394x341, so that is not four times the
+  detail -- it is the same picture at a size that does not have to be
+  point-sampled onto a modern display.
+- **The black box has to be scaled with everything else.** The menu is laid out
+  in 320x200 whatever the texture behind it, so the crop, the fade and the box
+  all take the same factor or the rows stop landing on the box.
+- **The loading screen measures the low-res file and draws the hi-res one.**
+  `DSLevelLoadingScene` takes its layout from `pathForResource:` directly --
+  not through the resource controller -- and only the texture comes from
+  `imageWithName:`. That is what lets its twin be bigger without pushing the
+  text off the screen, and it will stop being true the moment someone tidies
+  that line into using the resource controller.
+- **The hi-fi sounds are synthesised again, not resampled up.** Same tones,
+  same envelopes, same fundamentals -- 44.1kHz and sixteen bits instead of
+  8kHz and eight, so a square wave's harmonics are not folding back on
+  themselves. `SOUND_SPECS` names each effect once and both sets are built
+  from it, so they cannot drift. 23KB becomes 252KB, which matters on a floppy
+  and not in an app bundle.
+- The lo-fi set must stay byte-identical when any of this is touched: it is
+  what the CoCo build resamples. `check-assets.py` will say so.
+
+- **The menu is a second implementation of the same layout.** `DSInitScene.m`
+  draws it here, `engine/menu.asm` draws it on the CoCo, and both take their
+  row positions from a `MenuShowControl`/`MenuShowMusic` pair that has to be
+  set the same way in both. The black box the rows sit on is neither one's
+  doing: `gen-assets.py` paints it into the splash from `MENU_ROWS`, so a row
+  hidden on one side and shown on the other hangs off the bottom of the box.
+  The Mac copy had been left at four rows for exactly that reason -- nothing
+  in either build checks it, and only the picture shows it.
+- **Every other file under `mac/dynosprite/` is byte-identical to
+  space-bandits'.** Worth checking with `cmp` before assuming a Mac-only bug
+  is in the engine; it is the one part of this tree nobody has touched.
+
+### The engine's unit tests
+
+`mac/dynosprite tests/` is space-bandits' test suite, brought across whole:
+forty-seven test files, their fixtures, and OCMock. They test the engine
+rather than the game, which is what makes them portable -- there is not one
+mention of either project in them.
+
+```sh
+scripts/gen-xcode.py
+xcodebuild -project mac/Pinball.xcodeproj -scheme "Lost World Pinball" \
+  -testPlan dynosprite-github \
+  -destination 'platform=macOS,variant=Mac Catalyst' test
+```
+
+- **The tests are not hosted.** There is no app to load them into, so the test
+  target compiles its own copy of the engine -- which is why the engine's
+  forty-five sources appear in two Sources phases, and why `gen-xcode.py` has
+  to keep each target's build files apart. A `PBXFileReference` is shared; a
+  `PBXBuildFile` is not.
+- **The scheme is generated and shared.** `xcodebuild -scheme` otherwise leans
+  on Xcode auto-creating schemes from targets, which is the IDE's behaviour and
+  not the build system's promise. One scheme builds the app and tests the
+  engine, so CI runs both from the same name.
+- **`mac/dynosprite-github.xctestplan` is what CI runs**, as it is in
+  space-bandits. A scheme that names a test plan hands the whole test action
+  to it, so the skip list lives in the plan and nowhere else -- not in the
+  scheme, not in the workflow. The plan pins its target by object id;
+  `gen-xcode.py` checks that id still matches and stops if it does not, since
+  a plan aimed at a target that moved fails as though the tests had vanished.
+- **OCMock is embedded, so it is signed on the way in.** It lives beside the
+  project in `mac/Frameworks/`, and its Copy Frameworks entry carries
+  `CodeSignOnCopy`; without that the bundle builds and then will not load.
+- **Two tests had to be adapted**, and they are exactly the two covering what
+  this project changed in the engine: `DSInitSceneTest` follows the menu's
+  `MenuShowControl`/`MenuShowMusic` switches, which is why those live in
+  `DSInitScene.h` rather than the `.m`; and `DSSceneTest` grew cases for the
+  keys the game is played with. Everything else is byte-identical to the
+  sibling's copy.
+- `DSTextureManagerTest` and `DSLevelLoadingSceneTest/testDidMoveToView` want a
+  window server and are skipped by the plan. `DSWindowControllerTest.m` is
+  excluded from the target outright,
+  following `DSWindowController.m`.
 
 ## CI
 

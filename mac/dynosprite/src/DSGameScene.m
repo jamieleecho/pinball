@@ -134,13 +134,20 @@
     _lastOffset.x = DynospriteDirectPageGlobalsPtr->Gfx_BkgrndLastX * 2;
     _lastOffset.y = DynospriteDirectPageGlobalsPtr->Gfx_BkgrndLastY;
     _paintedBackgrounds[0].position = _paintedBackgrounds[1].position = self.camera.position;
-    [self renderScene];
-    
+
     // Initialize the objects
     [_objectCoordinator initializeObjects];
     
     // Initialize the level
     _levelObj.initLevel();
+
+    // Only now paint the first frame.  Until Init has run, every object still
+    // carries the position the level descriptor gave it, and objects that
+    // place themselves in Init -- which in this game is most of them -- are
+    // sitting at the origin.  Painting then puts a copy of each at the corner
+    // of the world, and because those sprites save no background there is
+    // nothing that will ever erase them again.
+    [self renderScene];
     
     [self.joystickController.joystick reset];
 }
@@ -193,6 +200,7 @@
         [_textureManager configureSprite:_sprites[ii] forCob:_objectCoordinator.cobs + ii andScene:self andCamera:self.camera includeBackgroundSavers:NO];
     }
     SKTexture *texture = [self.view textureFromNode:self];
+    texture.filteringMode = SKTextureFilteringNearest;
 
     // We have to crop texture if we moved up or down. First calculate in points
     int deltaY = 2 * (_lastOffset.y - DynospriteDirectPageGlobalsPtr->Gfx_BkgrndLastY);
@@ -216,6 +224,7 @@
                                 
     // Crop and reposition the painting node
     texture = texture ? [SKTexture textureWithRect:croppedTextureRect inTexture:texture] : nil;
+    texture.filteringMode = SKTextureFilteringNearest;
     paintedBackground.position = CGPointMake(self.camera.position.x, self.camera.position.y - deltaY / 2);
     paintedBackground.texture = texture;
     paintedBackground.size = CGSizeMake(self.size.width, self.size.height - fabs(deltaY));

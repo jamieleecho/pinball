@@ -41,7 +41,7 @@
             @"x":   @[@0x08, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
             @"0":   @[@0x10, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
             @"8":   @[@0x20, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
-            @"\n":  @[@0x40, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
+            @"\r":  @[@0x40, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
 
             @"a":   @[@0x00, @0x01, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
             @"i":   @[@0x00, @0x02, @0x00, @0x00, @0x00, @0x00, @0x00, @0x00],
@@ -68,7 +68,7 @@
                     @[@0x00, @0x00, @0x00, @0x08, @0x00, @0x00, @0x00, @0x00],
             @"3":   @[@0x00, @0x00, @0x00, @0x10, @0x00, @0x00, @0x00, @0x00],
             @";":   @[@0x00, @0x00, @0x00, @0x20, @0x00, @0x00, @0x00, @0x00],
-            UIKeyInputF3: /* Alt */
+            UIKeyInputF5: /* Alt */
                     @[@0x00, @0x00, @0x00, @0x40, @0x00, @0x00, @0x00, @0x00],
 
             @"d":   @[@0x00, @0x00, @0x00, @0x00, @0x01, @0x00, @0x00, @0x00],
@@ -132,10 +132,26 @@
     return _debouncedKeys;
 }
 
+
+static NSString *keyPressToString(UIPress *press) {
+    NSString *keyChar = press.key.charactersIgnoringModifiers;
+    if ([keyChar isEqualToString:@""]) {
+        if ((press.key.keyCode == UIKeyboardHIDUsageKeyboardLeftControl) || (press.key.keyCode == UIKeyboardHIDUsageKeyboardRightControl)) {
+            keyChar = UIKeyInputF3;
+        } else if ((press.key.keyCode == UIKeyboardHIDUsageKeyboardLeftShift) || (press.key.keyCode == UIKeyboardHIDUsageKeyboardRightShift)) {
+            keyChar = UIKeyInputF4;
+        } else if ((press.key.keyCode == UIKeyboardHIDUsageKeyboardLeftAlt) || (press.key.keyCode == UIKeyboardHIDUsageKeyboardRightAlt)) {
+            keyChar = UIKeyInputF5;
+        }
+    }
+    return keyChar;
+}
+
+
 - (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(nullable UIPressesEvent *)event {
     [self.joystickController pressesBegan:presses withEvent:event];
     for(UIPress *press in presses) {
-        NSString *keyChar = press.key.charactersIgnoringModifiers;
+        NSString *keyChar = keyPressToString(press);
         [_pressedKeys addObject:keyChar];
     }
     [self updateDebouncedKeys];
@@ -144,7 +160,7 @@
 - (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(nullable UIPressesEvent *)event {
     [self.joystickController pressesEnded:presses withEvent:event];
     for(UIPress *press in presses) {
-        NSString *keyChar = press.key.charactersIgnoringModifiers;
+        NSString *keyChar = keyPressToString(press);
         [_pressedKeys removeObject:keyChar];
     }
     [self updateDebouncedKeys];

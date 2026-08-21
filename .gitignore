@@ -7,3 +7,7 @@ dist/
 *.swp
 *.swo
 snap/
+
+# Xcode writes these beside the generated project; they are per-user state.
+mac/Pinball.xcodeproj/project.xcworkspace/
+mac/Pinball.xcodeproj/xcuserdata/

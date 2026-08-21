@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "FFFF4CBB-CC32-4636-8F35-BABB0C095772",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "DSLevelLoadingSceneTest\/testDidMoveToView",
+        "DSTextureManagerTest",
+        "DSTextureManagerTest\/testConfigureCustomDraw",
+        "DSTextureManagerTest\/testConfigureSpriteNoRectangle",
+        "DSTextureManagerTest\/testConfigureSpriteWithRectangle"
+      ],
+      "target" : {
+        "containerPath" : "container:Pinball.xcodeproj",
+        "identifier" : "984A1D6338D49A1E20867B67",
+        "name" : "dynosprite tests"
+      }
+    }
+  ],
+  "version" : 1
+}

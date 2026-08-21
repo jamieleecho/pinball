@@ -112,3 +112,15 @@ jobs:
             -scheme "Lost World Pinball" \
             -destination 'platform=macOS,variant=Mac Catalyst' \
             build
+
+      # The engine's own unit tests, brought across from space-bandits, which
+      # runs the same plan in its own CI.  The plan is what carries the list of
+      # tests that need a window server and cannot run on a runner, so naming
+      # it here keeps the skips in one file rather than in the workflow.
+      - name: Run the engine unit tests
+        run: |
+          xcodebuild -project mac/Pinball.xcodeproj \
+            -scheme "Lost World Pinball" \
+            -testPlan dynosprite-github \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
+            test
