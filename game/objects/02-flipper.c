@@ -49,9 +49,10 @@ byte FlipperUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     FlipperObjectState *s = (FlipperObjectState *)(cob->statePtr);
     byte held, idx;
 
-    /* The flippers only answer the keys while a ball is actually in play, so
-     * they sit still during the pause after a drain. */
-    if (globals->gameState != GameStatePlaying && globals->gameState != GameStateReady) {
+    /* The flippers only answer the keys while a ball is actually in play: not
+     * during the pause after a drain, and not while one is sitting on the
+     * launcher waiting to be shot. */
+    if (globals->gameState != GameStatePlaying) {
         held = 0;
     } else {
         held = (s->side == FLIPPER_RIGHT) ? rightFlipperKey() : leftFlipperKey();

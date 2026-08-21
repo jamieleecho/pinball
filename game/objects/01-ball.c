@@ -224,6 +224,16 @@ static void resolveHit(BallObjectState *s, byte cell, int hx, int hy,
             }
             s->cooldown = TARGET_COOLDOWN;
         }
+    } else if (kind == K_DRAIN) {
+        /* The pyramid at the bottom of the table.  It is solid, so the ball
+         * comes to rest on it rather than sinking through it, and touching it
+         * is what loses the ball -- nothing has to fall off the bottom of the
+         * world for the game to notice.  Changing the state here stops the
+         * physics for this ball, so it stays where it landed. */
+        globals->gameState = GameStateDrained;
+        globals->stateTimer = DRAIN_PAUSE;
+        PlaySound(SOUND_DRAIN);
+        return;
     } else if (kind == K_FOOT) {
         /* A foot is a bumper until it is hit.  After that it turns cyan and is
          * ordinary scenery -- still solid, because it is part of the pod or the
@@ -531,6 +541,7 @@ static void startBall(DynospriteCOB *cob, BallObjectState *s) {
      * pieces for the first two seconds of a cold start. */
     globals->quake = 0;
     s->pull = 0;
+    globals->launcherPull = 0;
     s->cooldown = 0;
     s->clank = 0;
     s->stillFor = 0;
@@ -580,8 +591,14 @@ void BallInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     }
 
     s->role = initData[0];
-    s->spriteIdx =
-        (s->role == BALL_ROLE_LAUNCHER) ? BALL_SPRITE_LAUNCHER : BALL_SPRITE_BALL;
+    if (s->role == BALL_ROLE_LAUNCHER) {
+        s->spriteIdx = BALL_SPRITE_LAUNCHER;
+    } else if (s->role == BALL_ROLE_SPRING) {
+        s->spriteIdx = BALL_SPRITE_SPRING0;
+    } else {
+        s->spriteIdx = BALL_SPRITE_BALL;
+    }
+    s->redraw = 2;
     s->vx = 0;
     s->vy = 0;
     s->fx = 0;
@@ -597,6 +614,9 @@ void BallInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
     if (s->role == BALL_ROLE_LAUNCHER) {
         cob->globalX = LANE_CX;
         cob->globalY = LAUNCHER_REST_Y;
+    } else if (s->role == BALL_ROLE_SPRING) {
+        cob->globalX = SPRING_X;
+        cob->globalY = SPRING_Y;
     } else {
         globals->initialized = TRUE;
         if (globals->magic0 != 0x5a || globals->magic1 != 0x3c) {
@@ -616,40 +636,37 @@ byte BallReactivate(DynospriteCOB *cob, DynospriteODT *odt) {
     return 0;
 }
 
-/**
- * The ball, wherever it is in the object table.
- *
- * It shares its group with the launcher head, so a search on the group alone
- * finds whichever of the two comes first -- which used to be the ball only
- * because the ball was listed first.  It is listed last now, so that it draws
- * over everything, and this asks for the role instead.
- */
-static DynospriteCOB *findBall(void) {
-    DynospriteCOB *o = DynospriteDirectPageGlobalsPtr->Obj_CurrentTablePtr;
-    DynospriteCOB *end = o + DynospriteDirectPageGlobalsPtr->Obj_NumCurrent;
-    for (; o < end; ++o) {
-        if (o->groupIdx == BALL_GROUP_IDX &&
-            ((BallObjectState *)(o->statePtr))->role == BALL_ROLE_BALL) {
-            return o;
-        }
-    }
-    return 0;
-}
-
 byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     BallObjectState *s = (BallObjectState *)(cob->statePtr);
     byte state = globals->gameState;
 
-    if (s->role == BALL_ROLE_LAUNCHER) {
-        /* The launcher head mirrors however far the ball is drawn back, and
-         * disappears once the ball is away. */
-        DynospriteCOB *ballCob = findBall();
-        byte pull = 0;
-        if (ballCob) {
-            pull = ((BallObjectState *)(ballCob->statePtr))->pull;
+    if (s->role == BALL_ROLE_LAUNCHER || s->role == BALL_ROLE_SPRING) {
+        /* Both halves of the plunger follow however far the ball is drawn
+         * back.  Neither goes away when the ball does: a plunger you can see
+         * sitting at the bottom of the lane is what the ball rolls back down
+         * onto, and hiding it made the lane look like it ended in nothing. */
+        byte pull = globals->launcherPull;
+        if (s->role == BALL_ROLE_LAUNCHER) {
+            cob->globalY = LAUNCHER_REST_Y + pull;
+            cob->active = OBJECT_ACTIVE;
+            return 0;
         }
-        cob->globalY = LAUNCHER_REST_Y + pull;
-        cob->active = (state == GameStateReady) ? OBJECT_ACTIVE : OBJECT_UPDATE_ACTIVE;
+        /* The spring stays put and changes length instead, one frame per two
+         * rows of travel.  It saves no background, so it is painted only when
+         * that frame changes -- and then into both buffers. */
+        {
+            byte idx = (byte)(BALL_SPRITE_SPRING0 + (pull >> 1));
+            if (s->spriteIdx != idx) {
+                s->spriteIdx = idx;
+                s->redraw = 2;
+            }
+        }
+        if (s->redraw) {
+            s->redraw--;
+            cob->active = OBJECT_ACTIVE;
+        } else {
+            cob->active = OBJECT_UPDATE_ACTIVE;
+        }
         return 0;
     }
 
@@ -684,12 +701,14 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
             }
             s->vx = 0;
             s->pull = 0;
+            globals->launcherPull = 0;
             globals->gameState = GameStatePlaying;
             PlaySound(SOUND_LAUNCH);
             cob->active = OBJECT_ACTIVE;
             break;
         }
         s->lastEnter = enter;
+        globals->launcherPull = s->pull;
         placeOnLauncher(cob, s, s->pull);
         cob->active = OBJECT_ACTIVE;
         break;
@@ -697,6 +716,8 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
     case GameStatePlaying: {
         int ax, ay, amax, dx, dy;
+        unsigned wasX = cob->globalX;
+        unsigned wasY = cob->globalY;
         byte steps, i;
 
         s->vy += GRAVITY;
@@ -726,8 +747,17 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
         /* A ball that has wedged itself, or that is trapped bouncing straight
          * up and down between two walls, gets a shove.  This table -- like the
-         * original -- has no nudge button to do it with. */
-        if (ax < STUCK_SPEED) {
+         * original -- has no nudge button to do it with.
+         *
+         * Being slow is not the only way to be stuck, which cost a whole
+         * playtest to find out: a ball can pin itself in a corner at full
+         * speed, sliding along one surface into another, and then it is going
+         * flat out and going nowhere.  Watching the speed alone never fires.
+         * So the real question is whether the ball has moved -- a tick that
+         * ends on the pixel it started on counts as stuck however fast the
+         * arithmetic says it is travelling. */
+        if (ax < STUCK_SPEED ||
+            (cob->globalX == wasX && cob->globalY == wasY)) {
             s->stillFor++;
             if (s->stillFor > STUCK_FRAMES) {
                 s->stillFor = 0;

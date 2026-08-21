@@ -33,9 +33,11 @@
  * does not score: a wall, a piece of scenery, a foot already spent. */
 #define SOUND_CLANK SOUND_FLIPPER
 
-/* Ball sprites */
+/* Ball sprites.  The spring frames follow the head, one per two rows of pull;
+ * SPRING_FRAMES of them come out of table_data.h. */
 #define BALL_SPRITE_BALL 0
 #define BALL_SPRITE_LAUNCHER 1
+#define BALL_SPRITE_SPRING0 2
 
 /* Digit sprites.  The blank is drawn in place of a hidden read-out: these
  * sprites carry no erase code, so an object that simply stopped drawing would
@@ -85,10 +87,7 @@
  * score digits, so they use the digit grid.  Everything on the panel is placed
  * by table_data.h, from the same constants that drew the artwork beneath it --
  * PANEL_TONGUE_X/Y, for instance, is exactly where the generator put Vally's
- * mouth.  Only the end-of-game plate is positioned here, because it is drawn
- * across the table rather than on the panel. */
-#define PANEL_OVER_X 54
-#define PANEL_OVER_Y 96
+ * mouth, and PANEL_OVER_X/Y is the middle of the screen. */
 #define PANEL_MULTX_X (MULT_DIGIT_X + 2 * SCORE_DIGIT_PITCH)
 #define PANEL_MULTX_Y (MULT_DIGIT_Y + 2)
 
@@ -97,12 +96,12 @@
 #define TONGUE_TARGET 12 /* top-mark hits needed to make the volcano erupt */
 #define FLASH_FRAMES 10  /* how long a struck target stays lit */
 
-/* Launcher */
+/* Launcher.  Where it sits and how far it comes back are geometry and live in
+ * table_data.h -- the travel has to leave the spring somewhere to be.  What is
+ * left here is the rule: how hard a given pull shoots. */
 #define LANE_CX ((LANE_X0 + LANE_X1) / 2)
-#define LAUNCHER_REST_Y 180
-#define LAUNCHER_MAX_PULL 18
 #define LAUNCH_SPEED_MIN 1300 /* 8.8 fixed point pixels per frame */
-#define LAUNCH_STEP 115        /* added per notch of pull */
+#define LAUNCH_STEP 130        /* added per notch of pull */
 #define LAUNCH_SPEED_MAX 3400
 
 enum GameState {
@@ -153,6 +152,12 @@ typedef struct GameGlobals {
     /* Ticks of eruption still to run.  The volcano going up is the one time
      * the camera moves, which is why the world is bigger than the screen. */
     byte quake;
+    /* How far the plunger is drawn back.  The ball owns it; the head and the
+     * spring under it only follow.  It is published here rather than read off
+     * the ball because finding the ball means walking the whole object table,
+     * and two accessories doing that every frame is worth about a frame a
+     * second on a table that has none to spare. */
+    byte launcherPull;
 } GameGlobals;
 
 MAYBE_UNUSED

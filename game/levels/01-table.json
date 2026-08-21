@@ -1,7 +1,7 @@
 {
   "Level": {
     "Name": "Lost World Pinball",
-    "Description": "Three balls. Hit anything red.",
+    "Description": "Prehistoric Fun",
     "ObjectGroups": [
       1,
       2,
@@ -12,7 +12,7 @@
       7,
       8
     ],
-    "MaxObjectTableSize": 50,
+    "MaxObjectTableSize": 51,
     "Tileset": 1,
     "TilemapImage": "../tiles/01-table.png",
     "TilemapStart": [
@@ -27,6 +27,17 @@
     "BkgrndStartY": 12
   },
   "Objects": [
+    {
+      "_comment": "launcher spring",
+      "GroupID": 1,
+      "ObjectID": 0,
+      "Active": 3,
+      "globalX": 186,
+      "globalY": 184,
+      "InitData": [
+        2
+      ]
+    },
     {
       "_comment": "launcher",
       "GroupID": 1,

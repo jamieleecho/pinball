@@ -162,6 +162,8 @@
 		453F05462EDF31988197AB01 /* 06-lava.c in Sources */ = {isa = PBXBuildFile; fileRef = 379B4FF48A6F49C3CF319AEA /* 06-lava.c */; };
 		ABEFDA5E870BA5356E207F4E /* 07-tongue.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "07-tongue.c"; path = "../game/objects/07-tongue.c"; sourceTree = SOURCE_ROOT; };
 		211A3C9CAA898602AFD48E27 /* 07-tongue.c in Sources */ = {isa = PBXBuildFile; fileRef = ABEFDA5E870BA5356E207F4E /* 07-tongue.c */; };
+		A402E702192764D7FF26E177 /* 08-fly.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "08-fly.c"; path = "../game/objects/08-fly.c"; sourceTree = SOURCE_ROOT; };
+		4661E7E7B102965946A3B3A8 /* 08-fly.c in Sources */ = {isa = PBXBuildFile; fileRef = A402E702192764D7FF26E177 /* 08-fly.c */; };
 		2107B2775484C2F73CCBA429 /* 01-table.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "01-table.c"; path = "../game/levels/01-table.c"; sourceTree = SOURCE_ROOT; };
 		78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2107B2775484C2F73CCBA429 /* 01-table.c */; };
 		3D3B381C7E6498C41E26CDA3 /* 01-ball.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "01-ball.h"; path = "../game/objects/01-ball.h"; sourceTree = SOURCE_ROOT; };
@@ -171,6 +173,8 @@
 		88B74E57B037981AC06DC163 /* 05-panel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "05-panel.h"; path = "../game/objects/05-panel.h"; sourceTree = SOURCE_ROOT; };
 		625DF408902B87E0CFA964B3 /* 06-lava.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "06-lava.h"; path = "../game/objects/06-lava.h"; sourceTree = SOURCE_ROOT; };
 		18A3C40B3266B17C13C1B448 /* 07-tongue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "07-tongue.h"; path = "../game/objects/07-tongue.h"; sourceTree = SOURCE_ROOT; };
+		19AFEA12A5057D8AE217183B /* 08-fly.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "08-fly.h"; path = "../game/objects/08-fly.h"; sourceTree = SOURCE_ROOT; };
+		A4C54B4F3740DD50F888568B /* fly_data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fly_data.h; path = ../game/objects/fly_data.h; sourceTree = SOURCE_ROOT; };
 		13748BFFD46F258DA0A9C4A0 /* object_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = object_info.h; path = ../game/objects/object_info.h; sourceTree = SOURCE_ROOT; };
 		BC1F4F2D2C94ED8AF4BF8A28 /* table_data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = table_data.h; path = ../game/objects/table_data.h; sourceTree = SOURCE_ROOT; };
 		D24365165B5F168E0124FA4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Pinball/main.m; sourceTree = SOURCE_ROOT; };
@@ -315,6 +319,7 @@
 				3E2D54C2BFA201788FABEEC1 /* 05-panel.c */,
 				379B4FF48A6F49C3CF319AEA /* 06-lava.c */,
 				ABEFDA5E870BA5356E207F4E /* 07-tongue.c */,
+				A402E702192764D7FF26E177 /* 08-fly.c */,
 				2107B2775484C2F73CCBA429 /* 01-table.c */,
 				3D3B381C7E6498C41E26CDA3 /* 01-ball.h */,
 				EBB476494478196962335871 /* 02-flipper.h */,
@@ -323,6 +328,8 @@
 				88B74E57B037981AC06DC163 /* 05-panel.h */,
 				625DF408902B87E0CFA964B3 /* 06-lava.h */,
 				18A3C40B3266B17C13C1B448 /* 07-tongue.h */,
+				19AFEA12A5057D8AE217183B /* 08-fly.h */,
+				A4C54B4F3740DD50F888568B /* fly_data.h */,
 				13748BFFD46F258DA0A9C4A0 /* object_info.h */,
 				BC1F4F2D2C94ED8AF4BF8A28 /* table_data.h */,
 				DFF28DA8EAB59CC0CBCFD500 /* levels */,
@@ -418,6 +425,7 @@
 				95BAE058838C367B20392E44 /* 05-panel.c in Sources */,
 				453F05462EDF31988197AB01 /* 06-lava.c in Sources */,
 				211A3C9CAA898602AFD48E27 /* 07-tongue.c in Sources */,
+				4661E7E7B102965946A3B3A8 /* 08-fly.c in Sources */,
 				78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */,
 				1A0F5E720F4905525EADE3AF /* main.m in Sources */,
 			);

@@ -85,7 +85,7 @@
     {
       "Name": "GateShut",
       "Location": [
-        100,
+        136,
         30
       ],
       "SinglePixelPosition": true,
@@ -95,7 +95,7 @@
     {
       "Name": "GateOpen",
       "Location": [
-        116,
+        146,
         30
       ],
       "SinglePixelPosition": true,

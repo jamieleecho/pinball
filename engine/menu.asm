@@ -25,23 +25,58 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************************
 
+* Which rows the menu offers.  Set either to 1 to put its row back.
+*
+* A row that can only be left at the one setting that works is worse than no
+* row at all, and this game has two of those.  It reads the keyboard matrix
+* itself because the joystick emulation cannot report two keys at once and a
+* pinball table needs both flippers at once; and it ships no music.  Both are
+* assembled out rather than merely defaulted, so there is nothing to set.
+MenuShowControl         equ     0
+MenuShowMusic           equ     0
+
+* The rows are laid out from these rather than written down four times each,
+* so a hidden row closes its gap instead of leaving a hole in the middle of
+* the menu, and what is left stays centred on the same part of the splash.
+* X is in bytes: two pixels each, four bytes to a character, 160 to a screen.
+MenuRowDY               equ     16
+MenuNumRows             equ     2+MenuShowControl+MenuShowMusic
+MenuRowMonitorY         equ     107+(4-MenuNumRows)*MenuRowDY/2
+MenuRowControlY         equ     MenuRowMonitorY+MenuRowDY
+MenuRowSoundY           equ     MenuRowControlY+MenuShowControl*MenuRowDY
+MenuRowMusicY           equ     MenuRowSoundY+MenuRowDY
+MenuLabelX              equ     30
+MenuValueX              equ     32+10*4
+
 *Local Data
 *
 Menu_Monitor            fcn     '[M]onitor:'
 Menu_RGB                fcn     'RGB'
 Menu_CMP                fcn     'Composite'
+ IFNE MenuShowControl
 Menu_Control            fcn     '[C]ontrol:'
 Menu_Joystick           fcn     'Joystick'
 Menu_Keyboard           fcn     'Keyboard'
+ ENDC
 Menu_Sound              fcn     '[S]ound:'
 Menu_Internal           fcn     'Coco internal'
 Menu_Orc90              fcn     'Orchestra-90'
 Menu_NoSound            fcn     'No sound'
+ IFNE MenuShowMusic
 Menu_Music              fcn     'M[u]sic:'
 Menu_MusicYes           fcn     'Yes'
 Menu_MusicNo            fcn     'No'
 Menu_MusicEnabled       fcb     EnableMusic     * $FF=music on, 0=music off (from defaults-config.json)
+ ELSE
+Menu_MusicEnabled       fcb     0               * no Music row: music never comes on
+ ENDC
+ IFNE MenuShowControl
 Menu_StartMsg           fcn     '[Space] or joystick button to start'
+MenuStartX              equ     (160-35*4)/2
+ ELSE
+Menu_StartMsg           fcn     '[Space] to start'
+MenuStartX              equ     (160-16*4)/2
+ ENDC
 
 ***********************************************************
 * Menu_RunMain:
@@ -93,26 +128,30 @@ Menu_RunMain
             tfr         d,u
             pshs        u
             ldx         #Menu_Monitor
-            ldb         #30
-            lda         #107
+            ldb         #MenuLabelX
+            lda         #MenuRowMonitorY
             jsr         Gfx_DrawTextLine_Back
+ IFNE MenuShowControl
             ldx         #Menu_Control
-            ldb         #30
-            lda         #123
+            ldb         #MenuLabelX
+            lda         #MenuRowControlY
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
+ ENDC
             ldx         #Menu_Sound
-            ldb         #30
-            lda         #139
+            ldb         #MenuLabelX
+            lda         #MenuRowSoundY
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
+ IFNE MenuShowMusic
             ldx         #Menu_Music
-            ldb         #30
-            lda         #155
+            ldb         #MenuLabelX
+            lda         #MenuRowMusicY
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
+ ENDC
             ldx         #Menu_StartMsg
-            ldb         #10
+            ldb         #MenuStartX
             lda         #184
             puls        u
             jsr         Gfx_DrawTextLine_Back
@@ -125,17 +164,22 @@ Menu_RunMain
             tst         <Gfx_MonitorIsRGB
             beq         >
             ldx         #Menu_RGB
-!           ldb         #32+10*4
-            lda         #107
+!           ldb         #MenuValueX
+            lda         #MenuRowMonitorY
             jsr         Gfx_DrawTextLine_Back
+ IFNE MenuShowControl
             ldx         #Menu_Joystick
             tst         <Input_UseKeyboard
             beq         >
             ldx         #Menu_Keyboard
-!           ldb         #32+10*4
-            lda         #123
+!           ldb         #MenuValueX
+            lda         #MenuRowControlY
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
+ ELSE
+            lda         #$ff
+            sta         <Input_UseKeyboard      * no Control row: keyboard, always
+ ENDC
             ldx         #Menu_NoSound
             tst         <Sound_OutputMode
             bmi         SoundMenuInitTextDone@
@@ -144,10 +188,11 @@ Menu_RunMain
             bra         SoundMenuInitTextDone@
 !           ldx         #Menu_Orc90
 SoundMenuInitTextDone@
-            ldb         #32+10*4
-            lda         #139
+            ldb         #MenuValueX
+            lda         #MenuRowSoundY
             ldu         ,s
             jsr         Gfx_DrawTextLine_Back
+ IFNE MenuShowMusic
             * Draw music value
             ldx         #Menu_MusicYes
             tst         <Sound_OutputMode
@@ -158,10 +203,13 @@ MusicMenuInitOff@
             clr         Menu_MusicEnabled
             ldx         #Menu_MusicNo
 MusicMenuInitTextDone@
-            ldb         #32+10*4
-            lda         #155
+            ldb         #MenuValueX
+            lda         #MenuRowMusicY
             puls        u
             jsr         Gfx_DrawTextLine_Back
+ ELSE
+            puls        u
+ ENDC
             * clear front buffer and set the new palette
             clra
             jsr         Gfx_FillScreen_Front
@@ -179,42 +227,49 @@ MenuKeyLoop@
             tstb
             beq         >
             jsr         Menu_Keypress_M
+ IFNE MenuShowControl
 !           lda         #KEY_C
             jsr         Input_IsKeyPressed
             tstb
             beq         >
             jsr         Menu_Keypress_C
+ ENDC
 !           lda         #KEY_S
             jsr         Input_IsKeyPressed
             tstb
             beq         >
             jsr         Menu_Keypress_S
+ IFNE MenuShowMusic
 !           lda         #KEY_U
             jsr         Input_IsKeyPressed
             tstb
             beq         >
             jsr         Menu_Keypress_U
+ ENDC
 !           lda         #KEY_SPACE
             jsr         Input_IsKeyPressed
             tstb
             beq         >
             jmp         Menu_Keypress_Space     * this starts a level and doesn't return, so jump there
 CheckJoyButton@
+ IFNE MenuShowControl
             * read joystick button state
 !           ldb         <Input_JoyButtonMask
             bitb        #Joy1Button1
             beq         >
             jmp         Menu_Keypress_Space     * this starts a level and doesn't return, so jump there
+ ENDC
 !           bra         MenuKeyLoop@
 
+ IFNE MenuShowControl
 Menu_Keypress_C
             * flip state of Controller option
             com         <Input_UseKeyboard
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #32+10*4
-            lda         #123
+            ldb         #MenuValueX
+            lda         #MenuRowControlY
             ldu         #8
             jsr         Menu_EraseBox
             * redraw new option value
@@ -226,10 +281,11 @@ Menu_Keypress_C
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #32+10*4
-            lda         #123
+            ldb         #MenuValueX
+            lda         #MenuRowControlY
             jsr         Gfx_DrawTextLine
             rts
+ ENDC
 
 Menu_Keypress_S
             * advance state of Sound option
@@ -242,8 +298,8 @@ Menu_Keypress_S
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #32+10*4
-            lda         #139
+            ldb         #MenuValueX
+            lda         #MenuRowSoundY
             ldu         #13
             jsr         Menu_EraseBox
             * redraw new option value
@@ -259,8 +315,8 @@ SoundMenuTextDone@
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #32+10*4
-            lda         #139
+            ldb         #MenuValueX
+            lda         #MenuRowSoundY
             jsr         Gfx_DrawTextLine
             * update audio hardware state if necessary
  IFEQ SOUND_METHOD-1
@@ -280,9 +336,12 @@ AudioSwitchDone@
             bpl         >
             clr         Menu_MusicEnabled
             clr         Music_Playing
+ IFNE MenuShowMusic
             jsr         Menu_RedrawMusic
+ ENDC
 !           rts
 
+ IFNE MenuShowMusic
 ***********************************************************
 * Menu_Keypress_U — toggle music on/off
 ***********************************************************
@@ -305,8 +364,8 @@ MusicToggleDone@
 ***********************************************************
 Menu_RedrawMusic
             sync
-            ldb         #32+10*4
-            lda         #155
+            ldb         #MenuValueX
+            lda         #MenuRowMusicY
             ldu         #3
             jsr         Menu_EraseBox
             ldx         #Menu_MusicYes
@@ -317,10 +376,11 @@ Menu_RedrawMusic
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #32+10*4
-            lda         #155
+            ldb         #MenuValueX
+            lda         #MenuRowMusicY
             jsr         Gfx_DrawTextLine
             rts
+ ENDC
 
 Menu_Keypress_M
             * flip state of Monitor option
@@ -328,8 +388,8 @@ Menu_Keypress_M
             * wait for next vertical retrace to start
             sync
             * erase box around option text
-            ldb         #32+10*4
-            lda         #107
+            ldb         #MenuValueX
+            lda         #MenuRowMonitorY
             ldu         #9
             jsr         Menu_EraseBox
             * redraw new option value
@@ -341,8 +401,8 @@ Menu_Keypress_M
             ldb         Gfx_PalIdx_FGColor
             andb        #$0f
             tfr         d,u
-            ldb         #32+10*4
-            lda         #107
+            ldb         #MenuValueX
+            lda         #MenuRowMonitorY
             jsr         Gfx_DrawTextLine
             * set new palette
             jsr         System_SetPaletteAuto

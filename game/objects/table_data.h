@@ -43,11 +43,20 @@
 /* All of these are world pixels. */
 #define PLAYFIELD_LEFT   43
 #define PLAYFIELD_RIGHT  194
-#define LANE_X0          185
+#define LANE_X0          184
 #define LANE_X1          192
 #define LANE_TOP         46
 #define DRAIN_Y          206
 #define BALL_R           3
+
+/* The launcher.  The head rides down the lane as the plunger is drawn back and
+ * the spring underneath it takes up the difference, one frame per two rows, so
+ * the pull is even and stops SPRING_MIN_H rows short of the floor. */
+#define LAUNCHER_REST_Y   180
+#define LAUNCHER_MAX_PULL 16
+#define SPRING_X          186
+#define SPRING_Y          184
+#define SPRING_FRAMES     9
 
 #define NUM_FEET         9
 /* The first NUM_TOP_FEET are the ones under the pods -- the marks the manual
@@ -77,6 +86,12 @@ const unsigned char tblDiamondBox[] = {
 #define PANEL_TONGUE_X    270
 #define PANEL_TONGUE_Y    91
 
+/* The end-of-game banner is the one thing placed on the screen rather than on
+ * the table, so it is centred on the world -- which is the same thing, the
+ * camera sitting in the middle of it except while the volcano is going off. */
+#define PANEL_OVER_X      104
+#define PANEL_OVER_Y      102
+
 /* The volcano, and the two slopes the lava runs down. */
 #define VOLCANO_X         228
 #define VOLCANO_Y         64
@@ -95,8 +110,8 @@ const unsigned char tblDiamondBox[] = {
 #define LAVA_FRAMES       8
 #define GATE_X0           177
 #define GATE_Y0           25
-#define GATE_X1           184
-#define GATE_Y1           53
+#define GATE_X1           178
+#define GATE_Y1           46
 
 /* The dinosaurs' tongues.  Like the gate these come and go, so they cannot be
  * cells in the grid; unlike the gate they lie at 45 degrees, so the ball tests
@@ -266,12 +281,12 @@ const unsigned char tblGrid[] = {
     0, 0, 0, 0, 0, 0, 0, 55, 62, 0, 0, 48, 61, 60, 59, 59, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 54, 55, 59, 62,
     0, 0, 48, 60, 60, 59, 58, 58, 57, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 54, 55, 55, 54, 54, 56, 60, 62, 0, 0, 49, 34, 33, 32, 62, 60, 59,
-    58, 58, 58, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 54, 54, 54, 53,
-    53, 51, 48, 34, 32, 63, 0, 0, 48, 36, 37, 37, 38, 37, 34, 62, 60, 59, 59, 58, 58, 59, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 53, 54, 54, 53, 53, 52, 50, 46, 43, 41, 41, 38, 35, 33, 61, 0, 49,
-    35, 37, 38, 39, 40, 39, 39, 38, 36, 33, 61, 60, 60, 59, 59, 0, 0, 0, 0, 0, 53, 53, 52, 52,
-    51, 47, 44, 42, 41, 41, 40, 40, 40, 39, 37, 36, 36, 49, 48, 32, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 54, 55, 55, 54, 54, 56, 61, 62, 0, 0, 49, 34, 33, 32, 62, 60, 59,
+    58, 58, 58, 58, 0, 0, 0, 0, 0, 0, 0, 216, 0, 0, 0, 0, 0, 0, 0, 54, 54, 54, 54, 53,
+    53, 51, 48, 34, 32, 32, 0, 0, 48, 36, 37, 37, 38, 37, 34, 62, 60, 59, 59, 58, 58, 58, 0, 0,
+    0, 214, 216, 218, 0, 0, 0, 54, 54, 54, 53, 53, 52, 50, 46, 43, 41, 41, 37, 34, 32, 0, 0, 49,
+    35, 37, 38, 39, 40, 39, 39, 38, 36, 33, 61, 60, 59, 58, 56, 214, 213, 216, 219, 218, 216, 54, 53, 52,
+    51, 47, 44, 42, 41, 41, 40, 40, 40, 38, 36, 34, 60, 50, 48, 32, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0,
 };
