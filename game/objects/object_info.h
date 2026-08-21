@@ -118,8 +118,29 @@
  * table_data.h -- the travel has to leave the spring somewhere to be.  What is
  * left here is the rule: how hard a given pull shoots. */
 #define LANE_CX ((LANE_X0 + LANE_X1) / 2)
-#define LAUNCH_SPEED_MIN 1300 /* 8.8 fixed point pixels per frame */
-#define LAUNCH_STEP 130        /* added per notch of pull */
+/* What the plunger is worth, in 8.8 fixed point pixels per frame.
+ *
+ * The lane is the thing these have to be set against.  A ball leaving the
+ * launcher has to rise 125 pixels to get its centre past the mouth at
+ * LANE_TOP, and under GRAVITY that costs a launch speed of about 947:
+ *
+ *     h = (v/256)^2 / (2 * GRAVITY/256)  =>  v = sqrt(512 * GRAVITY * h)
+ *
+ * The old floor of 1300 was worth 285 pixels of climb, so even the lightest
+ * tap cleared the lane twice over and every shot arrived at the top with much
+ * the same speed -- which is why the plunger felt like a button rather than a
+ * plunger.  The range now straddles the threshold instead: the first three
+ * notches die in the lane and slide back, and the fourth barely crawls out.
+ *
+ * The step matters as much as the floor and is easier to get wrong.  Dropping
+ * the floor without steepening the ramp costs the top of the range too: a
+ * gentler slope from a lower start reaches a lower finish, and a full pull
+ * that leaves the lane at eight pixels a frame instead of twelve feels feeble
+ * however good the weak end is.  These keep the old full-pull speed and spend
+ * the new room at the bottom.
+ */
+#define LAUNCH_SPEED_MIN 250 /* 8.8 fixed point pixels per frame */
+#define LAUNCH_STEP 180        /* added per notch of pull */
 #define LAUNCH_SPEED_MAX 3400
 
 enum GameState {

@@ -336,8 +336,35 @@ bounding-box minimum.
 - The launch lane has a one-way gate at its mouth, implemented in code rather
   than in the grid: a rising ball passes through, a falling one is turned back
   into the table.
+- **The plunger's range straddles the lane.** A ball has to rise 125 pixels to
+  get its centre past the mouth at `LANE_TOP`, which under `GRAVITY` costs a
+  launch speed of about 947 -- `v = sqrt(512 * GRAVITY * h)`. The first three
+  notches of pull are worth less than that and die in the lane; the fourth
+  crawls out at under a pixel a frame; a full pull leaves at 11.7. Setting the
+  floor above the threshold is what makes a plunger feel like a button, and it
+  is easy to do by accident: a floor of 1300 clears the lane twice over, so
+  every shot arrives at the top at much the same speed. Lowering the floor
+  without steepening `LAUNCH_STEP` is the other half of the trap -- it buys a
+  weak end by giving up the strong one, and the plunger just feels feeble
+  instead of uniform.
 - A shot too weak to round the top returns to the launcher without costing a
-  ball. The shooter lane is not a drain.
+  ball. The shooter lane is not a drain. That path used to be unreachable and
+  is now on the common route, so `playtest.lua` works through a list of pull
+  strengths with a deliberately weak one first.
+- **The plunger stops at full stretch.** It used to wind past `LAUNCHER_MAX_PULL`
+  and wrap back to nothing, which is a full cycle every 0.53 seconds at one
+  notch a tick: half a second of holding gave full power, three quarters gave
+  almost none, and at about 1.1 seconds the release did not fire at all,
+  because the launch branch wants a non-zero pull. It reads as the plunger
+  having nothing to do with how long the knob is held, which is exactly what
+  it was.
+
+  No automated run could see it. The driver let go the moment the pull counter
+  reached what it had asked for, so it never held long enough to wrap.
+  `playtest.lua` now spends one shot per game holding the key for two seconds
+  and prints how far back the plunger got, and `check-playtest.py` fails if
+  that shot is not at full stretch. Verified in both directions: it passes on
+  the fix and fails on the old code with `left it at 0 of 16`.
 - **The drain is the orange pyramid** at the bottom of the table, and it is
   solid: the ball comes to rest on it, and touching it is what loses the ball.
   It used to be cut out of the collision grid altogether -- a hole, so the ball

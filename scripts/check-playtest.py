@@ -21,6 +21,18 @@ LINE = re.compile(
     r"score=(?P<score>[0-9a-f]{8})"
 )
 
+# The driver announces each launch and how far back the plunger was.
+LAUNCH = re.compile(
+    r"launch (?P<n>\d+): pull=(?P<pull>\d+) after (?P<held>\d+) frames"
+    r"(?P<stop> \(stop test\))?"
+)
+
+# table_data.h.  One of the driver's shots holds the key far past full stretch,
+# and a plunger with a stop has to answer that at full stretch.  The counter
+# used to wrap back to nothing instead, so holding the key too long quietly
+# fired a weak shot -- or, at about 1.1 seconds, no shot at all.
+FULL_PULL = 16
+
 STATE_NAMES = {1: "ready", 2: "playing", 3: "drained", 4: "game over"}
 
 
@@ -55,6 +67,22 @@ def main():
         failures.append("no ball ever drained")
     if 4 not in states:
         failures.append("the game never ended (run it for longer?)")
+
+    launches = [m.groupdict() for m in LAUNCH.finditer(text)]
+    if not launches:
+        failures.append("the driver never reported a launch")
+    else:
+        held = [int(l["pull"]) for l in launches if l["stop"]]
+        print(f"{len(launches)} launches, plunger reached "
+              f"{max(int(l['pull']) for l in launches)} of {FULL_PULL}")
+        if not held:
+            failures.append("no shot was tagged as testing the plunger's stop")
+        elif max(held) < FULL_PULL:
+            failures.append(
+                f"holding the plunger for a second or more left it at "
+                f"{max(held)} of {FULL_PULL} -- it is winding past its stop "
+                f"and back to nothing instead of staying put"
+            )
 
     for f in failures:
         print(f"FAIL: {f}")
