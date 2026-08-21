@@ -76,8 +76,18 @@ end
 -- one or two notches.  Asking for 3 launched at 5, which cleared the lane and
 -- quietly turned the dud shot into an ordinary one.  Every entry here is
 -- therefore chosen to still mean what it says two notches later.
-local PULLS = { 1, 9, 14, 6, 11 }
+--
+-- HOLD_ON means something different: keep the key down well past full stretch
+-- and only then let go.  A plunger has a stop, so that has to fire at full
+-- power.  It did not -- the pull counter wrapped round to nothing every 0.53
+-- seconds -- and no automated run ever noticed, because every entry here made
+-- the driver let go the moment it had what it asked for.  A bug the harness
+-- cannot reach is a bug that ships.
+local HOLD_ON = -1
+local HOLD_FRAMES = 120  -- two seconds, several full winds
+local PULLS = { 1, 9, HOLD_ON, 6, 11 }
 local launches = 0
+local ready_since = nil
 
 local function want_pull()
   return PULLS[math.min(launches + 1, #PULLS)]
@@ -144,10 +154,31 @@ local function tick()
   local cob, st = findBall(mem)
   if cob == nil then return end
   local pull = mem:read_u8(st + 9)
-  if frames >= release_until then
-    if state == 1 and pull >= want_pull() then
+  if state == 1 then
+    ready_since = ready_since or frames
+  else
+    ready_since = nil
+  end
+
+  if frames >= release_until and state == 1 then
+    local want = want_pull()
+    local go
+    if want == HOLD_ON then
+      go = ready_since ~= nil and (frames - ready_since) >= HOLD_FRAMES
+    else
+      go = pull >= want
+    end
+    if go then
       release_until = frames + 12
       launches = launches + 1
+      -- Printed so check-playtest.py can see how far back the plunger
+      -- actually was, which is the only way to tell a stop from a wrap.
+      -- The deliberate long hold is tagged, because a ball can sit in Ready
+      -- for a long time before the driver gets to it and a bare frame count
+      -- would not tell the two apart.
+      print(string.format("launch %d: pull=%d after %d frames%s",
+                          launches, pull, frames - (ready_since or frames),
+                          want == HOLD_ON and " (stop test)" or ""))
     end
   end
   hold(":row6", "ENTER", state == 1 and frames >= release_until)

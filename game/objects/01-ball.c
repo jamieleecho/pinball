@@ -690,9 +690,15 @@ byte BallUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     case GameStateReady: {
         byte enter = keyDown(PB_KEY_ENTER);
         if (enter) {
-            s->pull++;
-            if (s->pull > LAUNCHER_MAX_PULL) {
-                s->pull = 0; /* held too long: the launcher springs back */
+            /* The plunger stops at full stretch and stays there.  It used to
+             * wrap back to nothing, which is a full wind every 0.53s at one
+             * notch a tick -- so holding the key half a second gave full power
+             * and holding it three quarters gave almost none, and at about
+             * 1.1s the release did not fire at all because a pull of zero is
+             * not a launch.  Power has to follow how long the knob is held or
+             * the plunger is a lottery. */
+            if (s->pull < LAUNCHER_MAX_PULL) {
+                s->pull++;
             }
         } else if (s->lastEnter && s->pull) {
             s->vy = -(LAUNCH_SPEED_MIN + (int)s->pull * LAUNCH_STEP);

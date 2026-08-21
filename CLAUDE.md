@@ -351,6 +351,27 @@ bounding-box minimum.
   ball. The shooter lane is not a drain. That path used to be unreachable and
   is now on the common route, so `playtest.lua` works through a list of pull
   strengths with a deliberately weak one first.
+- **The plunger stops at full stretch.** It used to wind past `LAUNCHER_MAX_PULL`
+  and wrap back to nothing, which is a full cycle every 0.53 seconds at one
+  notch a tick: half a second of holding gave full power, three quarters gave
+  almost none, and at about 1.1 seconds the release did not fire at all,
+  because the launch branch wants a non-zero pull. It reads as the plunger
+  having nothing to do with how long the knob is held, which is exactly what
+  it was.
+
+  No automated run could see it. The driver let go the moment the pull counter
+  reached what it had asked for, so it never held long enough to wrap.
+  `playtest.lua` now spends one shot per game holding the key for two seconds
+  and prints how far back the plunger got, and `check-playtest.py` fails if
+  that shot is not at full stretch. Verified in both directions: it passes on
+  the fix and fails on the old code with `left it at 0 of 16`.
+- **The drain is the orange pyramid** at the bottom of the table, and it is
+  solid: the ball comes to rest on it, and touching it is what loses the ball.
+  It used to be cut out of the collision grid altogether -- a hole, so the ball
+  fell off the bottom of the world and was counted out by crossing `DRAIN_Y`.
+  That worked and it was visible: the ball sank through the one solid-looking
+  thing down there and came to rest below the table's own border. `DRAIN_Y` is
+  still checked, now only as a backstop.
 
 ## The Mac build
 
