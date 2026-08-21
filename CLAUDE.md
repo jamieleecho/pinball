@@ -107,7 +107,7 @@ normal from 32 directions to 16. That is why the launch lane's one-way gate is
 a coordinate test in `01-ball.c` rather than a cell kind: it was not worth a
 bit.
 
-The tileset is likewise on a budget. The artwork currently needs 161 unique
+The tileset is likewise on a budget. The artwork currently needs 144 unique
 16x16 tiles; tilemap entries are bytes, so the hard ceiling is 255. Detail
 costs tiles, and large flat areas cost none.
 
@@ -283,7 +283,13 @@ three consequences that dominate every sprite decision:
    because nothing will ever erase it. The score digits qualify; that is why a
    hidden read-out draws `DigitBlank` rather than going inactive.
 
-Together these took the sprite code for this game from 43KB to 21KB.
+Together these took the sprite code for this game from 43KB to 21KB. It has
+since grown back to about 48KB, most of that the score read-out: colouring the
+digits by significance and giving each an inverted twin for the end-of-game
+flash means sixty digit sprites where there were ten. That is the shape of the
+cost -- a digit's sprite is an opaque 8x11 cell whatever it shows, so every
+colour is a whole new set. Filling the board's white margin as well would grow
+each cell by half again, which is where it was left.
 
 Large byte-aligned blocks can also send the compiler's store-ordering search
 exponential — a 66x22 plate took over twenty minutes. `ChunkHint` bounds that

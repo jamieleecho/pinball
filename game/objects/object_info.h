@@ -39,12 +39,30 @@
 #define BALL_SPRITE_LAUNCHER 1
 #define BALL_SPRITE_SPRING0 2
 
-/* Digit sprites.  The blank is drawn in place of a hidden read-out: these
- * sprites carry no erase code, so an object that simply stopped drawing would
- * leave its last digit on screen for good. */
-#define DIGIT_SPRITE_BLANK 10
-#define DIGIT_SPRITE_BALL 11
-#define DIGIT_SPRITE_BALL_BLANK 12
+/* Digit sprites: ten of each ink in a row, so a digit's sprite is its ink's
+ * base plus its value.
+ *
+ * The score is coloured by significance, as the original coloured it: the
+ * three least significant figures cyan, the next three magenta, the most
+ * significant orange.  Adding DIGIT_INVERT gets the same digit with the
+ * colours swapped and an orange ground, which is what the board flashes at
+ * the end of a game instead of blanking itself.
+ *
+ * The blank is drawn in place of a hidden read-out: these sprites carry no
+ * erase code, so an object that simply stopped drawing would leave its last
+ * digit on screen for good. */
+#define DIGIT_INK_LO 0
+#define DIGIT_INK_MID 10
+#define DIGIT_INK_HI 20
+#define DIGIT_INVERT 30
+#define DIGIT_SPRITE_BLANK 60
+#define DIGIT_SPRITE_BALL 61
+#define DIGIT_SPRITE_BALL_BLANK 62
+
+/* How many of the seven figures each ink covers, counting from the least
+ * significant. */
+#define DIGIT_LO_FIGURES 3
+#define DIGIT_MID_FIGURES 3
 
 /* Table overlays, in the order draw_lite_sheet() lays them out */
 #define LITE_SPRITE_DIAMOND_HOT 0

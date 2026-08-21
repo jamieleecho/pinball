@@ -11,7 +11,7 @@
   },
   "Sprites": [
     {
-      "Name": "Digit0",
+      "Name": "DigitLo0",
       "Location": [
         2,
         2
@@ -20,7 +20,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit1",
+      "Name": "DigitLo1",
       "Location": [
         14,
         2
@@ -29,7 +29,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit2",
+      "Name": "DigitLo2",
       "Location": [
         26,
         2
@@ -38,7 +38,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit3",
+      "Name": "DigitLo3",
       "Location": [
         38,
         2
@@ -47,7 +47,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit4",
+      "Name": "DigitLo4",
       "Location": [
         50,
         2
@@ -56,7 +56,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit5",
+      "Name": "DigitLo5",
       "Location": [
         62,
         2
@@ -65,7 +65,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit6",
+      "Name": "DigitLo6",
       "Location": [
         74,
         2
@@ -74,7 +74,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit7",
+      "Name": "DigitLo7",
       "Location": [
         86,
         2
@@ -83,7 +83,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit8",
+      "Name": "DigitLo8",
       "Location": [
         98,
         2
@@ -92,7 +92,7 @@
       "SaveBackground": false
     },
     {
-      "Name": "Digit9",
+      "Name": "DigitLo9",
       "Location": [
         110,
         2
@@ -101,10 +101,460 @@
       "SaveBackground": false
     },
     {
+      "Name": "DigitMid0",
+      "Location": [
+        2,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid1",
+      "Location": [
+        14,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid2",
+      "Location": [
+        26,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid3",
+      "Location": [
+        38,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid4",
+      "Location": [
+        50,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid5",
+      "Location": [
+        62,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid6",
+      "Location": [
+        74,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid7",
+      "Location": [
+        86,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid8",
+      "Location": [
+        98,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMid9",
+      "Location": [
+        110,
+        17
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi0",
+      "Location": [
+        2,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi1",
+      "Location": [
+        14,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi2",
+      "Location": [
+        26,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi3",
+      "Location": [
+        38,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi4",
+      "Location": [
+        50,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi5",
+      "Location": [
+        62,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi6",
+      "Location": [
+        74,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi7",
+      "Location": [
+        86,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi8",
+      "Location": [
+        98,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHi9",
+      "Location": [
+        110,
+        32
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv0",
+      "Location": [
+        2,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv1",
+      "Location": [
+        14,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv2",
+      "Location": [
+        26,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv3",
+      "Location": [
+        38,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv4",
+      "Location": [
+        50,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv5",
+      "Location": [
+        62,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv6",
+      "Location": [
+        74,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv7",
+      "Location": [
+        86,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv8",
+      "Location": [
+        98,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitLoInv9",
+      "Location": [
+        110,
+        47
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv0",
+      "Location": [
+        2,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv1",
+      "Location": [
+        14,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv2",
+      "Location": [
+        26,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv3",
+      "Location": [
+        38,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv4",
+      "Location": [
+        50,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv5",
+      "Location": [
+        62,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv6",
+      "Location": [
+        74,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv7",
+      "Location": [
+        86,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv8",
+      "Location": [
+        98,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitMidInv9",
+      "Location": [
+        110,
+        62
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv0",
+      "Location": [
+        2,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv1",
+      "Location": [
+        14,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv2",
+      "Location": [
+        26,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv3",
+      "Location": [
+        38,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv4",
+      "Location": [
+        50,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv5",
+      "Location": [
+        62,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv6",
+      "Location": [
+        74,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv7",
+      "Location": [
+        86,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv8",
+      "Location": [
+        98,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
+      "Name": "DigitHiInv9",
+      "Location": [
+        110,
+        77
+      ],
+      "SinglePixelPosition": false,
+      "SaveBackground": false
+    },
+    {
       "Name": "DigitBlank",
       "Location": [
-        122,
-        2
+        2,
+        92
       ],
       "SinglePixelPosition": false,
       "SaveBackground": false
@@ -112,8 +562,8 @@
     {
       "Name": "BallLive",
       "Location": [
-        134,
-        2
+        14,
+        92
       ],
       "SinglePixelPosition": false,
       "SaveBackground": false
@@ -121,8 +571,8 @@
     {
       "Name": "BallBlank",
       "Location": [
-        146,
-        2
+        26,
+        92
       ],
       "SinglePixelPosition": false,
       "SaveBackground": false
