@@ -37,12 +37,31 @@ void DigitInit(DynospriteCOB *cob, DynospriteODT *odt, byte *initData) {
 
     s->board = initData[0];
     s->column = initData[1];
+    /* Every read-out drawn with score digits gets an ink.  The boards are
+     * coloured by significance and column 0 is the most significant of the
+     * seven, so the sums count from the other end; the multiplier is not part
+     * of the score and takes the middle colour. */
+    if (s->board == DIGIT_BOARD_SCORE || s->board == DIGIT_BOARD_HIGH) {
+        if (s->column + DIGIT_LO_FIGURES >= SCORE_DIGITS) {
+            s->ink = DIGIT_INK_LO;
+        } else if (s->column + DIGIT_LO_FIGURES + DIGIT_MID_FIGURES >= SCORE_DIGITS) {
+            s->ink = DIGIT_INK_MID;
+        } else {
+            s->ink = DIGIT_INK_HI;
+        }
+    } else {
+        s->ink = DIGIT_INK_MID;
+    }
     /* Whatever this read-out ends up being, it must start on a sprite the
      * same size as the ones it will draw later.  None of these save the
      * background, so a taller sprite drawn even once leaves the rows the
      * shorter one cannot reach on screen for good -- and in one buffer only,
      * so it blinks.  Digit0 is eleven rows; a ball is eight. */
-    s->spriteIdx = (initData[0] == DIGIT_BOARD_BALLS) ? DIGIT_SPRITE_BALL_BLANK : 0;
+    if (initData[0] == DIGIT_BOARD_BALLS) {
+        s->spriteIdx = DIGIT_SPRITE_BALL_BLANK;
+    } else {
+        s->spriteIdx = s->ink;
+    }
     s->redraw = BUFFERS;
 
     switch (s->board) {
@@ -109,12 +128,15 @@ byte DigitUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
 
     case DIGIT_BOARD_MULT_TENS:
         /* Only 10X needs a tens digit; 2X and 3X leave it blank. */
-        show(cob, s, (globals->multiplier >= 10) ? 1 : DIGIT_SPRITE_BLANK);
+        show(cob, s, (globals->multiplier >= 10) ? (byte)(s->ink + 1)
+                                                 : DIGIT_SPRITE_BLANK);
         return 0;
 
     case DIGIT_BOARD_MULT_ONES:
         show(cob, s, (globals->multiplier > 1)
-                        ? ((globals->multiplier >= 10) ? 0 : globals->multiplier)
+                        ? (byte)(s->ink + ((globals->multiplier >= 10)
+                                               ? 0
+                                               : globals->multiplier))
                         : DIGIT_SPRITE_BLANK);
         return 0;
 
@@ -129,10 +151,16 @@ byte DigitUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
     packed = digits[index >> 1];
     index = (index & 1) ? (packed & 0x0f) : (packed >> 4);
 
-    /* The manual says the high score board flashes when the game ends. */
+    index += s->ink;
+
+    /* The manual says the high score board flashes when the game ends.  The
+     * original did that by inverting the score's pixels rather than by taking
+     * them away, so the board turns orange and its colours swap over instead
+     * of going blank -- it stays readable through the whole flash, which is
+     * the point of doing it that way. */
     if (s->board == DIGIT_BOARD_HIGH && globals->gameState == GameStateOver &&
         (globals->flashTimer & 0x10)) {
-        index = DIGIT_SPRITE_BLANK;
+        index += DIGIT_INVERT;
     }
     show(cob, s, index);
     return 0;

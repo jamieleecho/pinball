@@ -1,7 +1,7 @@
 #ifdef DynospriteObject_DataDefinition
 
 /** sizeof(DigitObjectState) */
-#define DynospriteObject_DataSize 4
+#define DynospriteObject_DataSize 5
 
 /** Two bytes of init data: which board, and which column of it. */
 #define DynospriteObject_InitSize 2
@@ -25,6 +25,7 @@ typedef struct DigitObjectState {
     byte board;
     byte column; /* 0 is the most significant of the seven shown */
     byte redraw;  /* buffers still to be painted with the current sprite */
+    byte ink;     /* base sprite of this column's colour; the value is added */
 } DigitObjectState;
 
 #endif /* _03_digit_h */

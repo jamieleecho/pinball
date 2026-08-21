@@ -2,10 +2,15 @@
 """The playfield, traced from artwork instead of drawn from parameters.
 
 The table is `art/pinball.png` -- the original machine's screen, in four
-colours -- and `art/pinball2.png` carries nothing but the nine feet, which is
-how we know which orange is a foot and which is a permanent bumper.  Both are
-read here; everything the ball collides with is derived from the pixels, so
+colours.  Everything the ball collides with is derived from those pixels, so
 the picture and the physics cannot disagree.
+
+Which orange is a scoring foot and which is a permanent bumper used to be
+declared in a second scan carrying nothing but the feet.  It does not have to
+be: the feet are the only orange on the table six pixels by four, and there
+are exactly nine of them, so they can be told apart by their shape the same
+way the three flashing bumpers already are.  foot_pixels() asserts the count,
+which is what a redrawn table would break.
 
     scripts/playfield.py          # report the geometry and write previews
 
@@ -197,15 +202,23 @@ DIAMOND_MID_OFF = 5
 DIAMOND_MID = 6
 
 
-def diamond_boxes():
-    """The bumpers that flash, found by their size rather than written down.
+# The nine scoring feet, as they are shaped in the artwork: the seven under the
+# pods and the crest lie on their sides, the two down the right-hand edge stand
+# up.  Nothing else orange on the table is either of these sizes -- the next
+# nearest is the flipper knob at 6x6 -- which is the whole reason the feet do
+# not have to be declared anywhere.
+FOOT_SIZES = ((6, 4), (4, 6))
+NUM_FEET = 9
 
-    Only the three big ones qualify; the strips and the small wall diamonds are
-    the same colour but a different shape, and they do not flash.
+
+def orange_blobs(src):
+    """Every 4-connected run of orange on the table, as (box, pixels).
+
+    Both the feet and the flashing bumpers are picked out of this by their
+    shape, so the scan is done once and shared.
     """
-    src, _ = source()
     p = src.load()
-    seen, boxes = set(), []
+    seen, blobs = set(), []
     for y in range(src.height):
         for x in range(TABLE_X0, TABLE_X1 + 1):
             if p[x, y] != SRC_ORANGE or (x, y) in seen:
@@ -223,9 +236,43 @@ def diamond_boxes():
                         stack.append(n)
             xs = [b[0] for b in blob]
             ys = [b[1] for b in blob]
-            if (max(xs) - min(xs) + 1 == DIAMOND_SIZE
-                    and max(ys) - min(ys) + 1 == DIAMOND_SIZE):
-                boxes.append((min(xs), min(ys), max(xs), max(ys)))
+            blobs.append(((min(xs), min(ys), max(xs), max(ys)), set(blob)))
+    return blobs
+
+
+def foot_pixels(src):
+    """The nine feet, told from the permanent bumpers by their size.
+
+    A foot scores and then turns cyan for the rest of the ball; a bumper is
+    orange for ever.  They are the same colour in the artwork, so something has
+    to say which is which -- and the shape says it, as long as the count comes
+    out right.  If a redraw ever puts a tenth six-by-four blob on the table
+    this is where it will be noticed.
+    """
+    px, found = set(), 0
+    for (x0, y0, x1, y1), blob in orange_blobs(src):
+        if (x1 - x0 + 1, y1 - y0 + 1) in FOOT_SIZES:
+            px |= blob
+            found += 1
+    assert found == NUM_FEET, (
+        f"the artwork has {found} orange blobs the size of a foot, not "
+        f"{NUM_FEET}: something else on the table is now shaped like one")
+    return px
+
+
+def diamond_boxes():
+    """The bumpers that flash, found by their size rather than written down.
+
+    Only the three big ones qualify; the strips and the small wall diamonds are
+    the same colour but a different shape, and they do not flash.
+    """
+    src, _ = source()
+    boxes = [
+        box
+        for box, _ in orange_blobs(src)
+        if box[2] - box[0] + 1 == DIAMOND_SIZE
+        and box[3] - box[1] + 1 == DIAMOND_SIZE
+    ]
     return sorted(boxes, key=lambda b: (b[1], b[0]))
 
 
@@ -451,20 +498,22 @@ def _check_gate(src):
             f"the stopper leaves column {x} open below it, at row {y1 + 1}")
 
 
+_SOURCE = None
+
+
 def source():
-    """The table artwork and the set of pixels belonging to the nine feet."""
-    src = _load("pinball.png").convert("RGB")
-    _check_lane(src)
-    _check_gate(src)
-    marks = _load("pinball2.png").convert("RGBA")
-    mp = marks.load()
-    feet = {
-        (x, y)
-        for y in range(marks.height)
-        for x in range(marks.width)
-        if mp[x, y][3] and mp[x, y][:3] == SRC_ORANGE
-    }
-    return src, feet
+    """The table artwork and the set of pixels belonging to the nine feet.
+
+    Cached: this is asked for a dozen times over a run, and it now costs a
+    flood fill of every orange shape on the table rather than a second file.
+    """
+    global _SOURCE
+    if _SOURCE is None:
+        src = _load("pinball.png").convert("RGB")
+        _check_lane(src)
+        _check_gate(src)
+        _SOURCE = (src, foot_pixels(src))
+    return _SOURCE
 
 
 def foot_boxes(feet):
