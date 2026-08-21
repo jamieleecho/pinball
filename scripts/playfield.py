@@ -290,7 +290,7 @@ FLY_W, FLY_H = 12, 6
 FLY_LEFT_X, FLY_RIGHT_X = 211, 267
 FLY_MID_Y, FLY_AMP = 97, 5
 FLY_PEAKS = 3
-FLY_PERIOD = 192  # ticks for a there-and-back: a crossing takes about three seconds
+FLY_PERIOD = 128  # ticks for a there-and-back: a crossing takes about two seconds
 
 
 def fly_path():

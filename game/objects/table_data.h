@@ -136,9 +136,9 @@ const unsigned char tblFootBox[] = {
  * carries its own copy of whatever this header declares, so a table eight
  * objects do not use is eight copies of dead weight -- and the ball has to fit
  * a single 8k page on its own. */
-#define FLY_PERIOD        192
+#define FLY_PERIOD        128
 /* The tick at which it is furthest left, which is where it can be caught. */
-#define FLY_CATCH_TICK    96
+#define FLY_CATCH_TICK    64
 /* How many ticks the tongue takes to reach full stretch, and so how far ahead
  * of the catch it has to start. */
 #define TONGUE_REACH_STAGES 6
