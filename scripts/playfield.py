@@ -212,25 +212,24 @@ DINO_TONGUE_BLOCKS = 4                       # blocks at full stretch
 DINO_TONGUE_PERIOD = 64                      # ticks for a full in-and-out
 
 
-DINO_TONGUE_THICK = 3
-
-
 def tongue_pixels(side, blocks):
     """One tongue at a given extension, in source coordinates.
 
-    The blocks are three across and step two, so each overlaps the last by a
-    pixel.  That is what makes the chain thick enough to read as a tongue, and
-    it also makes it 4-connected for free: at two across they touched only at
-    their corners, which does not count for the flood fill that finds a sprite,
-    and each joint needed a pixel of its own to hold the chain together.
+    Blocks that step diagonally touch only at their corners, and a sprite is
+    found by flood fill, for which diagonal contact does not count.  Each joint
+    therefore carries one extra pixel: without it the fill would take the block
+    under the anchor and leave the rest of the tongue behind, silently.
     """
     step = -1 if side == 0 else 1
     rx, ry = DINO_TONGUE_ROOTS[side]
-    t = DINO_TONGUE_THICK
     px = set()
+    prev_y = None
     for k in range(blocks):
         bx, by = rx + 2 * k * step, ry - 2 * k
-        px |= {(bx + i, by + j) for i in range(t) for j in range(t)}
+        px |= {(bx + i, by + j) for i in range(2) for j in range(2)}
+        if prev_y is not None:
+            px.add((bx + (1 if step < 0 else 0), prev_y))
+        prev_y = by
     return px
 
 
@@ -338,8 +337,16 @@ def vally_tongue_path():
     return [(mx, my), (mx, corner_y), (tip_x, corner_y), (tip_x, tip_y)]
 
 
+VALLY_TONGUE_THICK = 2
+
+
 def vally_tongue_pixels(stage):
-    """The tongue drawn out to one of its stages, in source coordinates."""
+    """The tongue drawn out to one of its stages, in source coordinates.
+
+    Two pixels across rather than one.  A single-pixel line at this size reads
+    as a scratch on the panel rather than as a tongue, and Vally is the one
+    dinosaur whose tongue the player is meant to be watching.
+    """
     pts = vally_tongue_path()
     legs = [
         (a, b, abs(b[0] - a[0]) + abs(b[1] - a[1]))
@@ -354,7 +361,12 @@ def vally_tongue_pixels(stage):
         for i in range(n + 1):
             if done + i > want:
                 return out
-            out.append((ax + sx * i, ay + sy * i))
+            x, y = ax + sx * i, ay + sy * i
+            # Thickened towards the bottom right, which leaves the left edge --
+            # the one the sprite is byte-aligned on -- where it was.
+            for tx in range(VALLY_TONGUE_THICK):
+                for ty in range(VALLY_TONGUE_THICK):
+                    out.append((x + tx, y + ty))
         done += n
     return out
 

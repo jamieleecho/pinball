@@ -333,9 +333,9 @@ static byte tongueNormal(int ix, int iy, signed char *nx, signed char *ny) {
     byte side;
 
     for (side = 0; side < 2; side++) {
-        int reach = (int)globals->tongueOut[side] << 1;
-        int u = side ? ix - TONGUE_R_X : (TONGUE_L_X + 2) - ix;
-        int v = (TONGUE_Y + 2) - iy;
+        int reach = ((int)globals->tongueOut[side] << 1) - 1;
+        int u = side ? ix - TONGUE_R_X : (TONGUE_L_X + 1) - ix;
+        int v = (TONGUE_Y + 1) - iy;
         int d;
 
         if (u < -BALL_R || u > reach + BALL_R ||

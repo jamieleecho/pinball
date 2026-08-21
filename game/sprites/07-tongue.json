@@ -23,7 +23,7 @@
     {
       "Name": "TongueL2",
       "Location": [
-        15,
+        14,
         2
       ],
       "SinglePixelPosition": false,
@@ -33,7 +33,7 @@
     {
       "Name": "TongueL3",
       "Location": [
-        28,
+        26,
         2
       ],
       "SinglePixelPosition": false,
@@ -43,7 +43,7 @@
     {
       "Name": "TongueL4",
       "Location": [
-        41,
+        38,
         2
       ],
       "SinglePixelPosition": false,
@@ -53,7 +53,7 @@
     {
       "Name": "TongueR1",
       "Location": [
-        54,
+        50,
         2
       ],
       "SinglePixelPosition": false,
@@ -63,7 +63,7 @@
     {
       "Name": "TongueR2",
       "Location": [
-        67,
+        62,
         2
       ],
       "SinglePixelPosition": false,
@@ -73,7 +73,7 @@
     {
       "Name": "TongueR3",
       "Location": [
-        80,
+        74,
         2
       ],
       "SinglePixelPosition": false,
@@ -83,7 +83,7 @@
     {
       "Name": "TongueR4",
       "Location": [
-        93,
+        86,
         2
       ],
       "SinglePixelPosition": false,
