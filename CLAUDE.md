@@ -365,6 +365,17 @@ bounding-box minimum.
   and prints how far back the plunger got, and `check-playtest.py` fails if
   that shot is not at full stretch. Verified in both directions: it passes on
   the fix and fails on the old code with `left it at 0 of 16`.
+- **The ball can roll under a flipper, and that used to trap it.** The outlane
+  feeds it into the channel between the flipper's underside and the floor, and
+  that channel converges: measured at rest it was twelve pixels near the pivot
+  and five at the tip, against a ball seven across. A converging channel is a
+  wedge, and the shove cannot help because there is nowhere to shove it to.
+  `widen_under_flippers()` shaves the floor there until the ball fits along
+  the whole length. Two things it must not do: touch the drain, and take the
+  last cell of floor -- near the tip the floor is one cell thick and sits on
+  the bottom edge of the table, so that cell is lowered a row rather than
+  removed. Shaving it opens a hole and the ball falls out of the world, which
+  is the behaviour the solid drain exists to prevent.
 - **The drain is the orange pyramid** at the bottom of the table, and it is
   solid: the ball comes to rest on it, and touching it is what loses the ball.
   It used to be cut out of the collision grid altogether -- a hole, so the ball

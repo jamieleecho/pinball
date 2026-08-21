@@ -21,6 +21,7 @@ top and bottom for the camera to jiggle into when the volcano goes off, without
 a black edge ever showing.
 """
 
+import math
 import os
 import sys
 
@@ -637,8 +638,73 @@ def collision_grid():
                 row.append(next(k for k in KIND_PRIORITY if k in kinds))
         grid.append(row)
 
+    widen_under_flippers(grid, gw, gh, x0, y0)
     seal(grid, gw, gh, x0, y0)
     return grid, (x0, y0, gw, gh)
+
+
+def widen_under_flippers(grid, gw, gh, x0, y0):
+    """Shave the floor under each flipper until a ball fits through.
+
+    The outlane feeds the ball under the flipper rather than onto it, and the
+    channel between the flipper's underside and the floor closes as it goes:
+    measured at rest, twelve pixels of clearance near the pivot and five at
+    the tip, against a ball seven across.  That is a converging wedge, and a
+    ball that rolls into one stops -- the shove that unsticks a wedged ball
+    cannot help, because there is nowhere for it to go.
+
+    Taking a cell off the top of the floor there keeps the channel wider than
+    the ball for its whole length, so the ball rolls through and drains, which
+    is what a ball down the outlane deserves.  It is done here rather than in
+    the artwork because the artwork is right: the picture wants the floor to
+    meet the flipper, and only the collision grid needs the gap.
+
+    Derived from the flipper geometry rather than written down, so moving a
+    pivot or lengthening a tail cannot leave the clearance behind.
+    """
+    want = 2 * BALL_R + 2  # the ball, and a pixel of daylight either side
+    rest = math.radians(FLIPPER_REST_DEG)
+    for (px, py), outward in zip(FLIPPER_PIVOTS, (1, -1)):
+        for step in range(FLIPPER_LEN + 6):
+            sx = px + outward * step
+            # Underside of the resting tail directly below this column.
+            along = step / math.cos(rest)
+            if along > FLIPPER_LEN:
+                under = py + FLIPPER_LEN * math.sin(rest)
+            else:
+                under = py + along * math.sin(rest)
+            under += FLIPPER_HALF_THICK / math.cos(rest)
+
+            gx = (sx + ORIGIN_X - x0) // CELL
+            if not 0 <= gx < gw:
+                continue
+            for _ in range(3):  # a cell at a time, and never far
+                top = None
+                for gy in range(gh):
+                    sy = y0 + gy * CELL - ORIGIN_Y
+                    if sy <= under:
+                        continue
+                    if grid[gy][gx] == K_WALL:
+                        top = (gy, sy)
+                        break
+                    if grid[gy][gx] != K_EMPTY:
+                        break  # the drain, or scenery: leave it alone
+                if top is None or top[1] - under >= want:
+                    break
+                # Lower the floor rather than remove it.  Near the tip it is a
+                # single cell sitting on the bottom edge of the table, and
+                # shaving that leaves a hole for the ball to fall through --
+                # which is how the drain used to behave, and why it was made
+                # solid in the first place.  Dropping the cell a row keeps the
+                # table closed and still buys the ball its four pixels.
+                gy = top[0]
+                if any(grid[b][gx] != K_EMPTY for b in range(gy + 1, gh)):
+                    grid[gy][gx] = K_EMPTY
+                elif gy + 1 < gh:
+                    grid[gy][gx] = K_EMPTY
+                    grid[gy + 1][gx] = K_WALL
+                else:
+                    break
 
 
 def seal(grid, gw, gh, x0, y0):
