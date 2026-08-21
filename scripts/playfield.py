@@ -212,24 +212,25 @@ DINO_TONGUE_BLOCKS = 4                       # blocks at full stretch
 DINO_TONGUE_PERIOD = 64                      # ticks for a full in-and-out
 
 
+DINO_TONGUE_THICK = 3
+
+
 def tongue_pixels(side, blocks):
     """One tongue at a given extension, in source coordinates.
 
-    Blocks that step diagonally touch only at their corners, and a sprite is
-    found by flood fill, for which diagonal contact does not count.  Each joint
-    therefore carries one extra pixel: without it the fill would take the block
-    under the anchor and leave the rest of the tongue behind, silently.
+    The blocks are three across and step two, so each overlaps the last by a
+    pixel.  That is what makes the chain thick enough to read as a tongue, and
+    it also makes it 4-connected for free: at two across they touched only at
+    their corners, which does not count for the flood fill that finds a sprite,
+    and each joint needed a pixel of its own to hold the chain together.
     """
     step = -1 if side == 0 else 1
     rx, ry = DINO_TONGUE_ROOTS[side]
+    t = DINO_TONGUE_THICK
     px = set()
-    prev_y = None
     for k in range(blocks):
         bx, by = rx + 2 * k * step, ry - 2 * k
-        px |= {(bx + i, by + j) for i in range(2) for j in range(2)}
-        if prev_y is not None:
-            px.add((bx + (1 if step < 0 else 0), prev_y))
-        prev_y = by
+        px |= {(bx + i, by + j) for i in range(t) for j in range(t)}
     return px
 
 

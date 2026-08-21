@@ -1186,12 +1186,14 @@ def draw_tongue_sheet(d, img):
     SinglePixelPosition either.
     """
     world = playfield.world_image().load()
-    size = playfield.DINO_TONGUE_BLOCKS * 2
     sprites = []
     for side in range(2):
         full = playfield.tongue_pixels(side, playfield.DINO_TONGUE_BLOCKS)
         bx0 = min(q[0] for q in full)
         by0 = min(q[1] for q in full)
+        # The box has to come from the pixels, not from the block count: the
+        # blocks overlap, so a four-block tongue is nine across and not eight.
+        size = max(max(q[0] for q in full) - bx0, max(q[1] for q in full) - by0) + 1
         for n in range(1, playfield.DINO_TONGUE_BLOCKS + 1):
             cx = 2 + (side * playfield.DINO_TONGUE_BLOCKS + n - 1) * (size + 4)
             for j in range(size):

@@ -33,6 +33,12 @@ extern "C" {
 /* The clank is only a sound, so it has its own shorter guard.  Sharing the
  * scoring cooldown made every wall bounce swallow the bumper hit after it. */
 #define CLANK_COOLDOWN 6
+/* The least a plunger will leave the ball travelling.  Multiplying what is
+ * already there is not enough on its own: a ball that reaches the line at the
+ * top of its climb has almost no speed to multiply, and drifted off looking as
+ * though it had come to rest on the line.  A ball arriving from below is fast,
+ * which is why that direction always looked right. */
+#define PLUNGER_MIN_SPEED 800
 #define STUCK_FRAMES 60
 #define STUCK_SPEED 120
 
@@ -289,10 +295,19 @@ static void hitPlunger(BallObjectState *s, int ix, int iy) {
             iy < (int)b[1] - BALL_R || iy > (int)b[3] + BALL_R) {
             continue;
         }
-        /* Sped on its way rather than turned back: half again as fast, up to
-         * whatever the table's ceiling is. */
+        /* Sped on its way rather than turned back: half again as fast, and
+         * never left dawdling, whichever way it was going. */
         s->vx += s->vx >> 1;
         s->vy += s->vy >> 1;
+        if (s->vy < 0) {
+            if (s->vy > -PLUNGER_MIN_SPEED) {
+                s->vy = -PLUNGER_MIN_SPEED;
+            }
+        } else if (s->vy > 0) {
+            if (s->vy < PLUNGER_MIN_SPEED) {
+                s->vy = PLUNGER_MIN_SPEED;
+            }
+        }
         clampSpeed(s);
         scoreTens(5);
         if (globals->tongue < TONGUE_TARGET) {
@@ -318,9 +333,9 @@ static byte tongueNormal(int ix, int iy, signed char *nx, signed char *ny) {
     byte side;
 
     for (side = 0; side < 2; side++) {
-        int reach = ((int)globals->tongueOut[side] << 1) - 1;
-        int u = side ? ix - TONGUE_R_X : (TONGUE_L_X + 1) - ix;
-        int v = (TONGUE_Y + 1) - iy;
+        int reach = (int)globals->tongueOut[side] << 1;
+        int u = side ? ix - TONGUE_R_X : (TONGUE_L_X + 2) - ix;
+        int v = (TONGUE_Y + 2) - iy;
         int d;
 
         if (u < -BALL_R || u > reach + BALL_R ||

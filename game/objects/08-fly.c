@@ -63,6 +63,10 @@ byte FlyUpdate(DynospriteCOB *cob, DynospriteODT *odt) {
         !globals->volcano) {
         s->caught = TRUE;
         globals->volcano = 1;
+        /* She has had her fly.  The next one has to be earned from nothing,
+         * which is the only thing that stops the rest of the game erupting on
+         * every pass. */
+        globals->tongue = 0;
         globals->multiplier = 10;
         globals->quake = QUAKE_TICKS;
         PlaySound(SOUND_DRAIN);
