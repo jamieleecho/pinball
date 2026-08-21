@@ -36,9 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 #define MenuRowControlY (MenuRowDisplayY + MenuRowDY)
 #define MenuRowSoundY   (MenuRowControlY + MenuShowControl * MenuRowDY)
 #define MenuRowMusicY   (MenuRowSoundY + MenuRowDY)
-#define MenuLabelX      46
-#define MenuValueX      136
-#define MenuStartY      184
+#define MenuLabelX      62
+#define MenuValueX      152
+#define MenuStartY      182
 #define MenuStartX(n)   ((320 - (n) * 8) / 2)
 
 typedef enum DSInitSceneDisplay {

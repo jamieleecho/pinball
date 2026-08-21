@@ -42,13 +42,13 @@
         self.backgroundImage.size = backgroundImage.size;
         self.backgroundImage.position = CGPointMake(159 - backgroundImage.size.width / 2, y0);
         
-        SKLabelNode *levelNameLabel = [self addLabelWithText:self.levelName atPosition:CGPointMake(0, y1)];
+        SKLabelNode *levelNameLabel = [self addLabelWithText:self.levelName atPosition:CGPointMake(0, y1) withBackground:YES];
         levelNameLabel.parent.position = CGPointMake(159 - (levelNameLabel.parent.frame.size.width / 2.0f), levelNameLabel.parent.frame.origin.y);
 
-        SKLabelNode *levelDescriptionLabel = [self addLabelWithText:self.levelDescription atPosition:CGPointMake(0, y2)];
+        SKLabelNode *levelDescriptionLabel = [self addLabelWithText:self.levelDescription atPosition:CGPointMake(0, y2) withBackground:YES];
         levelDescriptionLabel.parent.position = CGPointMake(159 - (levelDescriptionLabel.parent.frame.size.width / 2.0f), levelDescriptionLabel.parent.frame.origin.y);
 
-        SKLabelNode *levelLoadingLabel = [self addLabelWithText:@"Loading..." atPosition:CGPointMake(0, y4)];
+        SKLabelNode *levelLoadingLabel = [self addLabelWithText:@"Loading..." atPosition:CGPointMake(0, y4) withBackground:YES];
         levelLoadingLabel.parent.position = CGPointMake(159 - (levelLoadingLabel.parent.frame.size.width / 2.0f), levelLoadingLabel.parent.frame.origin.y);
         
         SKShapeNode *progressBarOutline = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, 68, 11)];

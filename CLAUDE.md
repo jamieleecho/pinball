@@ -510,6 +510,17 @@ xcodebuild -project mac/Pinball.xcodeproj -scheme "Lost World Pinball" \
   scheme, not in the workflow. The plan pins its target by object id;
   `gen-xcode.py` checks that id still matches and stops if it does not, since
   a plan aimed at a target that moved fails as though the tests had vanished.
+- **A label can be drawn with a plate behind it or straight onto the artwork,**
+  and the two put it in different places in the node tree.
+  `addLabelWithText:atPosition:withBackground:` with a plate leaves the label
+  at the origin of a sprite that carries the position; without one the label
+  is a child of the scene and carries the position itself, and misses the
+  tenth-of-a-font-size nudge the plate gets. Anything reading `label.parent`
+  has to know which it asked for -- and `SKScene` has a `backgroundColor` but
+  no `color` at all, so treating the scene as a plate is an unrecognised
+  selector rather than a quiet no-op. The menu draws onto the black box the
+  splash already carries; the loading screen keeps its plates, because it
+  centres each line from its parent's width.
 - **OCMock is embedded, so it is signed on the way in.** It lives beside the
   project in `mac/Frameworks/`, and its Copy Frameworks entry carries
   `CodeSignOnCopy`; without that the bundle builds and then will not load.
