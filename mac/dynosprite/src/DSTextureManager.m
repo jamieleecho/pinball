@@ -43,6 +43,7 @@
     DSImageUtilReplaceColor(imageInfo, transparentColorToMap, transparentColor);
     CGImageRef filteredImage = DSImageUtilMakeCGImage(imageInfo);
     SKTexture *mainTexture = [SKTexture textureWithCGImage:filteredImage];
+    mainTexture.filteringMode = SKTextureFilteringNearest;
     
     NSMutableArray<DSTexture *> *textures = [NSMutableArray arrayWithCapacity:spriteObjectClass.sprites.count];
     for(DSSpriteInfo *spriteInfo in spriteObjectClass.sprites) {
@@ -56,6 +57,9 @@
         }
         CGRect convertedRect = CGRectMake(rect.origin.x / imageInfo.width, 1.0f - (rect.origin.y + rect.size.height) / imageInfo.height, rect.size.width / imageInfo.width, rect.size.height / imageInfo.height);
         SKTexture *spriteTexture = [SKTexture textureWithRect:convertedRect inTexture:mainTexture];
+        /* A texture cut out of another does not inherit its filtering, and
+         * every sprite the game draws is one of these. */
+        spriteTexture.filteringMode = SKTextureFilteringNearest;
         CGFloat offsetX = -(spriteInfo.location.x - rect.origin.x - (rect.size.width / 2));
         CGFloat offsetY = -(spriteInfo.location.y - rect.origin.y - (rect.size.height / 2));
         DSTexture *texture = [[DSTexture alloc] initWithTexture:spriteTexture andPoint:CGPointMake(offsetX, offsetY)];

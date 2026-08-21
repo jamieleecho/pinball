@@ -91,6 +91,10 @@
     NSMutableArray<SKTileGroup *> *tileGroups = [NSMutableArray array];
     for(NSString *textureName in textureAtlas.textureNames) {
         SKTexture *texture = [textureAtlas textureNamed:textureName];
+        /* Sixteen colours and no in-between ones: the table is artwork at one
+         * pixel per pixel, and interpolating it just invents colours the CoCo
+         * cannot show. */
+        texture.filteringMode = SKTextureFilteringNearest;
         SKTileDefinition *tileDefinition = [SKTileDefinition tileDefinitionWithTexture:texture];
         SKTileGroup *tileGroup = [SKTileGroup tileGroupWithTileDefinition:tileDefinition];
         tileGroup.name = textureName;
