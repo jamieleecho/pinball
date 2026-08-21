@@ -6,96 +6,96 @@
 	objectVersion = 56;
 	objects = {
 		E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAppDelegate.m; path = dynosprite/src/DSAppDelegate.m; sourceTree = SOURCE_ROOT; };
-		7B8D78DA8406AF8D1B9F37E7 /* DSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */; };
+		BE72919A6A541724CAE7310A /* DSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */; };
 		C89607FB2394FD260E50546A /* DSAssetLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAssetLoader.m; path = dynosprite/src/DSAssetLoader.m; sourceTree = SOURCE_ROOT; };
-		E5D518203FBC9437AA0529C7 /* DSAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C89607FB2394FD260E50546A /* DSAssetLoader.m */; };
+		36487A7A40D0C1B4B0998770 /* DSAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C89607FB2394FD260E50546A /* DSAssetLoader.m */; };
 		076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSCoCoJoystick.mm; path = dynosprite/src/DSCoCoJoystick.mm; sourceTree = SOURCE_ROOT; };
-		9181947D2F66674B44CED737 /* DSCoCoJoystick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */; };
+		C7B62E24CFEDD480E296DE32 /* DSCoCoJoystick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */; };
 		BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCoCoKeyboardJoystick.m; path = dynosprite/src/DSCoCoKeyboardJoystick.m; sourceTree = SOURCE_ROOT; };
-		1771F5BAB377ADCFCE2A245B /* DSCoCoKeyboardJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */; };
+		4AD0227F59DCD0E7FBD0E627 /* DSCoCoKeyboardJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */; };
 		3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCocoJoystickController.m; path = dynosprite/src/DSCocoJoystickController.m; sourceTree = SOURCE_ROOT; };
-		460867F3FD0F38DA0DCE8D11 /* DSCocoJoystickController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */; };
+		577B60A0F839BE65ADDAFDC9 /* DSCocoJoystickController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */; };
 		B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSConfigFileParser.m; path = dynosprite/src/DSConfigFileParser.m; sourceTree = SOURCE_ROOT; };
-		86D5E83FC1FD13A542ECD3AA /* DSConfigFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */; };
+		85222B927CAB9C662E0BD2BD /* DSConfigFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */; };
 		4EFFDA4F51262631297483E4 /* DSCons.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCons.m; path = dynosprite/src/DSCons.m; sourceTree = SOURCE_ROOT; };
-		7DD68AD7613981026FB8D33B /* DSCons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFFDA4F51262631297483E4 /* DSCons.m */; };
+		8542C214A94D941942AD54FD /* DSCons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFFDA4F51262631297483E4 /* DSCons.m */; };
 		7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfig.m; path = dynosprite/src/DSDefaultsConfig.m; sourceTree = SOURCE_ROOT; };
-		8A7513476DC7C03CDC32F7C4 /* DSDefaultsConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */; };
+		80BDE82E1B8613F1DBD8C0A5 /* DSDefaultsConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */; };
 		E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfigLoader.m; path = dynosprite/src/DSDefaultsConfigLoader.m; sourceTree = SOURCE_ROOT; };
-		8605605857E2EC8E181E2693 /* DSDefaultsConfigLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */; };
+		240F14929EC9214EA4A1B967 /* DSDefaultsConfigLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */; };
 		C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDirectPageGlobals.m; path = dynosprite/src/DSDirectPageGlobals.m; sourceTree = SOURCE_ROOT; };
-		9A4F0C701245F67449179048 /* DSDirectPageGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */; };
+		53FB838CDD83CEE7A231D15B /* DSDirectPageGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */; };
 		166FEB3A1A38A07015E40386 /* DSGameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSGameScene.m; path = dynosprite/src/DSGameScene.m; sourceTree = SOURCE_ROOT; };
-		EB12C407CD8B518BEEFA4161 /* DSGameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 166FEB3A1A38A07015E40386 /* DSGameScene.m */; };
+		831522B8706DC199FC103A0C /* DSGameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 166FEB3A1A38A07015E40386 /* DSGameScene.m */; };
 		14DA5EB625008BFA12F31435 /* DSImageUtil.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSImageUtil.mm; path = dynosprite/src/DSImageUtil.mm; sourceTree = SOURCE_ROOT; };
-		5AA3D874D0FFF811ADE76821 /* DSImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14DA5EB625008BFA12F31435 /* DSImageUtil.mm */; };
+		4DFDE94BD2492F5E0FC3F05B /* DSImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14DA5EB625008BFA12F31435 /* DSImageUtil.mm */; };
 		0458023F19AF0F2794781F66 /* DSInitScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSInitScene.m; path = dynosprite/src/DSInitScene.m; sourceTree = SOURCE_ROOT; };
-		8000DFBCB973CE7A52A87FCC /* DSInitScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 0458023F19AF0F2794781F66 /* DSInitScene.m */; };
+		5B60387D5517E1E520E39E44 /* DSInitScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 0458023F19AF0F2794781F66 /* DSInitScene.m */; };
 		638AB97E2977F97C779FCC5E /* DSLevel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevel.m; path = dynosprite/src/DSLevel.m; sourceTree = SOURCE_ROOT; };
-		FD5A82C1683718A604B4FD1D /* DSLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 638AB97E2977F97C779FCC5E /* DSLevel.m */; };
+		56C1CB0F294E5A41152DFDD1 /* DSLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 638AB97E2977F97C779FCC5E /* DSLevel.m */; };
 		B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelFileParser.m; path = dynosprite/src/DSLevelFileParser.m; sourceTree = SOURCE_ROOT; };
-		A471D14A32B5256B3B111627 /* DSLevelFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */; };
+		6C3685F5D64C7E8FD6B617A4 /* DSLevelFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */; };
 		322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelLoadingScene.m; path = dynosprite/src/DSLevelLoadingScene.m; sourceTree = SOURCE_ROOT; };
-		DC20A6706A192ACECB67106B /* DSLevelLoadingScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */; };
+		435364C58D2696AF3AAC5E1F /* DSLevelLoadingScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */; };
 		0904A283629703D9340D4C25 /* DSLevelRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelRegistry.m; path = dynosprite/src/DSLevelRegistry.m; sourceTree = SOURCE_ROOT; };
-		BECACCAC2D2600089509D993 /* DSLevelRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0904A283629703D9340D4C25 /* DSLevelRegistry.m */; };
+		79D167D9772DF0CD293955B1 /* DSLevelRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0904A283629703D9340D4C25 /* DSLevelRegistry.m */; };
 		C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSMutableArrayWrapper.m; path = dynosprite/src/DSMutableArrayWrapper.m; sourceTree = SOURCE_ROOT; };
-		932EB0CBC8024638F3A6F07A /* DSMutableArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */; };
+		60F7B128F7C834685DFDBB36 /* DSMutableArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */; };
 		798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSNSDataMD5Extensions.m; path = dynosprite/src/DSNSDataMD5Extensions.m; sourceTree = SOURCE_ROOT; };
-		A5C4B573BC49AF46B1E92285 /* DSNSDataMD5Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */; };
+		CB0A12B3FA6D7EFF5551E818 /* DSNSDataMD5Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */; };
 		C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObject.m; path = dynosprite/src/DSObject.m; sourceTree = SOURCE_ROOT; };
-		2D045FB3CEB4479AFA402A33 /* DSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */; };
+		AAB819965D03395D798A4D16 /* DSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */; };
 		9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassData.m; path = dynosprite/src/DSObjectClassData.m; sourceTree = SOURCE_ROOT; };
-		72BE024B808B9E92293345A7 /* DSObjectClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */; };
+		262AA726333DA5416D93A59E /* DSObjectClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */; };
 		5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassDataRegistry.m; path = dynosprite/src/DSObjectClassDataRegistry.m; sourceTree = SOURCE_ROOT; };
-		C16316347B637BFA77410ED7 /* DSObjectClassDataRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */; };
+		95FF961C6A4257917BE1E2CF /* DSObjectClassDataRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */; };
 		033FDA5E0B97345413102139 /* DSObjectCoordinator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectCoordinator.m; path = dynosprite/src/DSObjectCoordinator.m; sourceTree = SOURCE_ROOT; };
-		EF0DB476FC5498EA38222493 /* DSObjectCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033FDA5E0B97345413102139 /* DSObjectCoordinator.m */; };
+		34568069570083F080805147 /* DSObjectCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033FDA5E0B97345413102139 /* DSObjectCoordinator.m */; };
 		F4D3FC272F3A15F863FB2780 /* DSPoint.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = DSPoint.c; path = dynosprite/src/DSPoint.c; sourceTree = SOURCE_ROOT; };
-		2D9F2A99FD05661F488891F8 /* DSPoint.c in Sources */ = {isa = PBXBuildFile; fileRef = F4D3FC272F3A15F863FB2780 /* DSPoint.c */; };
+		4188F0382F1142356CF9C3FE /* DSPoint.c in Sources */ = {isa = PBXBuildFile; fileRef = F4D3FC272F3A15F863FB2780 /* DSPoint.c */; };
 		1143D568433718CDA4CB5EBB /* DSResourceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSResourceController.m; path = dynosprite/src/DSResourceController.m; sourceTree = SOURCE_ROOT; };
-		5B3F640BFFE96DB12D5AFC90 /* DSResourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1143D568433718CDA4CB5EBB /* DSResourceController.m */; };
+		7ABF669A96D774F04769D52A /* DSResourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1143D568433718CDA4CB5EBB /* DSResourceController.m */; };
 		CAF19456551C9F9FD7F846D6 /* DSScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSScene.m; path = dynosprite/src/DSScene.m; sourceTree = SOURCE_ROOT; };
-		A92B3B04131F0EA28B2F4B4D /* DSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF19456551C9F9FD7F846D6 /* DSScene.m */; };
+		90B940873490E6828BCB5BA8 /* DSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF19456551C9F9FD7F846D6 /* DSScene.m */; };
 		879D43D10DAAF9BAAA04073C /* DSSceneController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSceneController.m; path = dynosprite/src/DSSceneController.m; sourceTree = SOURCE_ROOT; };
-		45373066C54C11527949EBAB /* DSSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 879D43D10DAAF9BAAA04073C /* DSSceneController.m */; };
+		14D3E7E0E41D32B0472F72A4 /* DSSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 879D43D10DAAF9BAAA04073C /* DSSceneController.m */; };
 		BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSharedSceneController.m; path = dynosprite/src/DSSharedSceneController.m; sourceTree = SOURCE_ROOT; };
-		DE5D43421DA8ED9E8450361F /* DSSharedSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */; };
+		24C5CF39E643F5BAB48DF57D /* DSSharedSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */; };
 		C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSoundManager.m; path = dynosprite/src/DSSoundManager.m; sourceTree = SOURCE_ROOT; };
-		71576E3D55FBF6CF228AB5EC /* DSSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */; };
+		B191B313EA598FB89DB641DD /* DSSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */; };
 		A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteFileParser.m; path = dynosprite/src/DSSpriteFileParser.m; sourceTree = SOURCE_ROOT; };
-		D236DBE265976DAD4E5AD31B /* DSSpriteFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */; };
+		31FA279196DA175FECC796F1 /* DSSpriteFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */; };
 		5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteInfo.m; path = dynosprite/src/DSSpriteInfo.m; sourceTree = SOURCE_ROOT; };
-		B0E96A05E4B736B830A7D420 /* DSSpriteInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */; };
+		FDCD4DA05A1CBDF016393F6D /* DSSpriteInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */; };
 		3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClass.m; path = dynosprite/src/DSSpriteObjectClass.m; sourceTree = SOURCE_ROOT; };
-		35FB4FC22822CBE10581CB53 /* DSSpriteObjectClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */; };
+		2341488669344ABE9C6B1075 /* DSSpriteObjectClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */; };
 		5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClassFactory.m; path = dynosprite/src/DSSpriteObjectClassFactory.m; sourceTree = SOURCE_ROOT; };
-		211DFCCA93BAF6C4F322AA9B /* DSSpriteObjectClassFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */; };
+		967461D3A2FC6654E05CEBA5 /* DSSpriteObjectClassFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */; };
 		4C91A8DD2C578F83AE956960 /* DSTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTexture.m; path = dynosprite/src/DSTexture.m; sourceTree = SOURCE_ROOT; };
-		36EFB3A6BA930412DE281409 /* DSTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C91A8DD2C578F83AE956960 /* DSTexture.m */; };
+		9BDBD5656E8074D0221AFCE5 /* DSTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C91A8DD2C578F83AE956960 /* DSTexture.m */; };
 		5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTextureManager.m; path = dynosprite/src/DSTextureManager.m; sourceTree = SOURCE_ROOT; };
-		584C0F872574E895F0A59EA5 /* DSTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */; };
+		EE07D2DD602AE6975D197F2A /* DSTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */; };
 		5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileFileParser.m; path = dynosprite/src/DSTileFileParser.m; sourceTree = SOURCE_ROOT; };
-		BF05BF9DFDF7FBDAB4071870 /* DSTileFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */; };
+		4D41486C63F340C0862D735E /* DSTileFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */; };
 		2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfo.m; path = dynosprite/src/DSTileInfo.m; sourceTree = SOURCE_ROOT; };
-		AE87A27D09ED80982A3FCC9C /* DSTileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */; };
+		8C186AE5E915895FD3F18FAC /* DSTileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */; };
 		77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfoRegistry.m; path = dynosprite/src/DSTileInfoRegistry.m; sourceTree = SOURCE_ROOT; };
-		4AFE5149D71011B8FD3675D5 /* DSTileInfoRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */; };
+		034F3681FF302839C0CA8CCE /* DSTileInfoRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */; };
 		DE2577CB27491037C9641829 /* DSTileMapMaker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileMapMaker.m; path = dynosprite/src/DSTileMapMaker.m; sourceTree = SOURCE_ROOT; };
-		FBF26C9103C54266AD223F6B /* DSTileMapMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = DE2577CB27491037C9641829 /* DSTileMapMaker.m */; };
+		EAB2DCFFDFE405191D11D079 /* DSTileMapMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = DE2577CB27491037C9641829 /* DSTileMapMaker.m */; };
 		C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionImageLoader.m; path = dynosprite/src/DSTransitionImageLoader.m; sourceTree = SOURCE_ROOT; };
-		9FE2A99D81FA23CE8179424A /* DSTransitionImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */; };
+		CCAE1C8171B9089D39D5887E /* DSTransitionImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */; };
 		8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionScene.m; path = dynosprite/src/DSTransitionScene.m; sourceTree = SOURCE_ROOT; };
-		858880CCBABDF36FE15D320C /* DSTransitionScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */; };
+		9E184560C62F234E07C8C674 /* DSTransitionScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */; };
 		DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfo.m; path = dynosprite/src/DSTransitionSceneInfo.m; sourceTree = SOURCE_ROOT; };
-		60EF2FEA2E7852E0A4C283F6 /* DSTransitionSceneInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */; };
+		2D1DEE37A35FDD97DA41C4C5 /* DSTransitionSceneInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */; };
 		1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfoFileParser.m; path = dynosprite/src/DSTransitionSceneInfoFileParser.m; sourceTree = SOURCE_ROOT; };
-		3C5E7FCDF290011041E53D15 /* DSTransitionSceneInfoFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */; };
+		4D4C9C246A8F7FC57C28CF23 /* DSTransitionSceneInfoFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */; };
 		9E1B53B85268075C657BD333 /* DSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSViewController.m; path = dynosprite/src/DSViewController.m; sourceTree = SOURCE_ROOT; };
-		4005330DE51FFD18D79CA02F /* DSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1B53B85268075C657BD333 /* DSViewController.m */; };
+		EC8538396955EFCABC5BD9B8 /* DSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1B53B85268075C657BD333 /* DSViewController.m */; };
 		267CE2E1F14A96F208C2063B /* DSWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSWindowController.m; path = dynosprite/src/DSWindowController.m; sourceTree = SOURCE_ROOT; };
 		BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Misc.m"; path = "dynosprite/src/UIImage+Misc.m"; sourceTree = SOURCE_ROOT; };
-		C31CC672D12F1E77024CF7D0 /* UIImage+Misc.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */; };
+		70136AB4340C84E2E9C506B6 /* UIImage+Misc.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */; };
 		B2178ED9468009F382C9AFAF /* DSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSAppDelegate.h; path = dynosprite/src/DSAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		6ECC3148974D89144159EBC0 /* DSAssetLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSAssetLoader.h; path = dynosprite/src/DSAssetLoader.h; sourceTree = SOURCE_ROOT; };
 		59F2D1F26206990515719216 /* DSCoCoJoystick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSCoCoJoystick.h; path = dynosprite/src/DSCoCoJoystick.h; sourceTree = SOURCE_ROOT; };
@@ -149,23 +149,23 @@
 		1CBC87B04AD2F74E83427702 /* coco.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = coco.h; path = dynosprite/include/coco.h; sourceTree = SOURCE_ROOT; };
 		20BC1D4C3AB19316EE6D1C12 /* dynosprite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dynosprite.h; path = dynosprite/include/dynosprite.h; sourceTree = SOURCE_ROOT; };
 		DAF9CA242583C27CE57278D0 /* 01-ball.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "01-ball.c"; path = "../game/objects/01-ball.c"; sourceTree = SOURCE_ROOT; };
-		935FA82DD25AB61197B230B6 /* 01-ball.c in Sources */ = {isa = PBXBuildFile; fileRef = DAF9CA242583C27CE57278D0 /* 01-ball.c */; };
+		FBFCC511F10C2568C8EEDF50 /* 01-ball.c in Sources */ = {isa = PBXBuildFile; fileRef = DAF9CA242583C27CE57278D0 /* 01-ball.c */; };
 		FCD0613D5290760D27804786 /* 02-flipper.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "02-flipper.c"; path = "../game/objects/02-flipper.c"; sourceTree = SOURCE_ROOT; };
-		9EF50F3E2873EFF402B7C6D8 /* 02-flipper.c in Sources */ = {isa = PBXBuildFile; fileRef = FCD0613D5290760D27804786 /* 02-flipper.c */; };
+		C51A547DC569217E643C8550 /* 02-flipper.c in Sources */ = {isa = PBXBuildFile; fileRef = FCD0613D5290760D27804786 /* 02-flipper.c */; };
 		12341E56BA48B8349BE710E8 /* 03-digit.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "03-digit.c"; path = "../game/objects/03-digit.c"; sourceTree = SOURCE_ROOT; };
-		6D9A0EE5B21BC98324EE7376 /* 03-digit.c in Sources */ = {isa = PBXBuildFile; fileRef = 12341E56BA48B8349BE710E8 /* 03-digit.c */; };
+		90126C4A56FE2B7827233148 /* 03-digit.c in Sources */ = {isa = PBXBuildFile; fileRef = 12341E56BA48B8349BE710E8 /* 03-digit.c */; };
 		B686DFEAD21D4474AD18FDF3 /* 04-lite.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "04-lite.c"; path = "../game/objects/04-lite.c"; sourceTree = SOURCE_ROOT; };
-		48D04601D272F0E6305E6818 /* 04-lite.c in Sources */ = {isa = PBXBuildFile; fileRef = B686DFEAD21D4474AD18FDF3 /* 04-lite.c */; };
+		D2E98276CF1BC492CD3B7E84 /* 04-lite.c in Sources */ = {isa = PBXBuildFile; fileRef = B686DFEAD21D4474AD18FDF3 /* 04-lite.c */; };
 		3E2D54C2BFA201788FABEEC1 /* 05-panel.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "05-panel.c"; path = "../game/objects/05-panel.c"; sourceTree = SOURCE_ROOT; };
-		95BAE058838C367B20392E44 /* 05-panel.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E2D54C2BFA201788FABEEC1 /* 05-panel.c */; };
+		368EA67BF07BCAAA4765C8F9 /* 05-panel.c in Sources */ = {isa = PBXBuildFile; fileRef = 3E2D54C2BFA201788FABEEC1 /* 05-panel.c */; };
 		379B4FF48A6F49C3CF319AEA /* 06-lava.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "06-lava.c"; path = "../game/objects/06-lava.c"; sourceTree = SOURCE_ROOT; };
-		453F05462EDF31988197AB01 /* 06-lava.c in Sources */ = {isa = PBXBuildFile; fileRef = 379B4FF48A6F49C3CF319AEA /* 06-lava.c */; };
+		5A06C4963275F76E06E68A52 /* 06-lava.c in Sources */ = {isa = PBXBuildFile; fileRef = 379B4FF48A6F49C3CF319AEA /* 06-lava.c */; };
 		ABEFDA5E870BA5356E207F4E /* 07-tongue.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "07-tongue.c"; path = "../game/objects/07-tongue.c"; sourceTree = SOURCE_ROOT; };
-		211A3C9CAA898602AFD48E27 /* 07-tongue.c in Sources */ = {isa = PBXBuildFile; fileRef = ABEFDA5E870BA5356E207F4E /* 07-tongue.c */; };
+		BC7C7919AD2FB254ED1199EE /* 07-tongue.c in Sources */ = {isa = PBXBuildFile; fileRef = ABEFDA5E870BA5356E207F4E /* 07-tongue.c */; };
 		A402E702192764D7FF26E177 /* 08-fly.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "08-fly.c"; path = "../game/objects/08-fly.c"; sourceTree = SOURCE_ROOT; };
-		4661E7E7B102965946A3B3A8 /* 08-fly.c in Sources */ = {isa = PBXBuildFile; fileRef = A402E702192764D7FF26E177 /* 08-fly.c */; };
+		94D5069E527D31E898FA121C /* 08-fly.c in Sources */ = {isa = PBXBuildFile; fileRef = A402E702192764D7FF26E177 /* 08-fly.c */; };
 		2107B2775484C2F73CCBA429 /* 01-table.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; name = "01-table.c"; path = "../game/levels/01-table.c"; sourceTree = SOURCE_ROOT; };
-		78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2107B2775484C2F73CCBA429 /* 01-table.c */; };
+		0DE6BB41E4FE2C97D143781B /* 01-table.c in Sources */ = {isa = PBXBuildFile; fileRef = 2107B2775484C2F73CCBA429 /* 01-table.c */; };
 		3D3B381C7E6498C41E26CDA3 /* 01-ball.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "01-ball.h"; path = "../game/objects/01-ball.h"; sourceTree = SOURCE_ROOT; };
 		EBB476494478196962335871 /* 02-flipper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "02-flipper.h"; path = "../game/objects/02-flipper.h"; sourceTree = SOURCE_ROOT; };
 		8DB9499F4B4EEC72B7356249 /* 03-digit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "03-digit.h"; path = "../game/objects/03-digit.h"; sourceTree = SOURCE_ROOT; };
@@ -178,32 +178,234 @@
 		13748BFFD46F258DA0A9C4A0 /* object_info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = object_info.h; path = ../game/objects/object_info.h; sourceTree = SOURCE_ROOT; };
 		BC1F4F2D2C94ED8AF4BF8A28 /* table_data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = table_data.h; path = ../game/objects/table_data.h; sourceTree = SOURCE_ROOT; };
 		D24365165B5F168E0124FA4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Pinball/main.m; sourceTree = SOURCE_ROOT; };
-		1A0F5E720F4905525EADE3AF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D24365165B5F168E0124FA4C /* main.m */; };
+		517BF0BCF8B7BE16C91AD5EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D24365165B5F168E0124FA4C /* main.m */; };
 		5033E57538CEC179E8BD9D1A /* Pinball-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Pinball-Info.plist"; path = "Pinball-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1068111ACF869460673A8E03 /* Pinball.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Pinball.entitlements; path = Pinball/Pinball.entitlements; sourceTree = SOURCE_ROOT; };
 		C0CE92D971D7C83A0CB14B2E /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Actions.sks; path = dynosprite/src/Actions.sks; sourceTree = SOURCE_ROOT; };
-		70A15905D2A2C7C5A86CADF3 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CE92D971D7C83A0CB14B2E /* Actions.sks */; };
+		03A334487C29E79FC93E11A3 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CE92D971D7C83A0CB14B2E /* Actions.sks */; };
 		187F89368C0C0BD17117026A /* pcgfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = pcgfont.ttf; path = dynosprite/Fonts/pcgfont.ttf; sourceTree = SOURCE_ROOT; };
-		A2532077FB43BE8AA4EA91C9 /* pcgfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 187F89368C0C0BD17117026A /* pcgfont.ttf */; };
+		FAECE5FA8F84B427C7D26839 /* pcgfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 187F89368C0C0BD17117026A /* pcgfont.ttf */; };
 		BA466525A841240BB171ADFB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Pinball/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		CB17B9676B141C4DB8328964 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA466525A841240BB171ADFB /* Assets.xcassets */; };
+		8E4709B432FDB6B248072ADD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA466525A841240BB171ADFB /* Assets.xcassets */; };
 		5FF6E153D522C0D9C7697974 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Pinball/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
-		8BA602BFAE591153B23A139A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FF6E153D522C0D9C7697974 /* Main.storyboard */; };
+		09C660882572DCD56D7D9E5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5FF6E153D522C0D9C7697974 /* Main.storyboard */; };
 		0397EF86AA68E750AE054E9C /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Credits.html; path = Pinball/Credits.html; sourceTree = SOURCE_ROOT; };
-		59AC7705E3D9C255CDB40F11 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 0397EF86AA68E750AE054E9C /* Credits.html */; };
+		71363FCCB7428C6602A68AA1 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 0397EF86AA68E750AE054E9C /* Credits.html */; };
 		8600FD3C70376FCD3A963A23 /* defaults-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "defaults-config.json"; path = "../game/defaults-config.json"; sourceTree = SOURCE_ROOT; };
-		6C74A9A44CB6B10AC6961BE2 /* defaults-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8600FD3C70376FCD3A963A23 /* defaults-config.json */; };
+		776A40985B25A69765AD7E6A /* defaults-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8600FD3C70376FCD3A963A23 /* defaults-config.json */; };
 		DFF28DA8EAB59CC0CBCFD500 /* levels */ = {isa = PBXFileReference; lastKnownFileType = folder; name = levels; path = ../game/levels; sourceTree = SOURCE_ROOT; };
-		D9FB4A383A016787104A4005 /* levels in Resources */ = {isa = PBXBuildFile; fileRef = DFF28DA8EAB59CC0CBCFD500 /* levels */; };
+		8B0181937852D899B22B7FC9 /* levels in Resources */ = {isa = PBXBuildFile; fileRef = DFF28DA8EAB59CC0CBCFD500 /* levels */; };
 		BBED53A83E3DFDB485F711E8 /* sprites */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sprites; path = ../game/sprites; sourceTree = SOURCE_ROOT; };
-		B8FA847742B64BFE21EA3C77 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = BBED53A83E3DFDB485F711E8 /* sprites */; };
+		8DAD640D9E08C8C51C2C4218 /* sprites in Resources */ = {isa = PBXBuildFile; fileRef = BBED53A83E3DFDB485F711E8 /* sprites */; };
 		37B3FBAA118587E99F448923 /* tiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tiles; path = ../game/tiles; sourceTree = SOURCE_ROOT; };
-		4A17FF99104BC825AE3808B0 /* tiles in Resources */ = {isa = PBXBuildFile; fileRef = 37B3FBAA118587E99F448923 /* tiles */; };
+		EFB4BE13491CE7C0B41E1E67 /* tiles in Resources */ = {isa = PBXBuildFile; fileRef = 37B3FBAA118587E99F448923 /* tiles */; };
 		4F08E139F38DBAE1C8BB1C7B /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../game/images; sourceTree = SOURCE_ROOT; };
-		5D3832F4E89CE0366684BF12 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 4F08E139F38DBAE1C8BB1C7B /* images */; };
+		6672BF96A64F77E7FB66E38F /* images in Resources */ = {isa = PBXBuildFile; fileRef = 4F08E139F38DBAE1C8BB1C7B /* images */; };
 		379ABD4B5EDF0AA00438C499 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = ../game/sounds; sourceTree = SOURCE_ROOT; };
-		DA4CAB2847A956853AE01EA5 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = 379ABD4B5EDF0AA00438C499 /* sounds */; };
+		2EB7E2924422F12633CE8214 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = 379ABD4B5EDF0AA00438C499 /* sounds */; };
+		23E2B834B80CCD0A5B2372B3 /* DSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E15C7D9EE746584ECF32A1 /* DSAppDelegate.m */; };
+		9C1D07648FDB4800163C7BF7 /* DSAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C89607FB2394FD260E50546A /* DSAssetLoader.m */; };
+		6BAA216A1AEFC00398610B90 /* DSCoCoJoystick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 076E2526D8E796C93A83EAF7 /* DSCoCoJoystick.mm */; };
+		68423AD06FA1E478C5231680 /* DSCoCoKeyboardJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = BC6DCCF599C2F281B47132EA /* DSCoCoKeyboardJoystick.m */; };
+		FDDE99A7ED8287AB08DC12FD /* DSCocoJoystickController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B024781D9B5828FF4F11116 /* DSCocoJoystickController.m */; };
+		F6B98DED79005E8BF3612F23 /* DSConfigFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B37578DAC4FAEA6CED5A9183 /* DSConfigFileParser.m */; };
+		3F82D41181A326FC29289F89 /* DSCons.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EFFDA4F51262631297483E4 /* DSCons.m */; };
+		2D86F2C83132171F3B2A833C /* DSDefaultsConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C938DE56323616E86A5E714 /* DSDefaultsConfig.m */; };
+		575C1A7ADB7739E99D0BA26E /* DSDefaultsConfigLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E30588EBF4CC6AA16867E094 /* DSDefaultsConfigLoader.m */; };
+		11DF2467549A126663D8D5A7 /* DSDirectPageGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F065957A6C7FA947667924 /* DSDirectPageGlobals.m */; };
+		6EAA3687AFA4D22FAB1D65A0 /* DSGameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 166FEB3A1A38A07015E40386 /* DSGameScene.m */; };
+		795DF6BBBAB904D29212D9FD /* DSImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 14DA5EB625008BFA12F31435 /* DSImageUtil.mm */; };
+		C6629039675DDE261DC1B958 /* DSInitScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 0458023F19AF0F2794781F66 /* DSInitScene.m */; };
+		DE8F1A2A17369FE294DE4961 /* DSLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 638AB97E2977F97C779FCC5E /* DSLevel.m */; };
+		A50318CAE256C27E17175336 /* DSLevelFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D9C01B4CBE5A0AC206FA9E /* DSLevelFileParser.m */; };
+		C41A8ED1329D47CDBAD40D69 /* DSLevelLoadingScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 322D37BE83324E5CFDB33FDD /* DSLevelLoadingScene.m */; };
+		BF70CF47350A292C87A49779 /* DSLevelRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 0904A283629703D9340D4C25 /* DSLevelRegistry.m */; };
+		206337CE2E9D5CD4A1794B31 /* DSMutableArrayWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C7416B465F57A38DBF0487E3 /* DSMutableArrayWrapper.m */; };
+		AAAC8B61B1020E15019A771C /* DSNSDataMD5Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 798892076593E3C44E7D1A82 /* DSNSDataMD5Extensions.m */; };
+		39076FF666CD9524BD3C9E3B /* DSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D21C8ABBD2564A27AAE6E3 /* DSObject.m */; };
+		B3AEE988FE6104584DA161DA /* DSObjectClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C767EF0E5E6E5FAD9DF7FE2 /* DSObjectClassData.m */; };
+		AB27EAD00ABBE461932D8E90 /* DSObjectClassDataRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D01DDC5120D75412048FB69 /* DSObjectClassDataRegistry.m */; };
+		C4B207BB8D78F74F9CEB2602 /* DSObjectCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 033FDA5E0B97345413102139 /* DSObjectCoordinator.m */; };
+		628E8E0FB5648F78F989B956 /* DSPoint.c in Sources */ = {isa = PBXBuildFile; fileRef = F4D3FC272F3A15F863FB2780 /* DSPoint.c */; };
+		40BA85858E56FF1B26D8209B /* DSResourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1143D568433718CDA4CB5EBB /* DSResourceController.m */; };
+		F864F38A76B9D4752EA22F92 /* DSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF19456551C9F9FD7F846D6 /* DSScene.m */; };
+		7620D48823C73EA30B9C9FB0 /* DSSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 879D43D10DAAF9BAAA04073C /* DSSceneController.m */; };
+		42D2FA8BC89D3561B1BDE795 /* DSSharedSceneController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF37AB711E04B16AD36D0789 /* DSSharedSceneController.m */; };
+		4DDC3939993641DC8D6A926A /* DSSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B8FA3B10871CA0B59913B7 /* DSSoundManager.m */; };
+		98D741A66B974A10F872045A /* DSSpriteFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A973510F53D43CE4A7E1666D /* DSSpriteFileParser.m */; };
+		918BF720EA2C43EDF695BCC9 /* DSSpriteInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7073BAE535A806E83E23C /* DSSpriteInfo.m */; };
+		5CF4F48311260FA098B02D04 /* DSSpriteObjectClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A30AE8BAFC32C84E1CF16 /* DSSpriteObjectClass.m */; };
+		37D1A97409781E5EBDD48308 /* DSSpriteObjectClassFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CB468D378C78296318E0775 /* DSSpriteObjectClassFactory.m */; };
+		B24C0B7F9BDF5258F6581F39 /* DSTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C91A8DD2C578F83AE956960 /* DSTexture.m */; };
+		B18F6B0767B3600A506234FE /* DSTextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBB9E37928DBF2A5338E709 /* DSTextureManager.m */; };
+		74A99443EA22F2D6D2F62B0C /* DSTileFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9FCF4B78B1EE5A18C06C52 /* DSTileFileParser.m */; };
+		44A771895E2118414F2ADBC3 /* DSTileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6F5B8C9B4F43BDF0C1725B /* DSTileInfo.m */; };
+		19216A698738B7BE69E233B4 /* DSTileInfoRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C73007F94DCB3934CA4CB7 /* DSTileInfoRegistry.m */; };
+		8E183DF4C9BC3323ADBD436F /* DSTileMapMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = DE2577CB27491037C9641829 /* DSTileMapMaker.m */; };
+		6093F8336B66B1CEBC5EA686 /* DSTransitionImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C664F42F997F96FD3C17F213 /* DSTransitionImageLoader.m */; };
+		1F9F94BC1EDED65609672F30 /* DSTransitionScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 8845C32CBA20ADB2D75384FE /* DSTransitionScene.m */; };
+		F1D9BE3F6C33B373B13D5AE8 /* DSTransitionSceneInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9AEDECA031F60613E659CB /* DSTransitionSceneInfo.m */; };
+		3F569F4FCFC8D7E382B58E11 /* DSTransitionSceneInfoFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1605F2DA039E7177F288C89E /* DSTransitionSceneInfoFileParser.m */; };
+		4D1585693978D00A1D9ED729 /* DSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1B53B85268075C657BD333 /* DSViewController.m */; };
+		4B47E7CAF4861AABFB706A92 /* UIImage+Misc.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCCCE7F941881D5199266A9 /* UIImage+Misc.m */; };
+		5B556D8574DA95E6C2CA99DD /* DSAppDelegateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAppDelegateTest.m; path = "dynosprite tests/src/DSAppDelegateTest.m"; sourceTree = SOURCE_ROOT; };
+		4742CE808B2B2225ABD7A005 /* DSAppDelegateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B556D8574DA95E6C2CA99DD /* DSAppDelegateTest.m */; };
+		AF46AFEB3E3C13C1BF6898BD /* DSAssetLoaderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSAssetLoaderTest.m; path = "dynosprite tests/src/DSAssetLoaderTest.m"; sourceTree = SOURCE_ROOT; };
+		A5FAA0FD4857EC25F72ED716 /* DSAssetLoaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AF46AFEB3E3C13C1BF6898BD /* DSAssetLoaderTest.m */; };
+		6F56EC96D275C71E7C9AD0BE /* DSCoCoJoystickControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCoCoJoystickControllerTest.m; path = "dynosprite tests/src/DSCoCoJoystickControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		09786E17C047521E437B53B8 /* DSCoCoJoystickControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F56EC96D275C71E7C9AD0BE /* DSCoCoJoystickControllerTest.m */; };
+		F73DB9929F7B0DC4154F0A61 /* DSCoCoKeyboardJoystickTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCoCoKeyboardJoystickTest.m; path = "dynosprite tests/src/DSCoCoKeyboardJoystickTest.m"; sourceTree = SOURCE_ROOT; };
+		833445104B368E2DFCECC365 /* DSCoCoKeyboardJoystickTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F73DB9929F7B0DC4154F0A61 /* DSCoCoKeyboardJoystickTest.m */; };
+		CBCDC10DBCD878973FFBAA92 /* DSCocoJoystickTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSCocoJoystickTest.m; path = "dynosprite tests/src/DSCocoJoystickTest.m"; sourceTree = SOURCE_ROOT; };
+		D2CC86C2351CA838AECCF7C1 /* DSCocoJoystickTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCDC10DBCD878973FFBAA92 /* DSCocoJoystickTest.m */; };
+		D2F24B0F81D403A11B607D38 /* DSConfigFileParserTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSConfigFileParserTest.m; path = "dynosprite tests/src/DSConfigFileParserTest.m"; sourceTree = SOURCE_ROOT; };
+		17CEE8CB1149484164270224 /* DSConfigFileParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F24B0F81D403A11B607D38 /* DSConfigFileParserTest.m */; };
+		4D8D58A04BB774F2EF96BC35 /* DSConsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSConsTest.m; path = "dynosprite tests/src/DSConsTest.m"; sourceTree = SOURCE_ROOT; };
+		CE641677E4A638E0E8260ED4 /* DSConsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8D58A04BB774F2EF96BC35 /* DSConsTest.m */; };
+		21E40DEA016BC2C09C87850A /* DSDefaultsConfigLoaderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfigLoaderTest.m; path = "dynosprite tests/src/DSDefaultsConfigLoaderTest.m"; sourceTree = SOURCE_ROOT; };
+		C54065C74DDB00FE88ADACD0 /* DSDefaultsConfigLoaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 21E40DEA016BC2C09C87850A /* DSDefaultsConfigLoaderTest.m */; };
+		2F77C96C951890D12BEBB2BE /* DSDefaultsConfigTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDefaultsConfigTest.m; path = "dynosprite tests/src/DSDefaultsConfigTest.m"; sourceTree = SOURCE_ROOT; };
+		ACC69852581234F077285ED8 /* DSDefaultsConfigTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F77C96C951890D12BEBB2BE /* DSDefaultsConfigTest.m */; };
+		402B427C7987F2068B6B1E6A /* DSDirectPageGlobalsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSDirectPageGlobalsTest.m; path = "dynosprite tests/src/DSDirectPageGlobalsTest.m"; sourceTree = SOURCE_ROOT; };
+		978968C055DC30778F75923C /* DSDirectPageGlobalsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 402B427C7987F2068B6B1E6A /* DSDirectPageGlobalsTest.m */; };
+		5E82E8408AD3DA655C7D6543 /* DSGameSceneTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSGameSceneTest.m; path = "dynosprite tests/src/DSGameSceneTest.m"; sourceTree = SOURCE_ROOT; };
+		7D8DA99C97EE972B56B316BE /* DSGameSceneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E82E8408AD3DA655C7D6543 /* DSGameSceneTest.m */; };
+		D79BE6AA83598753E7CAE0B6 /* DSImageUtilTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSImageUtilTest.mm; path = "dynosprite tests/src/DSImageUtilTest.mm"; sourceTree = SOURCE_ROOT; };
+		34B452A980CF09D42DABBB9E /* DSImageUtilTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = D79BE6AA83598753E7CAE0B6 /* DSImageUtilTest.mm */; };
+		D215429FF77BB3D53E08770D /* DSInitSceneTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSInitSceneTest.m; path = "dynosprite tests/src/DSInitSceneTest.m"; sourceTree = SOURCE_ROOT; };
+		FC3FDF8CEE07AB7A3F9EABD2 /* DSInitSceneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D215429FF77BB3D53E08770D /* DSInitSceneTest.m */; };
+		47911B1B13DBBD75AC4AA456 /* DSKeyEventBaseTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSKeyEventBaseTest.m; path = "dynosprite tests/src/DSKeyEventBaseTest.m"; sourceTree = SOURCE_ROOT; };
+		C91F99E015AF3764447519A4 /* DSKeyEventBaseTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 47911B1B13DBBD75AC4AA456 /* DSKeyEventBaseTest.m */; };
+		0EBF75E0B08F4E055CBAFC36 /* DSLevelFileParserTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelFileParserTest.m; path = "dynosprite tests/src/DSLevelFileParserTest.m"; sourceTree = SOURCE_ROOT; };
+		85346C4EE655EC1C2F81852A /* DSLevelFileParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EBF75E0B08F4E055CBAFC36 /* DSLevelFileParserTest.m */; };
+		6A0C0154F5E727CAC12D331B /* DSLevelLoadingSceneTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelLoadingSceneTest.m; path = "dynosprite tests/src/DSLevelLoadingSceneTest.m"; sourceTree = SOURCE_ROOT; };
+		2819556113E5FE00E8B849E0 /* DSLevelLoadingSceneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A0C0154F5E727CAC12D331B /* DSLevelLoadingSceneTest.m */; };
+		7AA230E7BA876EA86ACE799F /* DSLevelRegistryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelRegistryTest.m; path = "dynosprite tests/src/DSLevelRegistryTest.m"; sourceTree = SOURCE_ROOT; };
+		FD1BC59DD74030E8A20CA55F /* DSLevelRegistryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AA230E7BA876EA86ACE799F /* DSLevelRegistryTest.m */; };
+		3B62FCEE6E8BC10EA731F2AB /* DSLevelTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSLevelTest.m; path = "dynosprite tests/src/DSLevelTest.m"; sourceTree = SOURCE_ROOT; };
+		DC840CD867CCC5DE6B664D14 /* DSLevelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B62FCEE6E8BC10EA731F2AB /* DSLevelTest.m */; };
+		6B715C6105ABC1F8B820C33F /* DSMusicEngineTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSMusicEngineTest.m; path = "dynosprite tests/src/DSMusicEngineTest.m"; sourceTree = SOURCE_ROOT; };
+		9B589498C499E00735AB7A9A /* DSMusicEngineTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B715C6105ABC1F8B820C33F /* DSMusicEngineTest.m */; };
+		1030FAA8FA77D7BC3DF6D614 /* DSMutableArrayWrapperTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSMutableArrayWrapperTest.m; path = "dynosprite tests/src/DSMutableArrayWrapperTest.m"; sourceTree = SOURCE_ROOT; };
+		27E49D4AE8D19E0D14269793 /* DSMutableArrayWrapperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1030FAA8FA77D7BC3DF6D614 /* DSMutableArrayWrapperTest.m */; };
+		EBA6457694F0453E8C07D153 /* DSNSDataMD5ExtensionsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSNSDataMD5ExtensionsTest.m; path = "dynosprite tests/src/DSNSDataMD5ExtensionsTest.m"; sourceTree = SOURCE_ROOT; };
+		6844AC45DA34A5769FE1F84F /* DSNSDataMD5ExtensionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = EBA6457694F0453E8C07D153 /* DSNSDataMD5ExtensionsTest.m */; };
+		E6570AD96743095D8CAC1ECE /* DSObjectClassDataRegistryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassDataRegistryTest.m; path = "dynosprite tests/src/DSObjectClassDataRegistryTest.m"; sourceTree = SOURCE_ROOT; };
+		BD1DADA883FD1BA957EAD5E7 /* DSObjectClassDataRegistryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E6570AD96743095D8CAC1ECE /* DSObjectClassDataRegistryTest.m */; };
+		16934CED87B0C1E6352D5ED3 /* DSObjectClassDataTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectClassDataTest.m; path = "dynosprite tests/src/DSObjectClassDataTest.m"; sourceTree = SOURCE_ROOT; };
+		D75A8A532F78A6AF004D6B55 /* DSObjectClassDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 16934CED87B0C1E6352D5ED3 /* DSObjectClassDataTest.m */; };
+		0D275F18D02B249931E663C4 /* DSObjectCoordinatorTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectCoordinatorTest.m; path = "dynosprite tests/src/DSObjectCoordinatorTest.m"; sourceTree = SOURCE_ROOT; };
+		85795FD3C55DCF2E3D67A53B /* DSObjectCoordinatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D275F18D02B249931E663C4 /* DSObjectCoordinatorTest.m */; };
+		0CA777F3E641DD00BA857D66 /* DSObjectTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSObjectTest.m; path = "dynosprite tests/src/DSObjectTest.m"; sourceTree = SOURCE_ROOT; };
+		97859D0134E074F05A024957 /* DSObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CA777F3E641DD00BA857D66 /* DSObjectTest.m */; };
+		D8B1F1F191B18658DF428BA6 /* DSPointTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSPointTest.m; path = "dynosprite tests/src/DSPointTest.m"; sourceTree = SOURCE_ROOT; };
+		B5491AADC6E77CE2B15BD85C /* DSPointTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B1F1F191B18658DF428BA6 /* DSPointTest.m */; };
+		799DC7BD8E4259916F3B128B /* DSResourceControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSResourceControllerTest.m; path = "dynosprite tests/src/DSResourceControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		97293D21A9907A7FD59409A9 /* DSResourceControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 799DC7BD8E4259916F3B128B /* DSResourceControllerTest.m */; };
+		D66A908D4ACC6D68E35C1D38 /* DSSceneControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSceneControllerTest.m; path = "dynosprite tests/src/DSSceneControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		EEA25D0E0A25BF84E46EADDF /* DSSceneControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D66A908D4ACC6D68E35C1D38 /* DSSceneControllerTest.m */; };
+		AF634BA2CC65F3D36AFB8A92 /* DSSceneTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSceneTest.m; path = "dynosprite tests/src/DSSceneTest.m"; sourceTree = SOURCE_ROOT; };
+		C94FEC15EA28BF98EB92CE22 /* DSSceneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AF634BA2CC65F3D36AFB8A92 /* DSSceneTest.m */; };
+		5FA5A35663B14A4FBF49E2C6 /* DSSharedSceneControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSharedSceneControllerTest.m; path = "dynosprite tests/src/DSSharedSceneControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		11E981D87FA8B1FD24EE78D7 /* DSSharedSceneControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA5A35663B14A4FBF49E2C6 /* DSSharedSceneControllerTest.m */; };
+		F76E9DBBF0925EC93B689F87 /* DSSoundManagerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSoundManagerTest.m; path = "dynosprite tests/src/DSSoundManagerTest.m"; sourceTree = SOURCE_ROOT; };
+		CC7990047E52A5779C516D35 /* DSSoundManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F76E9DBBF0925EC93B689F87 /* DSSoundManagerTest.m */; };
+		F41C9234953168CA109DB926 /* DSSpriteFileParserTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteFileParserTest.m; path = "dynosprite tests/src/DSSpriteFileParserTest.m"; sourceTree = SOURCE_ROOT; };
+		50EB15711AFB07645DDCD36B /* DSSpriteFileParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F41C9234953168CA109DB926 /* DSSpriteFileParserTest.m */; };
+		B4AF323EDCD56FB86121C78B /* DSSpriteInfoTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteInfoTest.m; path = "dynosprite tests/src/DSSpriteInfoTest.m"; sourceTree = SOURCE_ROOT; };
+		B822C08A3F37F0FE3B21A2A6 /* DSSpriteInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B4AF323EDCD56FB86121C78B /* DSSpriteInfoTest.m */; };
+		FCCD84A9C7064D771ABF82E4 /* DSSpriteObjectClassFactoryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClassFactoryTest.m; path = "dynosprite tests/src/DSSpriteObjectClassFactoryTest.m"; sourceTree = SOURCE_ROOT; };
+		354AE49783BD125B0AF3A311 /* DSSpriteObjectClassFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FCCD84A9C7064D771ABF82E4 /* DSSpriteObjectClassFactoryTest.m */; };
+		2F7F45818C25194C8B973157 /* DSSpriteObjectClassTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSSpriteObjectClassTest.m; path = "dynosprite tests/src/DSSpriteObjectClassTest.m"; sourceTree = SOURCE_ROOT; };
+		B65A4E8B0E12FB9D7C7254A3 /* DSSpriteObjectClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F7F45818C25194C8B973157 /* DSSpriteObjectClassTest.m */; };
+		B4F0FE9D34799C36D571FA82 /* DSTestUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTestUtils.m; path = "dynosprite tests/src/DSTestUtils.m"; sourceTree = SOURCE_ROOT; };
+		6B9EB239EAC4F7BFA398388A /* DSTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F0FE9D34799C36D571FA82 /* DSTestUtils.m */; };
+		85CBE32442B6FD1F8F7BD85B /* DSTextureManagerTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = DSTextureManagerTest.mm; path = "dynosprite tests/src/DSTextureManagerTest.mm"; sourceTree = SOURCE_ROOT; };
+		275C85C19318D20C6177E2D6 /* DSTextureManagerTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CBE32442B6FD1F8F7BD85B /* DSTextureManagerTest.mm */; };
+		8021F0A776ADD612E0C5139E /* DSTextureTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTextureTest.m; path = "dynosprite tests/src/DSTextureTest.m"; sourceTree = SOURCE_ROOT; };
+		C95733FD42F3C8D5C798A7BE /* DSTextureTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8021F0A776ADD612E0C5139E /* DSTextureTest.m */; };
+		8F5EA5A80B4DEC8BE70985DB /* DSTileFileParserTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileFileParserTest.m; path = "dynosprite tests/src/DSTileFileParserTest.m"; sourceTree = SOURCE_ROOT; };
+		885C1F6150CEE594405627C7 /* DSTileFileParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F5EA5A80B4DEC8BE70985DB /* DSTileFileParserTest.m */; };
+		97AF54B2141EB08BCC34A4A8 /* DSTileInfoRegistryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfoRegistryTest.m; path = "dynosprite tests/src/DSTileInfoRegistryTest.m"; sourceTree = SOURCE_ROOT; };
+		15A0B1C5B887370A6C3158BD /* DSTileInfoRegistryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AF54B2141EB08BCC34A4A8 /* DSTileInfoRegistryTest.m */; };
+		D132F8E3FE73C6C91AB9E2FE /* DSTileInfoTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileInfoTest.m; path = "dynosprite tests/src/DSTileInfoTest.m"; sourceTree = SOURCE_ROOT; };
+		C7E5C0CEF365CD0F8D3C17E6 /* DSTileInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D132F8E3FE73C6C91AB9E2FE /* DSTileInfoTest.m */; };
+		B2CA0148CEE68F27B74DF65A /* DSTileMapMakerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTileMapMakerTest.m; path = "dynosprite tests/src/DSTileMapMakerTest.m"; sourceTree = SOURCE_ROOT; };
+		930625F2DCA9B52BA1F190E6 /* DSTileMapMakerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CA0148CEE68F27B74DF65A /* DSTileMapMakerTest.m */; };
+		CC000C2D233168F1F55051D0 /* DSTransitionImageLoaderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionImageLoaderTest.m; path = "dynosprite tests/src/DSTransitionImageLoaderTest.m"; sourceTree = SOURCE_ROOT; };
+		591A333ECDD7F0E78CF2A82D /* DSTransitionImageLoaderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CC000C2D233168F1F55051D0 /* DSTransitionImageLoaderTest.m */; };
+		03C04AE9E04826CC297DD9C5 /* DSTransitionSceneInfoFileParserTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfoFileParserTest.m; path = "dynosprite tests/src/DSTransitionSceneInfoFileParserTest.m"; sourceTree = SOURCE_ROOT; };
+		5A9BB570CEC764E13C7CBA84 /* DSTransitionSceneInfoFileParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C04AE9E04826CC297DD9C5 /* DSTransitionSceneInfoFileParserTest.m */; };
+		7192E9414B3BB61E21655F7A /* DSTransitionSceneInfoTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneInfoTest.m; path = "dynosprite tests/src/DSTransitionSceneInfoTest.m"; sourceTree = SOURCE_ROOT; };
+		C37A888F9C127AEC1FDDCDCC /* DSTransitionSceneInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7192E9414B3BB61E21655F7A /* DSTransitionSceneInfoTest.m */; };
+		C4402C88CB798A7B847A2C59 /* DSTransitionSceneTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSTransitionSceneTest.m; path = "dynosprite tests/src/DSTransitionSceneTest.m"; sourceTree = SOURCE_ROOT; };
+		7D597AEF0024E3D338E14D9A /* DSTransitionSceneTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C4402C88CB798A7B847A2C59 /* DSTransitionSceneTest.m */; };
+		8BB509F22863E6657E901E3A /* DSViewControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSViewControllerTest.m; path = "dynosprite tests/src/DSViewControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		ECF113E748690BD6E3E7BFA2 /* DSViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BB509F22863E6657E901E3A /* DSViewControllerTest.m */; };
+		F56F9199F9F83F5ACAC18ACF /* DSWindowControllerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DSWindowControllerTest.m; path = "dynosprite tests/src/DSWindowControllerTest.m"; sourceTree = SOURCE_ROOT; };
+		13346EC362A700A9ABA29D1B /* DSKeyEventBaseTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSKeyEventBaseTest.h; path = "dynosprite tests/src/DSKeyEventBaseTest.h"; sourceTree = SOURCE_ROOT; };
+		034ACC7660DCFC175B9CD3BE /* DSTestUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DSTestUtils.h; path = "dynosprite tests/src/DSTestUtils.h"; sourceTree = SOURCE_ROOT; };
+		8FE10B7413AAF42DC5CEBC33 /* 01-foo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "01-foo.wav"; path = "dynosprite tests/resources/01-foo.wav"; sourceTree = SOURCE_ROOT; };
+		663C9E8781214A4364D6444F /* 01-foo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8FE10B7413AAF42DC5CEBC33 /* 01-foo.wav */; };
+		6FDA95529CF9D5DC4BE85567 /* 01-moon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = "01-moon.gif"; path = "dynosprite tests/resources/01-moon.gif"; sourceTree = SOURCE_ROOT; };
+		DDC7659A6BDA4929090BCC3C /* 01-moon.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FDA95529CF9D5DC4BE85567 /* 01-moon.gif */; };
+		2630325D18ECEDC69AE8418F /* 01-moon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "01-moon.json"; path = "dynosprite tests/resources/01-moon.json"; sourceTree = SOURCE_ROOT; };
+		16A297F2633BD6D4AE9B09EE /* 01-moon.json in Resources */ = {isa = PBXBuildFile; fileRef = 2630325D18ECEDC69AE8418F /* 01-moon.json */; };
+		32B699BBF121E2F789BE7FFA /* 01-test-level.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "01-test-level.json"; path = "dynosprite tests/resources/01-test-level.json"; sourceTree = SOURCE_ROOT; };
+		D5BAD6CCED652461952C69FE /* 01-test-level.json in Resources */ = {isa = PBXBuildFile; fileRef = 32B699BBF121E2F789BE7FFA /* 01-test-level.json */; };
+		5F6D0A4A1D43DBA664C762D5 /* 02-foo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "02-foo.wav"; path = "dynosprite tests/resources/02-foo.wav"; sourceTree = SOURCE_ROOT; };
+		2F446675ABD7EC613D1FE0B0 /* 02-foo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 5F6D0A4A1D43DBA664C762D5 /* 02-foo.wav */; };
+		BCE7DAF663F4E77D566B6094 /* 03-badguys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "03-badguys.json"; path = "dynosprite tests/resources/03-badguys.json"; sourceTree = SOURCE_ROOT; };
+		B2D6D280AF9D04395286B18C /* 03-badguys.json in Resources */ = {isa = PBXBuildFile; fileRef = BCE7DAF663F4E77D566B6094 /* 03-badguys.json */; };
+		A90159C7FDB97C02C28B053A /* 03-foo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "03-foo.wav"; path = "dynosprite tests/resources/03-foo.wav"; sourceTree = SOURCE_ROOT; };
+		04DF1E5EDB4CA8A81AA1AAF2 /* 03-foo.wav in Resources */ = {isa = PBXBuildFile; fileRef = A90159C7FDB97C02C28B053A /* 03-foo.wav */; };
+		D55BEACC5F7C8819A78F9CE2 /* 04-ship.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "04-ship.json"; path = "dynosprite tests/resources/04-ship.json"; sourceTree = SOURCE_ROOT; };
+		25EDC1FE4DB2E4171489E884 /* 04-ship.json in Resources */ = {isa = PBXBuildFile; fileRef = D55BEACC5F7C8819A78F9CE2 /* 04-ship.json */; };
+		158179467D7067A8C4C80183 /* 04-ship2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "04-ship2.json"; path = "dynosprite tests/resources/04-ship2.json"; sourceTree = SOURCE_ROOT; };
+		8C8AED13F1BDA689130C2C4D /* 04-ship2.json in Resources */ = {isa = PBXBuildFile; fileRef = 158179467D7067A8C4C80183 /* 04-ship2.json */; };
+		900EF6AF3E75E987D3EB8360 /* JSONBad */ = {isa = PBXFileReference; lastKnownFileType = text; name = JSONBad; path = "dynosprite tests/resources/JSONBad"; sourceTree = SOURCE_ROOT; };
+		528D248111D4B2DDE07DB584 /* JSONBad in Resources */ = {isa = PBXBuildFile; fileRef = 900EF6AF3E75E987D3EB8360 /* JSONBad */; };
+		0E5E5EAED4D63B6E6EF89BE5 /* JSONDict.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = JSONDict.json; path = "dynosprite tests/resources/JSONDict.json"; sourceTree = SOURCE_ROOT; };
+		AC2C8179B787AAC75F5C5906 /* JSONDict.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E5E5EAED4D63B6E6EF89BE5 /* JSONDict.json */; };
+		0E1ECF595B061894704DA12F /* JSONList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = JSONList.json; path = "dynosprite tests/resources/JSONList.json"; sourceTree = SOURCE_ROOT; };
+		99E62EFAE806185CB466E805 /* JSONList.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E1ECF595B061894704DA12F /* JSONList.json */; };
+		8AB83CBA2C4F08E80CAD544F /* defaults-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "defaults-config.json"; path = "dynosprite tests/resources/defaults-config.json"; sourceTree = SOURCE_ROOT; };
+		B4AF48207027BB2B915FB38B /* defaults-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8AB83CBA2C4F08E80CAD544F /* defaults-config.json */; };
+		FBD0DCF5AC31CA59607DF997 /* empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = empty.json; path = "dynosprite tests/resources/empty.json"; sourceTree = SOURCE_ROOT; };
+		1373444FAC5862F9E1DF2E9B /* empty.json in Resources */ = {isa = PBXBuildFile; fileRef = FBD0DCF5AC31CA59607DF997 /* empty.json */; };
+		28B76B2216B9A849D45C50B9 /* forest-hack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forest-hack.png"; path = "dynosprite tests/resources/forest-hack.png"; sourceTree = SOURCE_ROOT; };
+		E23D60AA127EB7DE90736D2D /* forest-hack.png in Resources */ = {isa = PBXBuildFile; fileRef = 28B76B2216B9A849D45C50B9 /* forest-hack.png */; };
+		936469598294B92B022EBA2E /* forest-hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "forest-hires.png"; path = "dynosprite tests/resources/forest-hires.png"; sourceTree = SOURCE_ROOT; };
+		CBB37DC4965FA465FA114488 /* forest-hires.png in Resources */ = {isa = PBXBuildFile; fileRef = 936469598294B92B022EBA2E /* forest-hires.png */; };
+		467D4BD5FBA2D65AB78B2D28 /* forest-subimage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "forest-subimage.tiff"; path = "dynosprite tests/resources/forest-subimage.tiff"; sourceTree = SOURCE_ROOT; };
+		3DB747E33C7602D8FB52E19B /* forest-subimage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 467D4BD5FBA2D65AB78B2D28 /* forest-subimage.tiff */; };
+		61F1F6E25A3BCBB3FA8652F3 /* forest-tile.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "forest-tile.tiff"; path = "dynosprite tests/resources/forest-tile.tiff"; sourceTree = SOURCE_ROOT; };
+		AE68E12CDF67441E6BE578B6 /* forest-tile.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 61F1F6E25A3BCBB3FA8652F3 /* forest-tile.tiff */; };
+		D7828C56346BADCD4F08CAAC /* forest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forest.png; path = "dynosprite tests/resources/forest.png"; sourceTree = SOURCE_ROOT; };
+		F02E7AA9B1225BE833B62DF6 /* forest.png in Resources */ = {isa = PBXBuildFile; fileRef = D7828C56346BADCD4F08CAAC /* forest.png */; };
+		3B1F783B5EDF8C3DE0BB01A5 /* hires */ = {isa = PBXFileReference; lastKnownFileType = folder; name = hires; path = "dynosprite tests/resources/hires"; sourceTree = SOURCE_ROOT; };
+		0B70F83D24C5774B53CEF35E /* hires in Resources */ = {isa = PBXBuildFile; fileRef = 3B1F783B5EDF8C3DE0BB01A5 /* hires */; };
+		2B126599F282E914A19D6A61 /* images-bad-1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "images-bad-1.json"; path = "dynosprite tests/resources/images-bad-1.json"; sourceTree = SOURCE_ROOT; };
+		718DE0B0B25080140AC96FAC /* images-bad-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 2B126599F282E914A19D6A61 /* images-bad-1.json */; };
+		F63A67494E83D1DD5AA93D6B /* images-bad-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "images-bad-2.json"; path = "dynosprite tests/resources/images-bad-2.json"; sourceTree = SOURCE_ROOT; };
+		B8E4DF95626D7063B6E0C90B /* images-bad-2.json in Resources */ = {isa = PBXBuildFile; fileRef = F63A67494E83D1DD5AA93D6B /* images-bad-2.json */; };
+		B580BFC56AC9CB0C5AD06A48 /* images.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = images.json; path = "dynosprite tests/resources/images.json"; sourceTree = SOURCE_ROOT; };
+		A98C3D99248C95A0FF104357 /* images.json in Resources */ = {isa = PBXBuildFile; fileRef = B580BFC56AC9CB0C5AD06A48 /* images.json */; };
+		DBDA0DBF80733F171661A67E /* moon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = moon.gif; path = "dynosprite tests/resources/moon.gif"; sourceTree = SOURCE_ROOT; };
+		723E7D0A9C5F66819430901E /* moon.gif in Resources */ = {isa = PBXBuildFile; fileRef = DBDA0DBF80733F171661A67E /* moon.gif */; };
+		E90C97BB596F8D58B2B28F49 /* ship.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ship.tiff; path = "dynosprite tests/resources/ship.tiff"; sourceTree = SOURCE_ROOT; };
+		CE9C7E3BBEA666173C23F05C /* ship.tiff in Resources */ = {isa = PBXBuildFile; fileRef = E90C97BB596F8D58B2B28F49 /* ship.tiff */; };
+		1A389135581E0EF746289F27 /* swath.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = swath.png; path = "dynosprite tests/resources/swath.png"; sourceTree = SOURCE_ROOT; };
+		2193161129C7D36730B3A578 /* swath.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A389135581E0EF746289F27 /* swath.png */; };
+		D166712B07443C9EEBAC618B /* pcgfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 187F89368C0C0BD17117026A /* pcgfont.ttf */; };
+		C1FB7A3E0236189C041488BC /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CE92D971D7C83A0CB14B2E /* Actions.sks */; };
+		2396252694C748118292C609 /* OCMock.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OCMock.xcframework; path = Frameworks/OCMock.xcframework; sourceTree = SOURCE_ROOT; };
+		4A8318D9F0C3A57D3AE9215D /* OCMock.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2396252694C748118292C609 /* OCMock.xcframework */; };
+		88F1706DB0D881BE23410D81 /* OCMock.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 2396252694C748118292C609 /* OCMock.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9C220B080C3D5054CD0C4C44 /* dynosprite-github.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "dynosprite-github.xctestplan"; path = "dynosprite-github.xctestplan"; sourceTree = SOURCE_ROOT; };
+		762070BE8750B4CEED527AF2 /* dynosprite-github.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 9C220B080C3D5054CD0C4C44 /* dynosprite-github.xctestplan */; };
 		F5BF48AA40CAD7891EB709FC /* Lost World Pinball.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lost World Pinball.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F36A49B3AD9567021B66A1EF /* dynosprite tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "dynosprite tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BE706EF9312F663F095DAA5 /* dynosprite */ = {
 			isa = PBXGroup;
 			children = (
@@ -351,10 +553,96 @@
 			name = Pinball;
 			sourceTree = "<group>";
 		};
+		830065D4623B20057C987911 /* dynosprite tests */ = {
+			isa = PBXGroup;
+			children = (
+				5B556D8574DA95E6C2CA99DD /* DSAppDelegateTest.m */,
+				AF46AFEB3E3C13C1BF6898BD /* DSAssetLoaderTest.m */,
+				6F56EC96D275C71E7C9AD0BE /* DSCoCoJoystickControllerTest.m */,
+				F73DB9929F7B0DC4154F0A61 /* DSCoCoKeyboardJoystickTest.m */,
+				CBCDC10DBCD878973FFBAA92 /* DSCocoJoystickTest.m */,
+				D2F24B0F81D403A11B607D38 /* DSConfigFileParserTest.m */,
+				4D8D58A04BB774F2EF96BC35 /* DSConsTest.m */,
+				21E40DEA016BC2C09C87850A /* DSDefaultsConfigLoaderTest.m */,
+				2F77C96C951890D12BEBB2BE /* DSDefaultsConfigTest.m */,
+				402B427C7987F2068B6B1E6A /* DSDirectPageGlobalsTest.m */,
+				5E82E8408AD3DA655C7D6543 /* DSGameSceneTest.m */,
+				D79BE6AA83598753E7CAE0B6 /* DSImageUtilTest.mm */,
+				D215429FF77BB3D53E08770D /* DSInitSceneTest.m */,
+				47911B1B13DBBD75AC4AA456 /* DSKeyEventBaseTest.m */,
+				0EBF75E0B08F4E055CBAFC36 /* DSLevelFileParserTest.m */,
+				6A0C0154F5E727CAC12D331B /* DSLevelLoadingSceneTest.m */,
+				7AA230E7BA876EA86ACE799F /* DSLevelRegistryTest.m */,
+				3B62FCEE6E8BC10EA731F2AB /* DSLevelTest.m */,
+				6B715C6105ABC1F8B820C33F /* DSMusicEngineTest.m */,
+				1030FAA8FA77D7BC3DF6D614 /* DSMutableArrayWrapperTest.m */,
+				EBA6457694F0453E8C07D153 /* DSNSDataMD5ExtensionsTest.m */,
+				E6570AD96743095D8CAC1ECE /* DSObjectClassDataRegistryTest.m */,
+				16934CED87B0C1E6352D5ED3 /* DSObjectClassDataTest.m */,
+				0D275F18D02B249931E663C4 /* DSObjectCoordinatorTest.m */,
+				0CA777F3E641DD00BA857D66 /* DSObjectTest.m */,
+				D8B1F1F191B18658DF428BA6 /* DSPointTest.m */,
+				799DC7BD8E4259916F3B128B /* DSResourceControllerTest.m */,
+				D66A908D4ACC6D68E35C1D38 /* DSSceneControllerTest.m */,
+				AF634BA2CC65F3D36AFB8A92 /* DSSceneTest.m */,
+				5FA5A35663B14A4FBF49E2C6 /* DSSharedSceneControllerTest.m */,
+				F76E9DBBF0925EC93B689F87 /* DSSoundManagerTest.m */,
+				F41C9234953168CA109DB926 /* DSSpriteFileParserTest.m */,
+				B4AF323EDCD56FB86121C78B /* DSSpriteInfoTest.m */,
+				FCCD84A9C7064D771ABF82E4 /* DSSpriteObjectClassFactoryTest.m */,
+				2F7F45818C25194C8B973157 /* DSSpriteObjectClassTest.m */,
+				B4F0FE9D34799C36D571FA82 /* DSTestUtils.m */,
+				85CBE32442B6FD1F8F7BD85B /* DSTextureManagerTest.mm */,
+				8021F0A776ADD612E0C5139E /* DSTextureTest.m */,
+				8F5EA5A80B4DEC8BE70985DB /* DSTileFileParserTest.m */,
+				97AF54B2141EB08BCC34A4A8 /* DSTileInfoRegistryTest.m */,
+				D132F8E3FE73C6C91AB9E2FE /* DSTileInfoTest.m */,
+				B2CA0148CEE68F27B74DF65A /* DSTileMapMakerTest.m */,
+				CC000C2D233168F1F55051D0 /* DSTransitionImageLoaderTest.m */,
+				03C04AE9E04826CC297DD9C5 /* DSTransitionSceneInfoFileParserTest.m */,
+				7192E9414B3BB61E21655F7A /* DSTransitionSceneInfoTest.m */,
+				C4402C88CB798A7B847A2C59 /* DSTransitionSceneTest.m */,
+				8BB509F22863E6657E901E3A /* DSViewControllerTest.m */,
+				F56F9199F9F83F5ACAC18ACF /* DSWindowControllerTest.m */,
+				13346EC362A700A9ABA29D1B /* DSKeyEventBaseTest.h */,
+				034ACC7660DCFC175B9CD3BE /* DSTestUtils.h */,
+				8FE10B7413AAF42DC5CEBC33 /* 01-foo.wav */,
+				6FDA95529CF9D5DC4BE85567 /* 01-moon.gif */,
+				2630325D18ECEDC69AE8418F /* 01-moon.json */,
+				32B699BBF121E2F789BE7FFA /* 01-test-level.json */,
+				5F6D0A4A1D43DBA664C762D5 /* 02-foo.wav */,
+				BCE7DAF663F4E77D566B6094 /* 03-badguys.json */,
+				A90159C7FDB97C02C28B053A /* 03-foo.wav */,
+				D55BEACC5F7C8819A78F9CE2 /* 04-ship.json */,
+				158179467D7067A8C4C80183 /* 04-ship2.json */,
+				900EF6AF3E75E987D3EB8360 /* JSONBad */,
+				0E5E5EAED4D63B6E6EF89BE5 /* JSONDict.json */,
+				0E1ECF595B061894704DA12F /* JSONList.json */,
+				8AB83CBA2C4F08E80CAD544F /* defaults-config.json */,
+				FBD0DCF5AC31CA59607DF997 /* empty.json */,
+				28B76B2216B9A849D45C50B9 /* forest-hack.png */,
+				936469598294B92B022EBA2E /* forest-hires.png */,
+				467D4BD5FBA2D65AB78B2D28 /* forest-subimage.tiff */,
+				61F1F6E25A3BCBB3FA8652F3 /* forest-tile.tiff */,
+				D7828C56346BADCD4F08CAAC /* forest.png */,
+				3B1F783B5EDF8C3DE0BB01A5 /* hires */,
+				2B126599F282E914A19D6A61 /* images-bad-1.json */,
+				F63A67494E83D1DD5AA93D6B /* images-bad-2.json */,
+				B580BFC56AC9CB0C5AD06A48 /* images.json */,
+				DBDA0DBF80733F171661A67E /* moon.gif */,
+				E90C97BB596F8D58B2B28F49 /* ship.tiff */,
+				1A389135581E0EF746289F27 /* swath.png */,
+				2396252694C748118292C609 /* OCMock.xcframework */,
+				9C220B080C3D5054CD0C4C44 /* dynosprite-github.xctestplan */,
+			);
+			name = "dynosprite tests";
+			sourceTree = "<group>";
+		};
 		8241ED42B56CC1DA7F726566 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				F5BF48AA40CAD7891EB709FC /* Lost World Pinball.app */,
+				F36A49B3AD9567021B66A1EF /* dynosprite tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -365,6 +653,7 @@
 				5435F544BB19B0245DB83127 /* Pinball */,
 				87F2B663B922F3DA9BFCEDE0 /* game */,
 				4BE706EF9312F663F095DAA5 /* dynosprite */,
+				830065D4623B20057C987911 /* dynosprite tests */,
 				8241ED42B56CC1DA7F726566 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -373,61 +662,61 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B8D78DA8406AF8D1B9F37E7 /* DSAppDelegate.m in Sources */,
-				E5D518203FBC9437AA0529C7 /* DSAssetLoader.m in Sources */,
-				9181947D2F66674B44CED737 /* DSCoCoJoystick.mm in Sources */,
-				1771F5BAB377ADCFCE2A245B /* DSCoCoKeyboardJoystick.m in Sources */,
-				460867F3FD0F38DA0DCE8D11 /* DSCocoJoystickController.m in Sources */,
-				86D5E83FC1FD13A542ECD3AA /* DSConfigFileParser.m in Sources */,
-				7DD68AD7613981026FB8D33B /* DSCons.m in Sources */,
-				8A7513476DC7C03CDC32F7C4 /* DSDefaultsConfig.m in Sources */,
-				8605605857E2EC8E181E2693 /* DSDefaultsConfigLoader.m in Sources */,
-				9A4F0C701245F67449179048 /* DSDirectPageGlobals.m in Sources */,
-				EB12C407CD8B518BEEFA4161 /* DSGameScene.m in Sources */,
-				5AA3D874D0FFF811ADE76821 /* DSImageUtil.mm in Sources */,
-				8000DFBCB973CE7A52A87FCC /* DSInitScene.m in Sources */,
-				FD5A82C1683718A604B4FD1D /* DSLevel.m in Sources */,
-				A471D14A32B5256B3B111627 /* DSLevelFileParser.m in Sources */,
-				DC20A6706A192ACECB67106B /* DSLevelLoadingScene.m in Sources */,
-				BECACCAC2D2600089509D993 /* DSLevelRegistry.m in Sources */,
-				932EB0CBC8024638F3A6F07A /* DSMutableArrayWrapper.m in Sources */,
-				A5C4B573BC49AF46B1E92285 /* DSNSDataMD5Extensions.m in Sources */,
-				2D045FB3CEB4479AFA402A33 /* DSObject.m in Sources */,
-				72BE024B808B9E92293345A7 /* DSObjectClassData.m in Sources */,
-				C16316347B637BFA77410ED7 /* DSObjectClassDataRegistry.m in Sources */,
-				EF0DB476FC5498EA38222493 /* DSObjectCoordinator.m in Sources */,
-				2D9F2A99FD05661F488891F8 /* DSPoint.c in Sources */,
-				5B3F640BFFE96DB12D5AFC90 /* DSResourceController.m in Sources */,
-				A92B3B04131F0EA28B2F4B4D /* DSScene.m in Sources */,
-				45373066C54C11527949EBAB /* DSSceneController.m in Sources */,
-				DE5D43421DA8ED9E8450361F /* DSSharedSceneController.m in Sources */,
-				71576E3D55FBF6CF228AB5EC /* DSSoundManager.m in Sources */,
-				D236DBE265976DAD4E5AD31B /* DSSpriteFileParser.m in Sources */,
-				B0E96A05E4B736B830A7D420 /* DSSpriteInfo.m in Sources */,
-				35FB4FC22822CBE10581CB53 /* DSSpriteObjectClass.m in Sources */,
-				211DFCCA93BAF6C4F322AA9B /* DSSpriteObjectClassFactory.m in Sources */,
-				36EFB3A6BA930412DE281409 /* DSTexture.m in Sources */,
-				584C0F872574E895F0A59EA5 /* DSTextureManager.m in Sources */,
-				BF05BF9DFDF7FBDAB4071870 /* DSTileFileParser.m in Sources */,
-				AE87A27D09ED80982A3FCC9C /* DSTileInfo.m in Sources */,
-				4AFE5149D71011B8FD3675D5 /* DSTileInfoRegistry.m in Sources */,
-				FBF26C9103C54266AD223F6B /* DSTileMapMaker.m in Sources */,
-				9FE2A99D81FA23CE8179424A /* DSTransitionImageLoader.m in Sources */,
-				858880CCBABDF36FE15D320C /* DSTransitionScene.m in Sources */,
-				60EF2FEA2E7852E0A4C283F6 /* DSTransitionSceneInfo.m in Sources */,
-				3C5E7FCDF290011041E53D15 /* DSTransitionSceneInfoFileParser.m in Sources */,
-				4005330DE51FFD18D79CA02F /* DSViewController.m in Sources */,
-				C31CC672D12F1E77024CF7D0 /* UIImage+Misc.m in Sources */,
-				935FA82DD25AB61197B230B6 /* 01-ball.c in Sources */,
-				9EF50F3E2873EFF402B7C6D8 /* 02-flipper.c in Sources */,
-				6D9A0EE5B21BC98324EE7376 /* 03-digit.c in Sources */,
-				48D04601D272F0E6305E6818 /* 04-lite.c in Sources */,
-				95BAE058838C367B20392E44 /* 05-panel.c in Sources */,
-				453F05462EDF31988197AB01 /* 06-lava.c in Sources */,
-				211A3C9CAA898602AFD48E27 /* 07-tongue.c in Sources */,
-				4661E7E7B102965946A3B3A8 /* 08-fly.c in Sources */,
-				78F88F5E735BAE9CE9FA759D /* 01-table.c in Sources */,
-				1A0F5E720F4905525EADE3AF /* main.m in Sources */,
+				BE72919A6A541724CAE7310A /* DSAppDelegate.m in Sources */,
+				36487A7A40D0C1B4B0998770 /* DSAssetLoader.m in Sources */,
+				C7B62E24CFEDD480E296DE32 /* DSCoCoJoystick.mm in Sources */,
+				4AD0227F59DCD0E7FBD0E627 /* DSCoCoKeyboardJoystick.m in Sources */,
+				577B60A0F839BE65ADDAFDC9 /* DSCocoJoystickController.m in Sources */,
+				85222B927CAB9C662E0BD2BD /* DSConfigFileParser.m in Sources */,
+				8542C214A94D941942AD54FD /* DSCons.m in Sources */,
+				80BDE82E1B8613F1DBD8C0A5 /* DSDefaultsConfig.m in Sources */,
+				240F14929EC9214EA4A1B967 /* DSDefaultsConfigLoader.m in Sources */,
+				53FB838CDD83CEE7A231D15B /* DSDirectPageGlobals.m in Sources */,
+				831522B8706DC199FC103A0C /* DSGameScene.m in Sources */,
+				4DFDE94BD2492F5E0FC3F05B /* DSImageUtil.mm in Sources */,
+				5B60387D5517E1E520E39E44 /* DSInitScene.m in Sources */,
+				56C1CB0F294E5A41152DFDD1 /* DSLevel.m in Sources */,
+				6C3685F5D64C7E8FD6B617A4 /* DSLevelFileParser.m in Sources */,
+				435364C58D2696AF3AAC5E1F /* DSLevelLoadingScene.m in Sources */,
+				79D167D9772DF0CD293955B1 /* DSLevelRegistry.m in Sources */,
+				60F7B128F7C834685DFDBB36 /* DSMutableArrayWrapper.m in Sources */,
+				CB0A12B3FA6D7EFF5551E818 /* DSNSDataMD5Extensions.m in Sources */,
+				AAB819965D03395D798A4D16 /* DSObject.m in Sources */,
+				262AA726333DA5416D93A59E /* DSObjectClassData.m in Sources */,
+				95FF961C6A4257917BE1E2CF /* DSObjectClassDataRegistry.m in Sources */,
+				34568069570083F080805147 /* DSObjectCoordinator.m in Sources */,
+				4188F0382F1142356CF9C3FE /* DSPoint.c in Sources */,
+				7ABF669A96D774F04769D52A /* DSResourceController.m in Sources */,
+				90B940873490E6828BCB5BA8 /* DSScene.m in Sources */,
+				14D3E7E0E41D32B0472F72A4 /* DSSceneController.m in Sources */,
+				24C5CF39E643F5BAB48DF57D /* DSSharedSceneController.m in Sources */,
+				B191B313EA598FB89DB641DD /* DSSoundManager.m in Sources */,
+				31FA279196DA175FECC796F1 /* DSSpriteFileParser.m in Sources */,
+				FDCD4DA05A1CBDF016393F6D /* DSSpriteInfo.m in Sources */,
+				2341488669344ABE9C6B1075 /* DSSpriteObjectClass.m in Sources */,
+				967461D3A2FC6654E05CEBA5 /* DSSpriteObjectClassFactory.m in Sources */,
+				9BDBD5656E8074D0221AFCE5 /* DSTexture.m in Sources */,
+				EE07D2DD602AE6975D197F2A /* DSTextureManager.m in Sources */,
+				4D41486C63F340C0862D735E /* DSTileFileParser.m in Sources */,
+				8C186AE5E915895FD3F18FAC /* DSTileInfo.m in Sources */,
+				034F3681FF302839C0CA8CCE /* DSTileInfoRegistry.m in Sources */,
+				EAB2DCFFDFE405191D11D079 /* DSTileMapMaker.m in Sources */,
+				CCAE1C8171B9089D39D5887E /* DSTransitionImageLoader.m in Sources */,
+				9E184560C62F234E07C8C674 /* DSTransitionScene.m in Sources */,
+				2D1DEE37A35FDD97DA41C4C5 /* DSTransitionSceneInfo.m in Sources */,
+				4D4C9C246A8F7FC57C28CF23 /* DSTransitionSceneInfoFileParser.m in Sources */,
+				EC8538396955EFCABC5BD9B8 /* DSViewController.m in Sources */,
+				70136AB4340C84E2E9C506B6 /* UIImage+Misc.m in Sources */,
+				FBFCC511F10C2568C8EEDF50 /* 01-ball.c in Sources */,
+				C51A547DC569217E643C8550 /* 02-flipper.c in Sources */,
+				90126C4A56FE2B7827233148 /* 03-digit.c in Sources */,
+				D2E98276CF1BC492CD3B7E84 /* 04-lite.c in Sources */,
+				368EA67BF07BCAAA4765C8F9 /* 05-panel.c in Sources */,
+				5A06C4963275F76E06E68A52 /* 06-lava.c in Sources */,
+				BC7C7919AD2FB254ED1199EE /* 07-tongue.c in Sources */,
+				94D5069E527D31E898FA121C /* 08-fly.c in Sources */,
+				0DE6BB41E4FE2C97D143781B /* 01-table.c in Sources */,
+				517BF0BCF8B7BE16C91AD5EF /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,17 +731,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70A15905D2A2C7C5A86CADF3 /* Actions.sks in Resources */,
-				A2532077FB43BE8AA4EA91C9 /* pcgfont.ttf in Resources */,
-				CB17B9676B141C4DB8328964 /* Assets.xcassets in Resources */,
-				8BA602BFAE591153B23A139A /* Main.storyboard in Resources */,
-				59AC7705E3D9C255CDB40F11 /* Credits.html in Resources */,
-				6C74A9A44CB6B10AC6961BE2 /* defaults-config.json in Resources */,
-				D9FB4A383A016787104A4005 /* levels in Resources */,
-				B8FA847742B64BFE21EA3C77 /* sprites in Resources */,
-				4A17FF99104BC825AE3808B0 /* tiles in Resources */,
-				5D3832F4E89CE0366684BF12 /* images in Resources */,
-				DA4CAB2847A956853AE01EA5 /* sounds in Resources */,
+				03A334487C29E79FC93E11A3 /* Actions.sks in Resources */,
+				FAECE5FA8F84B427C7D26839 /* pcgfont.ttf in Resources */,
+				8E4709B432FDB6B248072ADD /* Assets.xcassets in Resources */,
+				09C660882572DCD56D7D9E5C /* Main.storyboard in Resources */,
+				71363FCCB7428C6602A68AA1 /* Credits.html in Resources */,
+				776A40985B25A69765AD7E6A /* defaults-config.json in Resources */,
+				8B0181937852D899B22B7FC9 /* levels in Resources */,
+				8DAD640D9E08C8C51C2C4218 /* sprites in Resources */,
+				EFB4BE13491CE7C0B41E1E67 /* tiles in Resources */,
+				6672BF96A64F77E7FB66E38F /* images in Resources */,
+				2EB7E2924422F12633CE8214 /* sounds in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +760,160 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "sed 1,3d \"$SCRIPT_INPUT_FILE_0\" | textutil -convert rtf -stdin -output \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
+		38C18207E1B43452566204AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23E2B834B80CCD0A5B2372B3 /* DSAppDelegate.m in Sources */,
+				9C1D07648FDB4800163C7BF7 /* DSAssetLoader.m in Sources */,
+				6BAA216A1AEFC00398610B90 /* DSCoCoJoystick.mm in Sources */,
+				68423AD06FA1E478C5231680 /* DSCoCoKeyboardJoystick.m in Sources */,
+				FDDE99A7ED8287AB08DC12FD /* DSCocoJoystickController.m in Sources */,
+				F6B98DED79005E8BF3612F23 /* DSConfigFileParser.m in Sources */,
+				3F82D41181A326FC29289F89 /* DSCons.m in Sources */,
+				2D86F2C83132171F3B2A833C /* DSDefaultsConfig.m in Sources */,
+				575C1A7ADB7739E99D0BA26E /* DSDefaultsConfigLoader.m in Sources */,
+				11DF2467549A126663D8D5A7 /* DSDirectPageGlobals.m in Sources */,
+				6EAA3687AFA4D22FAB1D65A0 /* DSGameScene.m in Sources */,
+				795DF6BBBAB904D29212D9FD /* DSImageUtil.mm in Sources */,
+				C6629039675DDE261DC1B958 /* DSInitScene.m in Sources */,
+				DE8F1A2A17369FE294DE4961 /* DSLevel.m in Sources */,
+				A50318CAE256C27E17175336 /* DSLevelFileParser.m in Sources */,
+				C41A8ED1329D47CDBAD40D69 /* DSLevelLoadingScene.m in Sources */,
+				BF70CF47350A292C87A49779 /* DSLevelRegistry.m in Sources */,
+				206337CE2E9D5CD4A1794B31 /* DSMutableArrayWrapper.m in Sources */,
+				AAAC8B61B1020E15019A771C /* DSNSDataMD5Extensions.m in Sources */,
+				39076FF666CD9524BD3C9E3B /* DSObject.m in Sources */,
+				B3AEE988FE6104584DA161DA /* DSObjectClassData.m in Sources */,
+				AB27EAD00ABBE461932D8E90 /* DSObjectClassDataRegistry.m in Sources */,
+				C4B207BB8D78F74F9CEB2602 /* DSObjectCoordinator.m in Sources */,
+				628E8E0FB5648F78F989B956 /* DSPoint.c in Sources */,
+				40BA85858E56FF1B26D8209B /* DSResourceController.m in Sources */,
+				F864F38A76B9D4752EA22F92 /* DSScene.m in Sources */,
+				7620D48823C73EA30B9C9FB0 /* DSSceneController.m in Sources */,
+				42D2FA8BC89D3561B1BDE795 /* DSSharedSceneController.m in Sources */,
+				4DDC3939993641DC8D6A926A /* DSSoundManager.m in Sources */,
+				98D741A66B974A10F872045A /* DSSpriteFileParser.m in Sources */,
+				918BF720EA2C43EDF695BCC9 /* DSSpriteInfo.m in Sources */,
+				5CF4F48311260FA098B02D04 /* DSSpriteObjectClass.m in Sources */,
+				37D1A97409781E5EBDD48308 /* DSSpriteObjectClassFactory.m in Sources */,
+				B24C0B7F9BDF5258F6581F39 /* DSTexture.m in Sources */,
+				B18F6B0767B3600A506234FE /* DSTextureManager.m in Sources */,
+				74A99443EA22F2D6D2F62B0C /* DSTileFileParser.m in Sources */,
+				44A771895E2118414F2ADBC3 /* DSTileInfo.m in Sources */,
+				19216A698738B7BE69E233B4 /* DSTileInfoRegistry.m in Sources */,
+				8E183DF4C9BC3323ADBD436F /* DSTileMapMaker.m in Sources */,
+				6093F8336B66B1CEBC5EA686 /* DSTransitionImageLoader.m in Sources */,
+				1F9F94BC1EDED65609672F30 /* DSTransitionScene.m in Sources */,
+				F1D9BE3F6C33B373B13D5AE8 /* DSTransitionSceneInfo.m in Sources */,
+				3F569F4FCFC8D7E382B58E11 /* DSTransitionSceneInfoFileParser.m in Sources */,
+				4D1585693978D00A1D9ED729 /* DSViewController.m in Sources */,
+				4B47E7CAF4861AABFB706A92 /* UIImage+Misc.m in Sources */,
+				4742CE808B2B2225ABD7A005 /* DSAppDelegateTest.m in Sources */,
+				A5FAA0FD4857EC25F72ED716 /* DSAssetLoaderTest.m in Sources */,
+				09786E17C047521E437B53B8 /* DSCoCoJoystickControllerTest.m in Sources */,
+				833445104B368E2DFCECC365 /* DSCoCoKeyboardJoystickTest.m in Sources */,
+				D2CC86C2351CA838AECCF7C1 /* DSCocoJoystickTest.m in Sources */,
+				17CEE8CB1149484164270224 /* DSConfigFileParserTest.m in Sources */,
+				CE641677E4A638E0E8260ED4 /* DSConsTest.m in Sources */,
+				C54065C74DDB00FE88ADACD0 /* DSDefaultsConfigLoaderTest.m in Sources */,
+				ACC69852581234F077285ED8 /* DSDefaultsConfigTest.m in Sources */,
+				978968C055DC30778F75923C /* DSDirectPageGlobalsTest.m in Sources */,
+				7D8DA99C97EE972B56B316BE /* DSGameSceneTest.m in Sources */,
+				34B452A980CF09D42DABBB9E /* DSImageUtilTest.mm in Sources */,
+				FC3FDF8CEE07AB7A3F9EABD2 /* DSInitSceneTest.m in Sources */,
+				C91F99E015AF3764447519A4 /* DSKeyEventBaseTest.m in Sources */,
+				85346C4EE655EC1C2F81852A /* DSLevelFileParserTest.m in Sources */,
+				2819556113E5FE00E8B849E0 /* DSLevelLoadingSceneTest.m in Sources */,
+				FD1BC59DD74030E8A20CA55F /* DSLevelRegistryTest.m in Sources */,
+				DC840CD867CCC5DE6B664D14 /* DSLevelTest.m in Sources */,
+				9B589498C499E00735AB7A9A /* DSMusicEngineTest.m in Sources */,
+				27E49D4AE8D19E0D14269793 /* DSMutableArrayWrapperTest.m in Sources */,
+				6844AC45DA34A5769FE1F84F /* DSNSDataMD5ExtensionsTest.m in Sources */,
+				BD1DADA883FD1BA957EAD5E7 /* DSObjectClassDataRegistryTest.m in Sources */,
+				D75A8A532F78A6AF004D6B55 /* DSObjectClassDataTest.m in Sources */,
+				85795FD3C55DCF2E3D67A53B /* DSObjectCoordinatorTest.m in Sources */,
+				97859D0134E074F05A024957 /* DSObjectTest.m in Sources */,
+				B5491AADC6E77CE2B15BD85C /* DSPointTest.m in Sources */,
+				97293D21A9907A7FD59409A9 /* DSResourceControllerTest.m in Sources */,
+				EEA25D0E0A25BF84E46EADDF /* DSSceneControllerTest.m in Sources */,
+				C94FEC15EA28BF98EB92CE22 /* DSSceneTest.m in Sources */,
+				11E981D87FA8B1FD24EE78D7 /* DSSharedSceneControllerTest.m in Sources */,
+				CC7990047E52A5779C516D35 /* DSSoundManagerTest.m in Sources */,
+				50EB15711AFB07645DDCD36B /* DSSpriteFileParserTest.m in Sources */,
+				B822C08A3F37F0FE3B21A2A6 /* DSSpriteInfoTest.m in Sources */,
+				354AE49783BD125B0AF3A311 /* DSSpriteObjectClassFactoryTest.m in Sources */,
+				B65A4E8B0E12FB9D7C7254A3 /* DSSpriteObjectClassTest.m in Sources */,
+				6B9EB239EAC4F7BFA398388A /* DSTestUtils.m in Sources */,
+				275C85C19318D20C6177E2D6 /* DSTextureManagerTest.mm in Sources */,
+				C95733FD42F3C8D5C798A7BE /* DSTextureTest.m in Sources */,
+				885C1F6150CEE594405627C7 /* DSTileFileParserTest.m in Sources */,
+				15A0B1C5B887370A6C3158BD /* DSTileInfoRegistryTest.m in Sources */,
+				C7E5C0CEF365CD0F8D3C17E6 /* DSTileInfoTest.m in Sources */,
+				930625F2DCA9B52BA1F190E6 /* DSTileMapMakerTest.m in Sources */,
+				591A333ECDD7F0E78CF2A82D /* DSTransitionImageLoaderTest.m in Sources */,
+				5A9BB570CEC764E13C7CBA84 /* DSTransitionSceneInfoFileParserTest.m in Sources */,
+				C37A888F9C127AEC1FDDCDCC /* DSTransitionSceneInfoTest.m in Sources */,
+				7D597AEF0024E3D338E14D9A /* DSTransitionSceneTest.m in Sources */,
+				ECF113E748690BD6E3E7BFA2 /* DSViewControllerTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E87B23354FDAC0675FA33248 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A8318D9F0C3A57D3AE9215D /* OCMock.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2807AA4044A2342475B6B806 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				88F1706DB0D881BE23410D81 /* OCMock.xcframework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		62B82E02D1436D9AF075935A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				663C9E8781214A4364D6444F /* 01-foo.wav in Resources */,
+				DDC7659A6BDA4929090BCC3C /* 01-moon.gif in Resources */,
+				16A297F2633BD6D4AE9B09EE /* 01-moon.json in Resources */,
+				D5BAD6CCED652461952C69FE /* 01-test-level.json in Resources */,
+				2F446675ABD7EC613D1FE0B0 /* 02-foo.wav in Resources */,
+				B2D6D280AF9D04395286B18C /* 03-badguys.json in Resources */,
+				04DF1E5EDB4CA8A81AA1AAF2 /* 03-foo.wav in Resources */,
+				25EDC1FE4DB2E4171489E884 /* 04-ship.json in Resources */,
+				8C8AED13F1BDA689130C2C4D /* 04-ship2.json in Resources */,
+				528D248111D4B2DDE07DB584 /* JSONBad in Resources */,
+				AC2C8179B787AAC75F5C5906 /* JSONDict.json in Resources */,
+				99E62EFAE806185CB466E805 /* JSONList.json in Resources */,
+				B4AF48207027BB2B915FB38B /* defaults-config.json in Resources */,
+				1373444FAC5862F9E1DF2E9B /* empty.json in Resources */,
+				E23D60AA127EB7DE90736D2D /* forest-hack.png in Resources */,
+				CBB37DC4965FA465FA114488 /* forest-hires.png in Resources */,
+				3DB747E33C7602D8FB52E19B /* forest-subimage.tiff in Resources */,
+				AE68E12CDF67441E6BE578B6 /* forest-tile.tiff in Resources */,
+				F02E7AA9B1225BE833B62DF6 /* forest.png in Resources */,
+				0B70F83D24C5774B53CEF35E /* hires in Resources */,
+				718DE0B0B25080140AC96FAC /* images-bad-1.json in Resources */,
+				B8E4DF95626D7063B6E0C90B /* images-bad-2.json in Resources */,
+				A98C3D99248C95A0FF104357 /* images.json in Resources */,
+				723E7D0A9C5F66819430901E /* moon.gif in Resources */,
+				CE9C7E3BBEA666173C23F05C /* ship.tiff in Resources */,
+				2193161129C7D36730B3A578 /* swath.png in Resources */,
+				D166712B07443C9EEBAC618B /* pcgfont.ttf in Resources */,
+				C1FB7A3E0236189C041488BC /* Actions.sks in Resources */,
+				762070BE8750B4CEED527AF2 /* dynosprite-github.xctestplan in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		79202D6F05A2EB0B50AEA796 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -625,6 +1068,54 @@
 			};
 			name = Release;
 		};
+		96F2C567EB46973609F0EDBF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0.0;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jamiecho.LostWorldPinballTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		44FCE384A158C9E751C65417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0.0;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jamiecho.LostWorldPinballTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		BEE1607168D4EBCB69E53BCE /* project */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -639,6 +1130,15 @@
 			buildConfigurations = (
 				AF9D2D27DADC25B267ED81C6 /* Debug */,
 				7D8C6F6E45786682C7D8EF1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF816924509220084CD25D24 /* tests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96F2C567EB46973609F0EDBF /* Debug */,
+				44FCE384A158C9E751C65417 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -661,6 +1161,24 @@
 			productReference = F5BF48AA40CAD7891EB709FC;
 			productType = "com.apple.product-type.application";
 		};
+		984A1D6338D49A1E20867B67 /* dynosprite tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FF816924509220084CD25D24;
+			buildPhases = (
+				38C18207E1B43452566204AE /* Sources */,
+				E87B23354FDAC0675FA33248 /* Frameworks */,
+				2807AA4044A2342475B6B806 /* Copy Frameworks */,
+				62B82E02D1436D9AF075935A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "dynosprite tests";
+			productName = "dynosprite tests";
+			productReference = F36A49B3AD9567021B66A1EF;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		46F86FAA6BBF9AC94A7E4595 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
@@ -680,6 +1198,7 @@
 			projectRoot = "";
 			targets = (
 				42AEFBAE01D2DFD981F7DA7D /* Lost World Pinball */,
+				984A1D6338D49A1E20867B67 /* dynosprite tests */,
 			);
 		};
 	};

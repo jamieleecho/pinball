@@ -1,0 +1,117 @@
+//
+//  DSLevelLoadingSceneTest.m
+//  DynospriteCoreTests
+//
+//  Created by Jamie Cho on 4/28/20.
+//  Copyright © 2020 Jamie Cho. All rights reserved.
+//
+
+#import <OCMock/OCMock.h>
+#import <XCTest/XCTest.h>
+#import <math.h>
+#import "DSLevelLoadingScene.h"
+#import "DSSceneController.h"
+
+
+@interface DSLevelLoadingSceneTest : XCTestCase {
+    DSLevelLoadingScene *_target;
+    id _bundle;
+    id _resourceController;
+    id _sceneController;
+}
+
+@end
+
+@implementation DSLevelLoadingSceneTest
+
+- (void)setUp {
+    _target = [[DSLevelLoadingScene alloc] init];
+    _target.backgroundImageName = @"swath.png";
+    _bundle = OCMClassMock(NSBundle.class);
+    _resourceController = OCMClassMock(DSResourceController.class);
+    _sceneController = OCMClassMock(DSSceneController.class);
+    _target.sceneController = _sceneController;
+}
+
+- (void)testInit {
+    XCTAssertEqual(_target.bundle, NSBundle.mainBundle);
+    XCTAssertEqualObjects(_target.levelName, @"");
+    XCTAssertEqualObjects(_target.levelDescription, @"");
+    XCTAssertFalse(_target.isDone);
+    XCTAssertNil(_target.lastAction);
+    XCTAssertNil(_target.lastActionCompletionHandler);
+}
+
+- (void)testProperties {
+    [self initTarget];
+    XCTAssertEqual(_target.bundle, _bundle);
+    XCTAssertEqualObjects(_target.levelName, @"Level 1");
+    XCTAssertEqualObjects(_target.levelDescription, @"My Level Description");
+}
+
+- (void)testDidMoveToView {
+    [self initTarget];
+    SKView *view = [[SKView alloc] init];
+    _target.isDone = YES;
+    _target.levelNumber = 5;
+    id gameScene = OCMClassMock(DSGameScene.class);
+    OCMStub([_sceneController gameSceneForLevel:5]).andReturn(gameScene);
+
+    [_target didMoveToView:view];
+    XCTAssertFalse(_target.isDone);
+    XCTAssertEqual(_target.labels.count, 3);
+    XCTAssertEqualObjects(_target.labels[0].text, @"Level 1");
+    XCTAssertTrue([self isPoint:_target.labels[0].parent.position aboutEqualToPoint:CGPointMake(133, -12.199999809265137)]);
+    XCTAssertEqualObjects(_target.labels[1].text, @"My Level Description");
+    XCTAssertTrue([self isPoint:_target.labels[1].parent.position aboutEqualToPoint:CGPointMake(86, -31.200000762939453)]);
+    XCTAssertEqualObjects(_target.labels[2].text, @"Loading...");
+    XCTAssertTrue([self isPoint:_target.labels[2].parent.position aboutEqualToPoint:CGPointMake(123, -63.200000762939453)]);
+    SKShapeNode *progressBarOutline = (SKShapeNode *)_target.children.lastObject;
+    XCTAssertTrue([progressBarOutline isKindOfClass:SKShapeNode.class]);
+    XCTAssertTrue([self isPoint:progressBarOutline.position aboutEqualToPoint:CGPointMake(126, -60)]);
+    XCTAssertEqual(progressBarOutline.lineWidth, 2);
+    SKSpriteNode *progressBar = (SKSpriteNode *)progressBarOutline.children.firstObject;
+    XCTAssertTrue([progressBar isKindOfClass:SKSpriteNode.class]);
+    XCTAssertTrue(CGPointEqualToPoint(progressBar.position, CGPointMake(1, 1)));
+    XCTAssertTrue(CGSizeEqualToSize(progressBar.size, CGSizeMake(0, 9)));
+    
+    // Cheap hack to verify colors since SK framework changes them:
+    //   get the color, set object colors to what we think they should be and compare
+    UIColor *progressBarOutlineStrokeColor = progressBarOutline.strokeColor;
+    progressBarOutline.strokeColor = UIColor.lightGrayColor;
+    UIColor *progressBarOutlineFillColor = progressBarOutline.fillColor;
+    progressBarOutline.fillColor = [UIColor colorWithWhite:0 alpha:0];
+    UIColor *progressBarColor = progressBar.color;
+    progressBar.color = UIColor.blueColor;
+    XCTAssertEqualObjects(progressBarOutline.strokeColor, progressBarOutlineStrokeColor);
+    XCTAssertEqualObjects(progressBarOutline.fillColor, progressBarOutlineFillColor);
+    XCTAssertEqualObjects(progressBar.color, progressBarColor);
+    XCTAssertTrue(progressBar.hasActions);
+    XCTAssertNotNil(_target.lastAction);
+    XCTAssertNotNil(_target.lastActionCompletionHandler);
+    
+    _target.lastActionCompletionHandler();
+    XCTAssertTrue(_target.isDone);
+    OCMVerify([gameScene initializeLevel]);
+    
+    // Running it again should not add new elements
+    [_target didMoveToView:view];
+}
+
+- (void)initTarget {
+    _target.bundle = _bundle;
+    _target.levelName = @"Level 1";
+    _target.levelDescription = @"My Level Description";
+    _target.backgroundColor = UIColor.purpleColor;
+    _target.foregroundColor = UIColor.lightGrayColor;
+    _target.progressBarColor = UIColor.blueColor;
+    _target.resourceController = _resourceController;
+    OCMStub([_resourceController fontForDisplay]).andReturn(@"Courier");
+}
+
+- (BOOL)isPoint:(CGPoint)p1 aboutEqualToPoint:(CGPoint)p2 {
+    CGPoint p3 = CGPointMake(p1.x - p2.x, p1.y - p2.y);
+    return sqrt((p3.x * p3.x) + (p3.y * p3.y)) < 1e-2;
+}
+
+@end

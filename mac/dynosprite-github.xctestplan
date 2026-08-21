@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "03B9A0B0-B4B0-49C4-87AF-283618BFB00E",
+      "id" : "FFFF4CBB-CC32-4636-8F35-BABB0C095772",
       "name" : "Configuration 1",
       "options" : {
 
@@ -9,18 +9,20 @@
     }
   ],
   "defaultOptions" : {
-
+    "testTimeoutsEnabled" : true
   },
   "testTargets" : [
     {
       "skippedTests" : [
         "DSLevelLoadingSceneTest\/testDidMoveToView",
-        "DSSceneTest\/testClearsMatrixWhenMovedFromView",
-        "DSTextureManagerTest"
+        "DSTextureManagerTest",
+        "DSTextureManagerTest\/testConfigureCustomDraw",
+        "DSTextureManagerTest\/testConfigureSpriteNoRectangle",
+        "DSTextureManagerTest\/testConfigureSpriteWithRectangle"
       ],
       "target" : {
-        "containerPath" : "container:Space Bandits.xcodeproj",
-        "identifier" : "52CC81AE2C02172200CC3E38",
+        "containerPath" : "container:Pinball.xcodeproj",
+        "identifier" : "984A1D6338D49A1E20867B67",
         "name" : "dynosprite tests"
       }
     }

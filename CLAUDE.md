@@ -405,6 +405,49 @@ Things that bite:
   space-bandits'.** Worth checking with `cmp` before assuming a Mac-only bug
   is in the engine; it is the one part of this tree nobody has touched.
 
+### The engine's unit tests
+
+`mac/dynosprite tests/` is space-bandits' test suite, brought across whole:
+forty-seven test files, their fixtures, and OCMock. They test the engine
+rather than the game, which is what makes them portable -- there is not one
+mention of either project in them.
+
+```sh
+scripts/gen-xcode.py
+xcodebuild -project mac/Pinball.xcodeproj -scheme "Lost World Pinball" \
+  -testPlan dynosprite-github \
+  -destination 'platform=macOS,variant=Mac Catalyst' test
+```
+
+- **The tests are not hosted.** There is no app to load them into, so the test
+  target compiles its own copy of the engine -- which is why the engine's
+  forty-five sources appear in two Sources phases, and why `gen-xcode.py` has
+  to keep each target's build files apart. A `PBXFileReference` is shared; a
+  `PBXBuildFile` is not.
+- **The scheme is generated and shared.** `xcodebuild -scheme` otherwise leans
+  on Xcode auto-creating schemes from targets, which is the IDE's behaviour and
+  not the build system's promise. One scheme builds the app and tests the
+  engine, so CI runs both from the same name.
+- **`mac/dynosprite-github.xctestplan` is what CI runs**, as it is in
+  space-bandits. A scheme that names a test plan hands the whole test action
+  to it, so the skip list lives in the plan and nowhere else -- not in the
+  scheme, not in the workflow. The plan pins its target by object id;
+  `gen-xcode.py` checks that id still matches and stops if it does not, since
+  a plan aimed at a target that moved fails as though the tests had vanished.
+- **OCMock is embedded, so it is signed on the way in.** It lives beside the
+  project in `mac/Frameworks/`, and its Copy Frameworks entry carries
+  `CodeSignOnCopy`; without that the bundle builds and then will not load.
+- **Two tests had to be adapted**, and they are exactly the two covering what
+  this project changed in the engine: `DSInitSceneTest` follows the menu's
+  `MenuShowControl`/`MenuShowMusic` switches, which is why those live in
+  `DSInitScene.h` rather than the `.m`; and `DSSceneTest` grew cases for the
+  keys the game is played with. Everything else is byte-identical to the
+  sibling's copy.
+- `DSTextureManagerTest` and `DSLevelLoadingSceneTest/testDidMoveToView` want a
+  window server and are skipped by the plan. `DSWindowControllerTest.m` is
+  excluded from the target outright,
+  following `DSWindowController.m`.
+
 ## CI
 
 Three workflows, modelled on the sibling projects:
